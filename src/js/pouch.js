@@ -1,8 +1,8 @@
 // Utility functions to add pouch to an existing express instance
 "use strict";
-var fluid          = require('infusion');
-var gpii = fluid.registerNamespace("gpii");
-fluid.registerNamespace(namespace);
+var fluid = require('infusion');
+var gpii  = fluid.registerNamespace("gpii");
+fluid.registerNamespace("gpii.pouch");
 
 var PouchDB        = require("pouchdb");
 var memdown        = require('memdown');
