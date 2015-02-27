@@ -1,12 +1,12 @@
 // Utility functions to add pouch to an existing express instance
 "use strict";
-var fluid = require('infusion');
+var fluid = require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
 fluid.registerNamespace("gpii.pouch");
 
 var PouchDB        = require("pouchdb");
-var memdown        = require('memdown');
-var expressPouchdb = require('express-pouchdb');
+var memdown        = require("memdown");
+var expressPouchdb = require("express-pouchdb");
 
 gpii.pouch.addRoutesPrivate = function(that) {
     if (!that.options.path) {
@@ -38,7 +38,7 @@ gpii.pouch.addRoutesPrivate = function(that) {
 // TODO:  Write a change listener to allow easy adding of new databases
 
 /*
-    The 'databases' option is expected to be an array keyed by dbName, with options to control whether data is loaded or not, as in:
+    The "databases" option is expected to be an array keyed by dbName, with options to control whether data is loaded or not, as in:
 
     databases: {
         "nodata": {},

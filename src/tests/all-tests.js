@@ -1,19 +1,17 @@
 /* Tests for the "pouch" module */
 "use strict";
-var fluid      = fluid || require('infusion');
+var fluid      = fluid || require("infusion");
 var gpii       = fluid.registerNamespace("gpii");
 var path       = require("path");
 var jqUnit     = fluid.require("jqUnit");
 var request    = require("request");
 
-require("../../node_modules/gpii-express/src/js/express");
-require("../../node_modules/gpii-express/src/js/router");
-require("../../node_modules/gpii-express/src/js/middleware");
-require("../../node_modules/gpii-express/src/js/bodyparser");
+require("gpii-express");
+
 require("../js/pouch.js");
 
 function isSaneResponse(jqUnit, error, response, body, status) {
-    var status = status ? status : 200;
+    status = status ? status : 200;
     jqUnit.assertNull("There should be no errors.", error);
 
     jqUnit.assertEquals("The response should have a reasonable status code", status, response.statusCode);
@@ -116,7 +114,7 @@ jqUnit.asyncTest("Testing reading of a record...", function() {
         var data = (typeof body === "string") ? JSON.parse(body) : body;
         jqUnit.assertTrue("There should be id data.",       data._id  !== null && data._id  !== undefined);
         jqUnit.assertTrue("There should be revision data.", data._rev !== null && data._rev !== undefined);
-        jqUnit.assertEquals("There should be document data.", "bar", data.foo)
+        jqUnit.assertEquals("There should be document data.", "bar", data.foo);
     });
 });
 
