@@ -8,17 +8,7 @@ var PouchDB        = require("pouchdb");
 var memdown        = require("memdown");
 var expressPouchdb = require("express-pouchdb");
 
-gpii.pouch.addRoutesPrivate = function(that) {
-    if (!that.options.path) {
-        console.error("You must configure a path for a gpii.express.router grade...");
-        return null;
-    }
-
-    if (!that.model.router) {
-        console.error("Our router must be configured before we attempt to add our routes.");
-        return null;
-    }
-
+gpii.pouch.init = function(that) {
     var MemPouchDB = PouchDB.defaults({db: memdown });
 
     if (that.model.databases && Object.keys(that.model.databases).length > 0) {
@@ -32,8 +22,16 @@ gpii.pouch.addRoutesPrivate = function(that) {
         });
     }
 
-    that.model.router.use(that.options.path, expressPouchdb(MemPouchDB));
+    that.expressPouchdb = expressPouchdb(MemPouchDB);
+
+    // Sadly, expressPouchdb does not provide a ready event or callback.  We have to manually enforce a waiting period by waiting to fire our "started" event.
+    setTimeout(function() { that.events.started.fire(); },500);
 };
+
+gpii.pouch.getRouterFunction = function(that) {
+    return that.expressPouchdb;
+};
+
 
 // TODO:  Write a change listener to allow easy adding of new databases
 
@@ -49,13 +47,22 @@ fluid.defaults("gpii.pouch", {
     gradeNames: ["fluid.standardRelayComponent", "gpii.express.router", "autoInit"],
     config:     "{gpii.express}.options.config",
     path:      "/",
+    events: {
+        started: null
+    },
     model: {
         router:    null,
         databases: {}
     },
     listeners: {
-        "addRoutes": {
-            funcName: "gpii.pouch.addRoutesPrivate",
+        onCreate: {
+            funcName: "gpii.pouch.init",
+            args:     ["{that}"]
+        }
+    },
+    invokers: {
+        "getRouterFunction": {
+            funcName: "gpii.pouch.getRouterFunction",
             args: ["{that}"]
         }
     }
