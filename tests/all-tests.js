@@ -8,7 +8,7 @@ var request    = require("request");
 
 require("gpii-express");
 
-require("../js/pouch.js");
+require("../src/js/pouch.js");
 
 function isSaneResponse(jqUnit, error, response, body, status) {
     status = status ? status : 200;
