@@ -22,6 +22,25 @@ function isSaneResponse(jqUnit, error, response, body, status) {
     jqUnit.assertNotNull("There should be a body.", body);
 }
 
+function isSaneRecordBody(body, disableOkCheck) {
+    var data = typeof body === "string" ? JSON.parse(body) : body;
+
+    if (!disableOkCheck) {
+        jqUnit.assertTrue("The response should be OK.", data.ok);
+    }
+
+    var id = data.id ? data.id : data._id;
+    jqUnit.assertTrue("There should be id data.", id  !== null && id  !== undefined);
+
+    var rev = data.rev ? data.id : data._rev;
+    jqUnit.assertTrue("There should be revision data.", rev !== null && rev !== undefined);
+}
+
+function hasRecords(body){
+    var data = (typeof body === "string") ? JSON.parse(body) : body;
+    return data.doc_count && data.doc_count > 0;
+}
+
 var sampleDataFile  = path.resolve(__dirname, "./data/data.json");
 var userDataFile    = path.resolve(__dirname, "./data/users.json");
 
@@ -63,8 +82,7 @@ jqUnit.asyncTest("Testing the 'massive' database (should contain data)...", func
         jqUnit.start();
         isSaneResponse(jqUnit, error,response, body);
 
-        var data = (typeof body === "string") ? JSON.parse(body) : body;
-        jqUnit.assertTrue("There should be records.", data.doc_count && data.doc_count > 0);
+        jqUnit.assertTrue("There should be records.", hasRecords(body));
     });
 });
 
@@ -86,8 +104,7 @@ jqUnit.asyncTest("Testing the 'nodata' database (should not contain data)...", f
         jqUnit.start();
         isSaneResponse(jqUnit, error,response, body);
 
-        var data = (typeof body === "string") ? JSON.parse(body) : body;
-        jqUnit.assertEquals("There should be no records.", 0, data.doc_count);
+        jqUnit.assertFalse("There should be no records.", hasRecords(body));
     });
 });
 
@@ -99,8 +116,7 @@ jqUnit.asyncTest("Testing the 'data' database (should contain data)...", functio
         jqUnit.start();
         isSaneResponse(jqUnit, error,response, body);
 
-        var data = (typeof body === "string") ? JSON.parse(body) : body;
-        jqUnit.assertTrue("There should be records.", data.doc_count && data.doc_count > 0);
+        jqUnit.assertTrue("There should be records.", hasRecords(body));
     });
 });
 
@@ -113,11 +129,7 @@ jqUnit.asyncTest("Testing insertion of a new record...", function() {
     request.post(options, function(error, response, body){
         jqUnit.start();
         isSaneResponse(jqUnit, error,response, body, 201);
-
-        var data = (typeof body === "string") ? JSON.parse(body) : body;
-        jqUnit.assertTrue("The response should be OK.",     data.ok);
-        jqUnit.assertTrue("There should be id data.",       data.id  !== null && data.id  !== undefined);
-        jqUnit.assertTrue("There should be revision data.", data.rev !== null && data.rev !== undefined);
+        isSaneRecordBody(body);
     });
 });
 
@@ -128,10 +140,9 @@ jqUnit.asyncTest("Testing reading of a record...", function() {
     request.get(options, function(error, response, body){
         jqUnit.start();
         isSaneResponse(jqUnit, error,response, body, 200);
+        isSaneRecordBody(body, true);
 
         var data = (typeof body === "string") ? JSON.parse(body) : body;
-        jqUnit.assertTrue("There should be id data.",       data._id  !== null && data._id  !== undefined);
-        jqUnit.assertTrue("There should be revision data.", data._rev !== null && data._rev !== undefined);
         jqUnit.assertEquals("There should be document data.", "bar", data.foo);
     });
 });
@@ -143,9 +154,6 @@ jqUnit.asyncTest("Testing deletion of a record...", function() {
     request.del(options, function(error, response, body){
         jqUnit.start();
         isSaneResponse(jqUnit, error,response, body, 200);
-
-        var data = (typeof body === "string") ? JSON.parse(body) : body;
-        jqUnit.assertTrue("There should be id data.",       data.id  !== null && data.id  !== undefined);
-        jqUnit.assertTrue("There should be revision data.", data.rev !== null && data.rev !== undefined);
+        isSaneRecordBody(body);
     });
 });
