@@ -22,8 +22,12 @@ function isSaneResponse(jqUnit, error, response, body, status) {
     jqUnit.assertNotNull("There should be a body.", body);
 }
 
-var sampleDataFile = path.resolve(__dirname, "./data/data.json");
-var userDataFile   = path.resolve(__dirname, "./data/users.json");
+var sampleDataFile  = path.resolve(__dirname, "./data/data.json");
+var userDataFile    = path.resolve(__dirname, "./data/users.json");
+
+// A ~100k data set to confirm that the async data loads do not take too long.
+var massiveDataFile = path.resolve(__dirname, "./data/massive.json");
+
 var pouch = gpii.express({
     "config": {
         "express": {
@@ -37,9 +41,10 @@ var pouch = gpii.express({
             options: {
                 model: {
                     "databases": {
-                        "_users": { "data": userDataFile },
-                        "data":   { "data": sampleDataFile },
-                        "nodata": {}
+                        "_users":  { "data": userDataFile   },
+                        "data":    { "data": sampleDataFile },
+                        "massive": { "data": massiveDataFile},
+                        "nodata":  {}
                     }
                 }
             }
@@ -49,6 +54,19 @@ var pouch = gpii.express({
 
 
 jqUnit.module("Testing pouch module stack...");
+
+jqUnit.asyncTest("Testing the 'massive' database (should contain data)...", function() {
+    var options = {
+        url: pouch.options.config.express.baseUrl + "massive"
+    };
+    request.get(options, function(error, response, body){
+        jqUnit.start();
+        isSaneResponse(jqUnit, error,response, body);
+
+        var data = (typeof body === "string") ? JSON.parse(body) : body;
+        jqUnit.assertTrue("There should be records.", data.doc_count && data.doc_count > 0);
+    });
+});
 
 jqUnit.asyncTest("Testing the root of the pouch instance...", function() {
     var options = {

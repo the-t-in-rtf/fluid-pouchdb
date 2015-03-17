@@ -24,8 +24,7 @@ gpii.pouch.init = function(that) {
 
     that.expressPouchdb = expressPouchdb(MemPouchDB);
 
-    // Sadly, expressPouchdb does not provide a ready event or callback.  We have to manually enforce a waiting period by waiting to fire our "started" event.
-    setTimeout(function() { that.events.started.fire(); },500);
+    that.events.started.fire();
 };
 
 gpii.pouch.getRouterFunction = function(that) {
