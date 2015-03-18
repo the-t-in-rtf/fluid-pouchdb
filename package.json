@@ -10,7 +10,7 @@
     "express-pouchdb": "0.14.0",
     "infusion":        "git://github.com/fluid-project/infusion.git#df5f8cfabf815a4086b778e73125c3c952dda4ec",
     "memdown":         "1.0.0",
-    "pouchdb":         "3.0.5",
+    "pouchdb":         "3.3.1",
     "underscore-node": "0.1.2"
   },
   "devDependencies": {
