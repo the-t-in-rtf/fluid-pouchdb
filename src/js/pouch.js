@@ -8,11 +8,11 @@ var PouchDB        = require("pouchdb");
 var memdown        = require("memdown");
 var expressPouchdb = require("express-pouchdb");
 
-gpii.pouch.init = function(that) {
+gpii.pouch.init = function (that) {
     var MemPouchDB = PouchDB.defaults({db: memdown });
 
     if (that.model.databases && Object.keys(that.model.databases).length > 0) {
-        Object.keys(that.model.databases).forEach(function(key){
+        Object.keys(that.model.databases).forEach(function (key) {
             var dbConfig = that.model.databases[key];
             var db = new MemPouchDB(key);
             if (dbConfig.data) {
@@ -27,7 +27,7 @@ gpii.pouch.init = function(that) {
     that.events.started.fire();
 };
 
-gpii.pouch.getRouterFunction = function(that) {
+gpii.pouch.getRouterFunction = function (that) {
     return that.expressPouchdb;
 };
 
