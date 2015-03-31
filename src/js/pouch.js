@@ -11,9 +11,9 @@ var expressPouchdb = require("express-pouchdb");
 gpii.pouch.init = function (that) {
     var MemPouchDB = PouchDB.defaults({db: memdown });
 
-    if (that.model.databases && Object.keys(that.model.databases).length > 0) {
-        Object.keys(that.model.databases).forEach(function (key) {
-            var dbConfig = that.model.databases[key];
+    if (that.options.databases && Object.keys(that.options.databases).length > 0) {
+        Object.keys(that.options.databases).forEach(function (key) {
+            var dbConfig = that.options.databases[key];
             var db = new MemPouchDB(key);
             if (dbConfig.data) {
                 var data = require(dbConfig.data);
@@ -24,10 +24,10 @@ gpii.pouch.init = function (that) {
 
     that.expressPouchdb = expressPouchdb(MemPouchDB);
 
-    that.events.started.fire();
+    that.events.onStarted.fire();
 };
 
-gpii.pouch.getRouterFunction = function (that) {
+gpii.pouch.getRouter = function (that) {
     return that.expressPouchdb;
 };
 
@@ -45,14 +45,11 @@ gpii.pouch.getRouterFunction = function (that) {
 fluid.defaults("gpii.pouch", {
     gradeNames: ["fluid.standardRelayComponent", "gpii.express.router", "autoInit"],
     config:     "{gpii.express}.options.config",
-    path:      "/",
+    path:       "/",
     events: {
-        started: null
+        onStarted: null
     },
-    model: {
-        router:    null,
-        databases: {}
-    },
+    databases: {},
     listeners: {
         onCreate: {
             funcName: "gpii.pouch.init",
@@ -60,8 +57,8 @@ fluid.defaults("gpii.pouch", {
         }
     },
     invokers: {
-        "getRouterFunction": {
-            funcName: "gpii.pouch.getRouterFunction",
+        "getRouter": {
+            funcName: "gpii.pouch.getRouter",
             args: ["{that}"]
         }
     }
