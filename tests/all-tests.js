@@ -10,19 +10,10 @@ require("gpii-express");
 
 require("../src/js/pouch.js");
 
-function isSaneResponse(jqUnit, error, response, body, status) {
-    status = status ? status : 200;
-    jqUnit.assertNull("There should be no errors.", error);
+require("../node_modules/gpii-express/tests/js/test-helpers");
 
-    jqUnit.assertEquals("The response should have a reasonable status code", status, response.statusCode);
-    if (response.statusCode !== status) {
-        console.log(JSON.stringify(body, null, 2));
-    }
-
-    jqUnit.assertNotNull("There should be a body.", body);
-}
-
-function isSaneRecordBody(body, disableOkCheck) {
+fluid.registerNamespace("gpii.tests.pouchdb");
+gpii.tests.pouchdb.isSaneRecordBody = function (body, disableOkCheck) {
     var data = typeof body === "string" ? JSON.parse(body) : body;
 
     if (!disableOkCheck) {
@@ -34,12 +25,12 @@ function isSaneRecordBody(body, disableOkCheck) {
 
     var rev = data.rev ? data.id : data._rev;
     jqUnit.assertTrue("There should be revision data.", rev !== null && rev !== undefined);
-}
+};
 
-function hasRecords(body){
+gpii.tests.pouchdb.hasRecords = function (body) {
     var data = (typeof body === "string") ? JSON.parse(body) : body;
     return data.doc_count && data.doc_count > 0;
-}
+};
 
 var sampleDataFile  = path.resolve(__dirname, "./data/data.json");
 var userDataFile    = path.resolve(__dirname, "./data/users.json");
@@ -58,13 +49,11 @@ var pouch = gpii.express({
         "pouch": {
             type: "gpii.pouch",
             options: {
-                model: {
-                    "databases": {
-                        "_users":  { "data": userDataFile   },
-                        "data":    { "data": sampleDataFile },
-                        "massive": { "data": massiveDataFile},
-                        "nodata":  {}
-                    }
+                "databases": {
+                    "_users":  { "data": userDataFile   },
+                    "data":    { "data": sampleDataFile },
+                    "massive": { "data": massiveDataFile},
+                    "nodata":  {}
                 }
             }
         }
@@ -74,86 +63,86 @@ var pouch = gpii.express({
 
 jqUnit.module("Testing pouch module stack...");
 
-jqUnit.asyncTest("Testing the 'massive' database (should contain data)...", function() {
+jqUnit.asyncTest("Testing the 'massive' database (should contain data)...", function () {
     var options = {
         url: pouch.options.config.express.baseUrl + "massive"
     };
-    request.get(options, function(error, response, body){
+    request.get(options, function (error, response, body) {
         jqUnit.start();
-        isSaneResponse(jqUnit, error,response, body);
+        gpii.express.tests.helpers.isSaneResponse(jqUnit, response, body);
 
-        jqUnit.assertTrue("There should be records.", hasRecords(body));
+        jqUnit.assertTrue("There should be records.", gpii.tests.pouchdb.hasRecords(body));
     });
 });
 
-jqUnit.asyncTest("Testing the root of the pouch instance...", function() {
+jqUnit.asyncTest("Testing the root of the pouch instance...", function () {
     var options = {
         url: pouch.options.config.express.baseUrl
     };
-    request.get(options, function(error, response, body){
+    request.get(options, function (error, response, body) {
         jqUnit.start();
-        isSaneResponse(jqUnit, error,response, body);
+        gpii.express.tests.helpers.isSaneResponse(jqUnit, response, body);
     });
 });
 
-jqUnit.asyncTest("Testing the 'nodata' database (should not contain data)...", function() {
+jqUnit.asyncTest("Testing the 'nodata' database (should not contain data)...", function () {
     var options = {
         url: pouch.options.config.express.baseUrl + "nodata"
     };
-    request.get(options, function(error, response, body){
+    request.get(options, function (error, response, body) {
         jqUnit.start();
-        isSaneResponse(jqUnit, error,response, body);
+        gpii.express.tests.helpers.isSaneResponse(jqUnit, response, body);
 
-        jqUnit.assertFalse("There should be no records.", hasRecords(body));
+        jqUnit.assertFalse("There should be no records.", gpii.tests.pouchdb.hasRecords(body));
     });
 });
 
-jqUnit.asyncTest("Testing the 'data' database (should contain data)...", function() {
+jqUnit.asyncTest("Testing the 'data' database (should contain data)...", function () {
     var options = {
         url: pouch.options.config.express.baseUrl + "data"
     };
-    request.get(options, function(error, response, body){
+    request.get(options, function (error, response, body) {
         jqUnit.start();
-        isSaneResponse(jqUnit, error,response, body);
+        gpii.express.tests.helpers.isSaneResponse(jqUnit, response, body);
 
-        jqUnit.assertTrue("There should be records.", hasRecords(body));
+        jqUnit.assertTrue("There should be records.", gpii.tests.pouchdb.hasRecords(body));
     });
 });
 
 // TODO:  test inserts
-jqUnit.asyncTest("Testing insertion of a new record...", function() {
+jqUnit.asyncTest("Testing insertion of a new record...", function () {
     var options = {
         url:  pouch.options.config.express.baseUrl + "data",
         json: { "foo": "bar" }
     };
-    request.post(options, function(error, response, body){
+    request.post(options, function (error, response, body) {
         jqUnit.start();
-        isSaneResponse(jqUnit, error,response, body, 201);
-        isSaneRecordBody(body);
+        gpii.express.tests.helpers.isSaneResponse(jqUnit, response, body, 201);
+        gpii.tests.pouchdb.isSaneRecordBody(body);
     });
 });
 
-jqUnit.asyncTest("Testing reading of a record...", function() {
+jqUnit.asyncTest("Testing reading of a record...", function () {
     var options = {
         url:  pouch.options.config.express.baseUrl + "data/foo"
     };
-    request.get(options, function(error, response, body){
+    request.get(options, function (error, response, body) {
         jqUnit.start();
-        isSaneResponse(jqUnit, error,response, body, 200);
-        isSaneRecordBody(body, true);
+        gpii.express.tests.helpers.isSaneResponse(jqUnit, response, body);
+        gpii.tests.pouchdb.isSaneRecordBody(body, true);
 
         var data = (typeof body === "string") ? JSON.parse(body) : body;
         jqUnit.assertEquals("There should be document data.", "bar", data.foo);
     });
 });
 
-jqUnit.asyncTest("Testing deletion of a record...", function() {
+jqUnit.asyncTest("Testing deletion of a record...", function () {
     var options = {
         url:  pouch.options.config.express.baseUrl + "data/todelete"
     };
-    request.del(options, function(error, response, body){
+    request.del(options, function (error, response, body) {
         jqUnit.start();
-        isSaneResponse(jqUnit, error,response, body, 200);
-        isSaneRecordBody(body);
+        gpii.express.tests.helpers.isSaneResponse(jqUnit, response, body);
+        gpii.tests.pouchdb.isSaneRecordBody(body);
     });
 });
