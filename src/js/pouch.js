@@ -11,16 +11,13 @@ var expressPouchdb = require("express-pouchdb");
 gpii.pouch.init = function (that) {
     var MemPouchDB = PouchDB.defaults({db: memdown });
 
-    if (that.options.databases && Object.keys(that.options.databases).length > 0) {
-        Object.keys(that.options.databases).forEach(function (key) {
-            var dbConfig = that.options.databases[key];
-            var db = new MemPouchDB(key);
-            if (dbConfig.data) {
-                var data = require(dbConfig.data);
-                db.bulkDocs(data);
-            }
-        });
-    }
+    fluid.each(that.options.databases, function(dbConfig, key) {
+        var db = new MemPouchDB(key);
+        if (dbConfig.data) {
+            var data = require(dbConfig.data);
+            db.bulkDocs(data);
+        }
+    });
 
     that.expressPouchdb = expressPouchdb(MemPouchDB);
 
