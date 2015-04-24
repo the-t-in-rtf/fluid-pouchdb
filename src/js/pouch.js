@@ -7,11 +7,26 @@ fluid.registerNamespace("gpii.pouch");
 var PouchDB        = require("pouchdb");
 var memdown        = require("memdown");
 var expressPouchdb = require("express-pouchdb");
+var os             = require("os");
+var path           = require("path");
+var fs             = require("fs");
+
+// We want to output our generated config file to the temporary directory instead of the working directory.
+var pouchConfigPath = path.resolve(os.tmpdir(), "config.json");
+var pouchLogPath    = path.resolve(os.tmpdir(), "log.txt");
+
 
 gpii.pouch.init = function (that) {
-    var MemPouchDB = PouchDB.defaults({db: memdown });
+    // There are unfortunately options that can only be configured via a configuration file.
+    //
+    // To allow ourselves (and users configuring and extending this grade) to control these options, we create the file
+    // with the contents of options.pouchConfig before configuring and starting express-pouchdb.
+    //
+    fs.writeFileSync(that.options.pouchConfigPath, JSON.stringify(that.options.pouchConfig, null, 2));
 
-    fluid.each(that.options.databases, function(dbConfig, key) {
+    var MemPouchDB = PouchDB.defaults({ db: memdown });
+
+    fluid.each(that.options.databases, function (dbConfig, key) {
         var db = new MemPouchDB(key);
         if (dbConfig.data) {
             var data = require(dbConfig.data);
@@ -19,7 +34,9 @@ gpii.pouch.init = function (that) {
         }
     });
 
-    that.expressPouchdb = expressPouchdb(MemPouchDB);
+    that.expressPouchdb = expressPouchdb(MemPouchDB, { configPath: pouchConfigPath });
+
+    //that.expressPouchdb.couchLogger.setFile(logPath);
 
     that.events.onStarted.fire();
 };
@@ -40,9 +57,15 @@ gpii.pouch.getRouter = function (that) {
     }
  */
 fluid.defaults("gpii.pouch", {
-    gradeNames: ["fluid.standardRelayComponent", "gpii.express.router", "autoInit"],
-    config:     "{gpii.express}.options.config",
-    path:       "/",
+    gradeNames:      ["fluid.standardRelayComponent", "gpii.express.router", "autoInit"],
+    config:          "{gpii.express}.options.config",
+    path:             "/",
+    pouchConfigPath: pouchConfigPath,
+    pouchConfig: {
+        log: {
+            file: pouchLogPath
+        }
+    },
     events: {
         onStarted: null
     },
