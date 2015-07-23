@@ -8,9 +8,9 @@ var request    = require("request");
 
 require("gpii-express");
 
-require("../src/js/pouch.js");
+require("../../src/js/pouch.js");
 
-require("../node_modules/gpii-express/tests/js/test-helpers");
+require("../../node_modules/gpii-express/tests/js/test-helpers");
 
 fluid.registerNamespace("gpii.tests.pouchdb");
 gpii.tests.pouchdb.isSaneRecordBody = function (body, disableOkCheck) {

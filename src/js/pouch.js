@@ -4,9 +4,6 @@ var fluid = require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
 fluid.registerNamespace("gpii.pouch");
 
-var PouchDB        = require("pouchdb");
-var memdown        = require("memdown");
-var expressPouchdb = require("express-pouchdb");
 var os             = require("os");
 var path           = require("path");
 var fs             = require("fs");
@@ -17,6 +14,11 @@ var pouchLogPath    = path.resolve(os.tmpdir(), "log.txt");
 
 
 gpii.pouch.init = function (that) {
+    // These cannot be a global variables or we will end up passing data between test runs and other bad stuff.
+    var expressPouchdb = require("express-pouchdb");
+    var PouchDB        = require("pouchdb");
+    var memdown        = require("memdown");
+
     // There are unfortunately options that can only be configured via a configuration file.
     //
     // To allow ourselves (and users configuring and extending this grade) to control these options, we create the file
@@ -32,11 +34,10 @@ gpii.pouch.init = function (that) {
             var data = require(dbConfig.data);
             db.bulkDocs(data);
         }
+        that.dbs.push(db);
     });
 
     that.expressPouchdb = expressPouchdb(MemPouchDB, { configPath: pouchConfigPath });
-
-    //that.expressPouchdb.couchLogger.setFile(logPath);
 
     that.events.onStarted.fire();
 };
@@ -45,6 +46,12 @@ gpii.pouch.getRouter = function (that) {
     return that.expressPouchdb;
 };
 
+// Clean up after MemDown when we are being destroyed.  This avoids problems where previous cached data is visible in future runs.
+gpii.pouch.destroyDbs = function (that) {
+    fluid.each(that.dbs, function (db) {
+        //db.destroy();
+    });
+};
 
 // TODO:  Write a change listener to allow easy adding of new databases
 
@@ -60,6 +67,9 @@ fluid.defaults("gpii.pouch", {
     gradeNames:      ["fluid.standardRelayComponent", "gpii.express.router", "autoInit"],
     config:          "{gpii.express}.options.config",
     path:             "/",
+    members: {
+        dbs: []
+    },
     pouchConfigPath: pouchConfigPath,
     pouchConfig: {
         log: {
@@ -74,12 +84,19 @@ fluid.defaults("gpii.pouch", {
         onCreate: {
             funcName: "gpii.pouch.init",
             args:     ["{that}"]
+        },
+        "onDestroy.destroyDb": {
+            func: "{that}.destroyDb"
         }
     },
     invokers: {
         "getRouter": {
             funcName: "gpii.pouch.getRouter",
-            args: ["{that}"]
+            args:     ["{that}"]
+        },
+        "destroyDb": {
+            funcName: "gpii.pouch.destroyDbs",
+            args:     ["{that}"]
         }
     }
 });
