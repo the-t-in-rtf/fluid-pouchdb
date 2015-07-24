@@ -49,45 +49,12 @@ gpii.pouch.init = function (that) {
     that.expressPouchdb = expressPouchdb(MemPouchDB, { configPath: pouchConfigPath });
 
     if (PouchDB.isBeingCleaned) {
-        var timedOut = false;
-
-        var failIfPouchTakesTooLong = setTimeout(function () {
-            timedOut = true;
-            fluid.fail("Pouch never finished being cleaned up from the last run...");
-        }, 2500);
-
-        var checkToSeeIfPouchIsClean = setInterval(function () {
-            if (PouchDB.isBeingCleaned) {
-                fluid.log("Waiting for pouch to clean up from previous run...");
-            }
-            else {
-                clearInterval(checkToSeeIfPouchIsClean);
-
-                if (timedOut) {
-                    fluid.log("Pouch cleanup timed out, cannot continue initializing new instance...");
-                }
-                else {
-                    clearTimeout(failIfPouchTakesTooLong);
-                    gpii.pouch.loadData(that, MemPouchDB);
-                }
-            }
-        }, 500);
-    }
-    else {
-        gpii.pouch.loadData(that, MemPouchDB);
-    }
-};
-
-gpii.pouch.loadData = function (that, MemPouchDB) {
-    if (PouchDB.isBeingCleaned) {
         fluid.fail("I should never be allowed to load data if pouch is still being cleaned from the previous run...");
     }
     else {
         var promises = [];
         fluid.each(that.options.databases, function (dbConfig, key) {
             var db = new MemPouchDB(key);
-            that.databases.push(db);
-
             if (dbConfig.data) {
                 var data = require(dbConfig.data);
                 promises.push(db.bulkDocs(data));
@@ -104,19 +71,6 @@ gpii.pouch.getRouter = function (that) {
     return that.expressPouchdb;
 };
 
-// Destroy our databases when we are being destroyed.  This is meant to avoid problems where previous cached data is
-// visible in future runs.  See https://issues.gpii.net/browse/GPII-1239 for details.
-gpii.pouch.destroyDbs = function (that) {
-    PouchDB.isBeingCleaned = true;
-    var promises = [];
-    fluid.each(that.databases, function (db) {
-        promises.push(db.destroy());
-    });
-    when.all(promises).then(function () {
-        PouchDB.isBeingCleaned = false;
-    });
-};
-
 fluid.defaults("gpii.pouch", {
     gradeNames:       ["fluid.standardRelayComponent", "gpii.express.router", "autoInit"],
     config:           "{gpii.express}.options.config",
@@ -130,17 +84,11 @@ fluid.defaults("gpii.pouch", {
     events: {
         onStarted: null
     },
-    members: {
-        databases: []
-    },
     databases: {},
     listeners: {
         onCreate: {
             funcName: "gpii.pouch.init",
             args:     ["{that}"]
-        },
-        "onDestroy.destroyDb": {
-            func: "{that}.destroyDb"
         }
     },
     invokers: {
