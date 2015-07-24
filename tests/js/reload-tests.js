@@ -1,4 +1,8 @@
 // Confirming that pouch can safely be loaded and reloaded without resulting in duplicate data.
+//
+// This test only works at the moment because we have enacted a workaround and added an `_id` variable for all records.
+//
+// See https://issues.gpii.net/browse/GPII-1239 for details.
 "use strict";
 var fluid = fluid || require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
