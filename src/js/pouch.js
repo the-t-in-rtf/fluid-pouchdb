@@ -55,6 +55,7 @@ gpii.pouch.init = function (that) {
         var promises = [];
         fluid.each(that.options.databases, function (dbConfig, key) {
             var db = new MemPouchDB(key);
+            that.databaseInstances[key] = db;
             if (dbConfig.data) {
                 var data = require(dbConfig.data);
                 promises.push(db.bulkDocs(data));
@@ -71,6 +72,49 @@ gpii.pouch.getRouter = function (that) {
     return that.expressPouchdb;
 };
 
+// Remove all data from each database between runs, otherwise we encounter problems with data leaking between tests.
+//
+// https://github.com/pouchdb/pouchdb/issues/4124
+//
+gpii.pouch.cleanup = function (that) {
+    fluid.each(that.databaseInstances, function (db, key) {
+        db.allDocs({}, function (err, response) {
+            if (err) { fluid.fail(err); }
+
+            var bulkPayloadDocs = fluid.transform(response.rows, gpii.pouch.transformRecord);
+            var bulkPayload     = {docs: bulkPayloadDocs};
+
+            db.bulkDocs(bulkPayload, function (err) {
+                if (err) { fluid.fail(err); }
+
+                fluid.log("Deleted existing data from database '" + key + "'...");
+
+                db.compact(function (err) {
+                    if (err) { fluid.fail(err); }
+
+                    fluid.log("Compacted existing database '" + key + "'...");
+                });
+            });
+        });
+    });
+};
+
+gpii.pouch.transformRecord = function (record) {
+    // We cannot use "that" or its options here because we have already been destroyed by the time this function is called.
+    var rules = {
+        _id:  "id",
+        _rev: "value.rev",
+        _deleted: {
+            transform: {
+                type: "fluid.transforms.literalValue",
+                value: true
+            }
+        }
+    };
+
+    return fluid.model.transformWithRules(record, rules);
+};
+
 fluid.defaults("gpii.pouch", {
     gradeNames:       ["fluid.standardRelayComponent", "gpii.express.router", "autoInit"],
     config:           "{gpii.express}.options.config",
@@ -84,11 +128,17 @@ fluid.defaults("gpii.pouch", {
     events: {
         onStarted: null
     },
-    databases: {},
+    members: {
+        databaseInstances: {} // The actual PouchDB databases
+    },
+    databases: {}, // The configuration we will use to create the required databases on startup.
     listeners: {
         onCreate: {
             funcName: "gpii.pouch.init",
             args:     ["{that}"]
+        },
+        onDestroy: {
+            func: "{that}.cleanup"
         }
     },
     invokers: {
@@ -96,8 +146,8 @@ fluid.defaults("gpii.pouch", {
             funcName: "gpii.pouch.getRouter",
             args:     ["{that}"]
         },
-        "destroyDb": {
-            funcName: "gpii.pouch.destroyDbs",
+        "cleanup": {
+            funcName: "gpii.pouch.cleanup",
             args:     ["{that}"]
         }
     }
