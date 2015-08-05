@@ -85,6 +85,10 @@ gpii.pouch.getRouter = function (that) {
 gpii.pouch.cleanup = function (that) {
     var promises = [];
     fluid.each(that.databaseInstances, function (db, key) {
+            // If we use the simpler method, the next attempt to recreate the database fails with a 409 document update conflict.
+            //var promise = db.destroy();
+
+            // Instead, we retrieve the list of all document IDs and revisions, and then bulk delete them.
             var promise = db.allDocs()
                 .then(function (result) {
                     var bulkPayloadDocs = fluid.transform(result.rows, gpii.pouch.transformRecord);
