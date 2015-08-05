@@ -48,10 +48,8 @@ gpii.pouch.init = function (that) {
     var MemPouchDB = PouchDB.defaults({ db: memdown });
     that.expressPouchdb = expressPouchdb(MemPouchDB, { configPath: pouchConfigPath });
 
-    if (PouchDB.isBeingCleaned) {
-        fluid.fail("I should never be allowed to load data if pouch is still being cleaned from the previous run...");
-    }
-    else {
+    var waitForCleaning = PouchDB.isBeingCleaned ? PouchDB.isBeingCleaned : fluid.promise();
+    waitForCleaning.then(function () {
         var promises = [];
         fluid.each(that.options.databases, function (dbConfig, key) {
             var db = new MemPouchDB(key);
@@ -65,6 +63,14 @@ gpii.pouch.init = function (that) {
         when.all(promises).then(function () {
             that.events.onStarted.fire();
         });
+    });
+
+    if (PouchDB.isBeingCleaned) {
+        fluid.log("Waiting for the last run to finish its cleanup...");
+    }
+    else {
+        fluid.log("No previous run detected. Continuing with the normal startup...");
+        waitForCleaning.resolve({});
     }
 };
 
@@ -77,9 +83,9 @@ gpii.pouch.getRouter = function (that) {
 // https://github.com/pouchdb/pouchdb/issues/4124
 //
 gpii.pouch.cleanup = function (that) {
+    var promises = [];
     fluid.each(that.databaseInstances, function (db, key) {
-            db
-                .allDocs()
+            var promise = db.allDocs()
                 .then(function (result) {
                     var bulkPayloadDocs = fluid.transform(result.rows, gpii.pouch.transformRecord);
                     var bulkPayload     = {docs: bulkPayloadDocs};
@@ -89,13 +95,17 @@ gpii.pouch.cleanup = function (that) {
                     fluid.log("Deleted existing data from database '" + key + "'...");
                     return db.compact();
                 })
-                .then(function (result) {
+                .then(function () {
                     fluid.log("Compacted existing database '" + key + "'...");
                 })
                 .catch(fluid.fail); // jshint ignore:line
 
+            promises.push(promise);
         }
     );
+
+    // Make sure that the next instance of pouch knows to wait for us to finish cleaning up.
+    PouchDB.isBeingCleaned = when.all(promises);
 };
 
 gpii.pouch.transformRecord = function (record) {
