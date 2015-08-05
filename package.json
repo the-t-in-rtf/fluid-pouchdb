@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "test": "node src/tests/all-tests.js"
+    "test": "node src/tests/all-tests.js",
+    "postinstall": "grunt dedupe-infusion"
   },
   "dependencies": {
     "express": "4.10.5",
