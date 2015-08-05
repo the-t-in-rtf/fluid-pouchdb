@@ -78,25 +78,24 @@ gpii.pouch.getRouter = function (that) {
 //
 gpii.pouch.cleanup = function (that) {
     fluid.each(that.databaseInstances, function (db, key) {
-        db.allDocs({}, function (err, response) {
-            if (err) { fluid.fail(err); }
-
-            var bulkPayloadDocs = fluid.transform(response.rows, gpii.pouch.transformRecord);
-            var bulkPayload     = {docs: bulkPayloadDocs};
-
-            db.bulkDocs(bulkPayload, function (err) {
-                if (err) { fluid.fail(err); }
-
-                fluid.log("Deleted existing data from database '" + key + "'...");
-
-                db.compact(function (err) {
-                    if (err) { fluid.fail(err); }
-
+            db
+                .allDocs()
+                .then(function (result) {
+                    var bulkPayloadDocs = fluid.transform(result.rows, gpii.pouch.transformRecord);
+                    var bulkPayload     = {docs: bulkPayloadDocs};
+                    return db.bulkDocs(bulkPayload);
+                })
+                .then(function () {
+                    fluid.log("Deleted existing data from database '" + key + "'...");
+                    return db.compact();
+                })
+                .then(function (result) {
                     fluid.log("Compacted existing database '" + key + "'...");
-                });
-            });
-        });
-    });
+                })
+                .catch(fluid.fail); // jshint ignore:line
+
+        }
+    );
 };
 
 gpii.pouch.transformRecord = function (record) {
