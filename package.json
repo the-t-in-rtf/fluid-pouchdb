@@ -8,6 +8,7 @@
   "dependencies": {
     "express": "4.10.5",
     "express-pouchdb": "0.14.0",
+    "gpii-express": "git://github.com/GPII/gpii-express#d2b57d7920270926a0fad77c81a39541a2a1a6e6",
     "infusion": "git://github.com/fluid-project/infusion.git#df5f8cfabf815a4086b778e73125c3c952dda4ec",
     "memdown": "1.0.0",
     "pouchdb": "3.3.1",
@@ -15,7 +16,6 @@
     "when": "^3.7.3"
   },
   "devDependencies": {
-    "gpii-express": "git://github.com/GPII/gpii-express#d2b57d7920270926a0fad77c81a39541a2a1a6e6",
     "grunt": "~0.4.4",
     "grunt-shell": "0.6.4",
     "grunt-contrib-jshint": "~0.9.0",
