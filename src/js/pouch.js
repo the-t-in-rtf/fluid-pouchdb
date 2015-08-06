@@ -48,8 +48,8 @@ gpii.pouch.init = function (that) {
     var MemPouchDB = PouchDB.defaults({ db: memdown });
     that.expressPouchdb = expressPouchdb(MemPouchDB, { configPath: pouchConfigPath });
 
-    var waitForCleaning = PouchDB.isBeingCleaned ? PouchDB.isBeingCleaned : fluid.promise();
-    waitForCleaning.then(function () {
+    var initWork = function () {
+        delete PouchDB.isBeingCleaned;
         var promises = [];
         fluid.each(that.options.databases, function (dbConfig, key) {
             var db = new MemPouchDB(key);
@@ -63,14 +63,15 @@ gpii.pouch.init = function (that) {
         when.all(promises).then(function () {
             that.events.onStarted.fire();
         });
-    });
+    };
 
     if (PouchDB.isBeingCleaned) {
         fluid.log("Waiting for the last run to finish its cleanup...");
+        PouchDB.isBeingCleaned.then(initWork);
     }
     else {
         fluid.log("No previous run detected. Continuing with the normal startup...");
-        waitForCleaning.resolve({});
+        initWork();
     }
 };
 
@@ -83,6 +84,10 @@ gpii.pouch.getRouter = function (that) {
 // https://github.com/pouchdb/pouchdb/issues/4124
 //
 gpii.pouch.cleanup = function (that) {
+    if (PouchDB.isBeingCleaned) {
+        fluid.fail("Cannot clean up onDestroy unless the previous instance has already finished its own cleanup.");
+    }
+
     var promises = [];
     fluid.each(that.databaseInstances, function (db, key) {
             // If we use the simpler method, the next attempt to recreate the database fails with a 409 document update conflict.
