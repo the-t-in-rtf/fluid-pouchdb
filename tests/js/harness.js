@@ -8,6 +8,10 @@ require("../../src/js/pouch");
 
 var path = require("path");
 var sampleDataFile = path.resolve(__dirname, "../data/data.json");
+var userDataFile    = path.resolve(__dirname, "../data/users.json");
+
+// A ~100k data set to confirm that the async data loads do not take too long.
+var massiveDataFile = path.resolve(__dirname, "../data/massive.json");
 
 fluid.defaults("gpii.pouch.tests.harness", {
     gradeNames: ["fluid.eventedComponent", "autoInit"],
@@ -46,7 +50,10 @@ fluid.defaults("gpii.pouch.tests.harness", {
                         options: {
                             path: "/",
                             databases: {
-                                sample:  { data: sampleDataFile }
+                                sample:  { data: sampleDataFile },
+                                _users:  { data: userDataFile},
+                                massive: { data: massiveDataFile},
+                                nodata:  {}
                             },
                             listeners: {
                                 onStarted: "{harness}.events.pouchStarted.fire"
@@ -58,3 +65,4 @@ fluid.defaults("gpii.pouch.tests.harness", {
         }
     }
 });
+

@@ -13,12 +13,12 @@
 // and populated with the contents of "../tests/data/records.json".
 //
 // NOTE:
-//   This module has a serious and non-obvious limitation, in that only one instance of PouchDB is created.  This
-//   means that multiple test sequences may end up using the same databases.  If you use the same database names in
-//   different test sequences, you may end up having the same data loaded multiple times.  To avoid this, either use
-//   different database names, or specify an _id value for every record you are creating.
+//   By default, MemPouchDB creates a global cache, which means that you can only ever have one database instance with
+//   the same name.  To work around this, this component manually cleans all database content when it is destroyed.
+//   Thus, although you can set up multiple instances to test things like synchronisation,  you can only ever have one
+//   database at a time that uses a particular name.  In most testCases, this should not pose a problem, as each
+//   instance starts up only after the last one has finished cleanup.
 //
-// TODO:  Examine ways to fix this within PouchDB or otherwise address.  See: https://issues.gpii.net/browse/GPII-1239
 "use strict";
 var fluid = require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
@@ -48,6 +48,7 @@ gpii.pouch.init = function (that) {
     var MemPouchDB = PouchDB.defaults({ db: memdown });
     that.expressPouchdb = expressPouchdb(MemPouchDB, { configPath: pouchConfigPath });
 
+    // TODO:  When this pull request is merged, we can simply clear the MemPouchDB cache: https://github.com/Level/memdown/pull/39
     var initWork = function () {
         delete PouchDB.isBeingCleaned;
         var promises = [];
@@ -136,6 +137,7 @@ gpii.pouch.transformRecord = function (record) {
 fluid.defaults("gpii.pouch", {
     gradeNames:       ["fluid.standardRelayComponent", "gpii.express.router", "autoInit"],
     config:           "{gpii.express}.options.config",
+    method:           "use", // We have to support all HTTP methods, as does our underlying router.
     path:             "/",
     pouchConfigPath:  pouchConfigPath,
     pouchConfig: {
