@@ -6,7 +6,7 @@ var gpii  = fluid.registerNamespace("gpii");
 
 
 fluid.registerNamespace("gpii.pouch.tests");
-gpii.pouch.tests.assembleUrl = function (baseUrl, path, that) {
+gpii.pouch.tests.assembleUrl = function (baseUrl, path) {
     var fullPath;
     // We have to be careful of double slashes (or no slashes)
     if (baseUrl[baseUrl.length - 1] === "/" && path[0] === "/") {
