@@ -3,25 +3,28 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "test": "node src/tests/all-tests.js"
+    "test": "node tests/js/all-tests.js",
+    "postinstall": "grunt dedupe-infusion"
   },
   "dependencies": {
-    "express":         "4.10.5",
+    "express": "4.10.5",
     "express-pouchdb": "0.14.0",
-    "infusion":        "git://github.com/fluid-project/infusion.git#df5f8cfabf815a4086b778e73125c3c952dda4ec",
-    "memdown":         "1.0.0",
-    "pouchdb":         "3.3.1",
-    "underscore-node": "0.1.2"
+    "gpii-express": "git://github.com/GPII/gpii-express#d2b57d7920270926a0fad77c81a39541a2a1a6e6",
+    "infusion": "git://github.com/fluid-project/infusion.git#df5f8cfabf815a4086b778e73125c3c952dda4ec",
+    "memdown": "1.0.0",
+    "pouchdb": "3.3.1",
+    "underscore-node": "0.1.2",
+    "when": "^3.7.3"
   },
   "devDependencies": {
-    "gpii-express":         "git://github.com/GPII/gpii-express#d2b57d7920270926a0fad77c81a39541a2a1a6e6",
-    "grunt":                "~0.4.4",
-    "grunt-shell":          "0.6.4",
+    "grunt": "~0.4.4",
+    "grunt-shell": "0.6.4",
     "grunt-contrib-jshint": "~0.9.0",
-    "grunt-jsonlint":       "1.0.4",
-    "grunt-gpii":           "git://github.com/GPII/grunt-gpii.git#58ae055833f437a9e91baedb9f39a22c5fdd727f",
-    "jqUnit":               "git://github.com/fluid-project/node-jqUnit.git#e9bf72445bd343a4f3aabe3ba96a1087d3498612",
-    "request":              "2.51.0",
-    "tough-cookie":         "0.12.1"
+    "grunt-jsonlint": "1.0.4",
+    "grunt-gpii": "git://github.com/GPII/grunt-gpii.git#58ae055833f437a9e91baedb9f39a22c5fdd727f",
+    "jqUnit": "git://github.com/fluid-project/node-jqUnit.git#e9bf72445bd343a4f3aabe3ba96a1087d3498612",
+    "kettle": "git://github.com/fluid-project/kettle.git#e79bb81196df68c97eaa9f96c485a4321b69af75",
+    "request": "2.51.0",
+    "tough-cookie": "0.12.1"
   }
 }
