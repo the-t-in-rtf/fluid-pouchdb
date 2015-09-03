@@ -76,7 +76,7 @@ gpii.pouch.init = function (that) {
     }
 };
 
-gpii.pouch.getRouter = function (that) {
+gpii.pouch.getHandler = function (that) {
     return that.expressPouchdb;
 };
 
@@ -135,7 +135,7 @@ gpii.pouch.transformRecord = function (record) {
 };
 
 fluid.defaults("gpii.pouch", {
-    gradeNames:       ["fluid.standardRelayComponent", "gpii.express.router", "autoInit"],
+    gradeNames:       ["fluid.modelComponent", "gpii.express.router"],
     config:           "{gpii.express}.options.config",
     method:           "use", // We have to support all HTTP methods, as does our underlying router.
     path:             "/",
@@ -162,8 +162,8 @@ fluid.defaults("gpii.pouch", {
         }
     },
     invokers: {
-        "getRouter": {
-            funcName: "gpii.pouch.getRouter",
+        "getHandler": {
+            funcName: "gpii.pouch.getHandler",
             args:     ["{that}"]
         },
         "cleanup": {

@@ -11,21 +11,21 @@
   "dependencies": {
     "express": "4.10.5",
     "express-pouchdb": "0.14.0",
-    "gpii-express": "git://github.com/GPII/gpii-express#d2b57d7920270926a0fad77c81a39541a2a1a6e6",
+    "gpii-express": "git://github.com/GPII/gpii-express#72850f74cd05229216467b3e9af3c7364f4beee5",
     "grunt": "~0.4.4",
     "grunt-shell": "0.6.4",
     "grunt-contrib-jshint": "~0.9.0",
     "grunt-jsonlint": "1.0.4",
     "grunt-gpii": "git://github.com/GPII/grunt-gpii.git#58ae055833f437a9e91baedb9f39a22c5fdd727f",
-    "infusion": "git://github.com/fluid-project/infusion.git#df5f8cfabf815a4086b778e73125c3c952dda4ec",
+    "infusion": "git://github.com/fluid-project/infusion.git#282f1a318718eed0b0ec060fb8b4ad254417fd7e",
     "memdown": "1.0.0",
     "pouchdb": "3.3.1",
     "underscore-node": "0.1.2",
     "when": "^3.7.3"
   },
   "devDependencies": {
-    "jqUnit": "git://github.com/fluid-project/node-jqUnit.git#e9bf72445bd343a4f3aabe3ba96a1087d3498612",
-    "kettle": "git://github.com/fluid-project/kettle.git#e79bb81196df68c97eaa9f96c485a4321b69af75",
+    "jqUnit":     "git://github.com/fluid-project/node-jqUnit.git#b7ef53aac1ca365bf23d35d255fae874faa88b70",
+    "kettle":     "git://github.com/amb26/kettle.git#33e2826e78315c6d29b13c8ba810f54fef29e8ac",
     "request": "2.51.0",
     "tough-cookie": "0.12.1"
   }
