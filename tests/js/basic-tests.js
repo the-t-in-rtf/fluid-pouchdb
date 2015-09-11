@@ -6,7 +6,7 @@ fluid.setLogging(true);
 var gpii       = fluid.registerNamespace("gpii");
 var jqUnit     = fluid.require("jqUnit");
 
-require("../../node_modules/gpii-express/tests/js/test-helpers");
+require("../../node_modules/gpii-express/tests/js/lib/test-helpers");
 
 // We use just the request-handling bits of the kettle stack in our tests, but we include the whole thing to pick up the base grades
 require("../../node_modules/kettle");
@@ -50,7 +50,7 @@ gpii.pouch.tests.basic.checkResponse = function (response, body, expectedStatus,
 //    });
 
 fluid.defaults("gpii.pouch.tests.basic.caseHolder", {
-    gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+    gradeNames: ["fluid.test.testCaseHolder"],
     expected: {
         root:         { "express-pouchdb": "Welcome!" },
         massive:      { total_rows: 150 },

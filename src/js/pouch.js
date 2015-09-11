@@ -76,8 +76,8 @@ gpii.pouch.init = function (that) {
     }
 };
 
-gpii.pouch.getRouter = function (that) {
-    return that.expressPouchdb;
+gpii.pouch.route = function (that, req, res) {
+    that.expressPouchdb(req, res);
 };
 
 // Remove all data from each database between runs, otherwise we encounter problems with data leaking between tests.
@@ -135,7 +135,7 @@ gpii.pouch.transformRecord = function (record) {
 };
 
 fluid.defaults("gpii.pouch", {
-    gradeNames:       ["fluid.standardRelayComponent", "gpii.express.router", "autoInit"],
+    gradeNames:       ["fluid.modelComponent", "gpii.express.router"],
     config:           "{gpii.express}.options.config",
     method:           "use", // We have to support all HTTP methods, as does our underlying router.
     path:             "/",
@@ -162,11 +162,11 @@ fluid.defaults("gpii.pouch", {
         }
     },
     invokers: {
-        "getRouter": {
-            funcName: "gpii.pouch.getRouter",
-            args:     ["{that}"]
+        route: {
+            funcName: "gpii.pouch.route",
+            args:     ["{that}", "{arguments}.0", "{arguments}.1"]
         },
-        "cleanup": {
+        cleanup: {
             funcName: "gpii.pouch.cleanup",
             args:     ["{that}"]
         }

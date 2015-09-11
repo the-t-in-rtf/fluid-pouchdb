@@ -14,7 +14,7 @@ var userDataFile    = path.resolve(__dirname, "../data/users.json");
 var massiveDataFile = path.resolve(__dirname, "../data/massive.json");
 
 fluid.defaults("gpii.pouch.tests.harness", {
-    gradeNames: ["fluid.eventedComponent", "autoInit"],
+    gradeNames: ["fluid.component"],
     port:       6789,
     baseUrl:    "http://localhost:6789/",
     events: {

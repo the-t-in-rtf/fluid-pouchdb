@@ -25,7 +25,7 @@ gpii.pouch.tests.reload.checkResponse = function (response, body) {
 };
 
 fluid.defaults("gpii.pouch.tests.reload.caseHolder", {
-    gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+    gradeNames: ["fluid.test.testCaseHolder"],
     mergePolicy: {
         rawModules:    "noexpand",
         sequenceStart: "noexpand"
