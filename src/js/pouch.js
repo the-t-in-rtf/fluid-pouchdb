@@ -76,8 +76,8 @@ gpii.pouch.init = function (that) {
     }
 };
 
-gpii.pouch.getHandler = function (that) {
-    return that.expressPouchdb;
+gpii.pouch.handler = function (that, req, res) {
+    that.expressPouchdb(req, res);
 };
 
 // Remove all data from each database between runs, otherwise we encounter problems with data leaking between tests.
@@ -162,9 +162,9 @@ fluid.defaults("gpii.pouch", {
         }
     },
     invokers: {
-        "getHandler": {
-            funcName: "gpii.pouch.getHandler",
-            args:     ["{that}"]
+        "handler": {
+            funcName: "gpii.pouch.handler",
+            args:     ["{that}", "{arguments}.0", "{arguments}.1"]
         },
         "cleanup": {
             funcName: "gpii.pouch.cleanup",

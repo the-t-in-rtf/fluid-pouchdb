@@ -11,7 +11,7 @@
   "dependencies": {
     "express": "4.10.5",
     "express-pouchdb": "0.14.0",
-    "gpii-express": "git://github.com/GPII/gpii-express#72850f74cd05229216467b3e9af3c7364f4beee5",
+    "gpii-express": "git://github.com/GPII/gpii-express#46d71db841cb4831649201aab123d690628a9e15",
     "grunt": "~0.4.4",
     "grunt-shell": "0.6.4",
     "grunt-contrib-jshint": "~0.9.0",
