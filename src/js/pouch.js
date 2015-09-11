@@ -76,7 +76,7 @@ gpii.pouch.init = function (that) {
     }
 };
 
-gpii.pouch.handler = function (that, req, res) {
+gpii.pouch.route = function (that, req, res) {
     that.expressPouchdb(req, res);
 };
 
@@ -162,11 +162,11 @@ fluid.defaults("gpii.pouch", {
         }
     },
     invokers: {
-        "handler": {
-            funcName: "gpii.pouch.handler",
+        route: {
+            funcName: "gpii.pouch.route",
             args:     ["{that}", "{arguments}.0", "{arguments}.1"]
         },
-        "cleanup": {
+        cleanup: {
             funcName: "gpii.pouch.cleanup",
             args:     ["{that}"]
         }
