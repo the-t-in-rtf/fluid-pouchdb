@@ -56,8 +56,11 @@ gpii.pouch.init = function (that) {
             var db = new MemPouchDB(key);
             that.databaseInstances[key] = db;
             if (dbConfig.data) {
-                var data = require(dbConfig.data);
-                promises.push(db.bulkDocs(data));
+                var dataSets = fluid.makeArray(dbConfig.data);
+                fluid.each(dataSets, function (dataSet) {
+                    var data = require(dataSet);
+                    promises.push(db.bulkDocs(data));
+                });
             }
         });
 

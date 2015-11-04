@@ -6,9 +6,10 @@ var fluid = fluid || require("infusion");
 require("gpii-express");
 require("../../src/js/pouch");
 
-var path = require("path");
-var sampleDataFile = path.resolve(__dirname, "../data/data.json");
-var userDataFile    = path.resolve(__dirname, "../data/users.json");
+var path             = require("path");
+var sampleData       = path.resolve(__dirname, "../data/data.json");
+var supplementalData = path.resolve(__dirname, "../data/supplemental.json");
+var userData         = path.resolve(__dirname, "../data/users.json");
 
 // A ~100k data set to confirm that the async data loads do not take too long.
 var massiveDataFile = path.resolve(__dirname, "../data/massive.json");
@@ -50,8 +51,8 @@ fluid.defaults("gpii.pouch.tests.harness", {
                         options: {
                             path: "/",
                             databases: {
-                                sample:  { data: sampleDataFile },
-                                _users:  { data: userDataFile},
+                                sample:  { data: [ sampleData, supplementalData] },
+                                _users:  { data: userData},
                                 massive: { data: massiveDataFile},
                                 nodata:  {}
                             },
