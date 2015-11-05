@@ -21,7 +21,7 @@ require("../lib/sequence");
 fluid.registerNamespace("gpii.pouch.tests.reload");
 gpii.pouch.tests.reload.checkResponse = function (response, body) {
     var jsonData = JSON.parse(body);
-    jqUnit.assertEquals("There should be three records...", 4, jsonData.doc_count);
+    jqUnit.assertEquals("There should be four records...", 4, jsonData.doc_count);
 };
 
 fluid.defaults("gpii.pouch.tests.reload.caseHolder", {
