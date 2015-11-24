@@ -9,9 +9,9 @@
     "postinstall": "grunt dedupe-infusion"
   },
   "dependencies": {
-    "express": "4.10.5",
     "express-pouchdb": "0.14.0",
-    "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#4750af51a1fbe886a260d89097e58c1c624ab4f7",
+    "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#ffc96bad77180b31f34654f268597caa93570683",
+    "express": "4.13.3",
     "grunt": "~0.4.4",
     "grunt-shell": "0.6.4",
     "grunt-contrib-jshint": "~0.9.0",

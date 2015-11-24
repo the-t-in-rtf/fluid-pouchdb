@@ -52,12 +52,13 @@ gpii.pouch.tests.basic.checkResponse = function (response, body, expectedStatus,
 fluid.defaults("gpii.pouch.tests.basic.caseHolder", {
     gradeNames: ["fluid.test.testCaseHolder"],
     expected: {
-        root:         { "express-pouchdb": "Welcome!" },
-        massive:      { total_rows: 150 },
-        noData:       { total_rows: 0 },
-        read:         { foo: "bar" },
-        "delete":     {},
-        insert:       { id: "toinsert", foo: "bar"}
+        root:             { "express-pouchdb": "Welcome!" },
+        massive:          { total_rows: 150 },
+        noData:           { total_rows: 0 },
+        read:             { foo: "bar" },
+        supplementalRead: { has: "data" },
+        "delete":         {},
+        insert:           { id: "toinsert", foo: "bar"}
     },
     mergePolicy: {
         rawModules:    "noexpand",
@@ -137,6 +138,21 @@ fluid.defaults("gpii.pouch.tests.basic.caseHolder", {
                             event:    "{readRequest}.events.onComplete",
                             //        (response, body, expectedStatus, expectedBody)
                             args:     ["{readRequest}.nativeResponse", "{arguments}.0", 200, "{testCaseHolder}.options.expected.read"]
+                        }
+                    ]
+                },
+                {
+                    name: "Confirm that supplemental data was loaded for the 'sample' database...",
+                    type: "test",
+                    sequence: [
+                        {
+                            func: "{supplementalReadRequest}.send"
+                        },
+                        {
+                            listener: "gpii.pouch.tests.basic.checkResponse",
+                            event:    "{supplementalReadRequest}.events.onComplete",
+                            //        (response, body, expectedStatus, expectedBody)
+                            args:     ["{supplementalReadRequest}.nativeResponse", "{arguments}.0", 200, "{testCaseHolder}.options.expected.supplementalRead"]
                         }
                     ]
                 },
@@ -239,6 +255,12 @@ fluid.defaults("gpii.pouch.tests.basic.caseHolder", {
             type: "gpii.pouch.tests.basic.request",
             options: {
                 path: "/sample/foo"
+            }
+        },
+        supplementalReadRequest: {
+            type: "gpii.pouch.tests.basic.request",
+            options: {
+                path: "/sample/supplemental"
             }
         },
         preDeleteRequest: {
