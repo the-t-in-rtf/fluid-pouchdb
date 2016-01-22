@@ -8,8 +8,6 @@ var fluid = require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
 
 require("./includes");
-var express = require("gpii-express");
-express.loadTestingSupport();
 
 fluid.defaults("gpii.pouch.tests.reload.caseHolder", {
     gradeNames: ["gpii.express.tests.caseHolder"],

@@ -3,9 +3,6 @@
 var fluid      = require("infusion");
 var gpii       = fluid.registerNamespace("gpii");
 
-var express = require("gpii-express");
-express.loadTestingSupport();
-
 require("./includes");
 
 // Convenience grade to avoid putting the same settings into all of our request components
