@@ -1,56 +1,19 @@
 /* Tests for the "pouch" module */
 "use strict";
-var fluid      = fluid || require("infusion");
-fluid.setLogging(true);
-
+var fluid      = require("infusion");
 var gpii       = fluid.registerNamespace("gpii");
-var jqUnit     = fluid.require("jqUnit");
 
-require("../../node_modules/gpii-express/tests/js/lib/test-helpers");
-
-// We use just the request-handling bits of the kettle stack in our tests, but we include the whole thing to pick up the base grades
-require("../../node_modules/kettle");
-require("../../node_modules/kettle/lib/test/KettleTestUtils");
-
-require("./harness");
-require("../lib/sequence");
+require("./includes");
 
 // Convenience grade to avoid putting the same settings into all of our request components
 fluid.defaults("gpii.pouch.tests.basic.request", {
-    gradeNames: ["kettle.test.request.http", "autoInit"],
+    gradeNames: ["kettle.test.request.http"],
     port:       "{testEnvironment}.options.port",
     method:     "GET"
 });
 
-fluid.registerNamespace("gpii.pouch.tests.basic");
-gpii.pouch.tests.basic.checkResponse = function (response, body, expectedStatus, expectedBody) {
-    expectedStatus = expectedStatus ? expectedStatus : 200;
-
-    var bodyData = JSON.parse(body);
-
-    gpii.express.tests.helpers.isSaneResponse(jqUnit, response, body, expectedStatus);
-
-    // NOTE:  This only works for results where you know the exact response or a simple subset.  Deeply inserted
-    // "couchisms" such as record `_id` and `_rev` values must be checked separately.  See the tests in gpii-pouchdb-lucene for an example.
-    if (expectedBody) {
-        jqUnit.assertLeftHand("The body should be as expected...", expectedBody, bodyData);
-    }
-};
-
-//    jqUnit.asyncTest("Testing insertion of a new record...", function () {
-//        var options = {
-//            url:  that.options.baseUrl + "sample",
-//            json: { "foo": "bar" }
-//        };
-//        request.post(options, function (error, response, body) {
-//            jqUnit.start();
-//            gpii.express.tests.helpers.isSaneResponse(jqUnit, response, body, 201);
-//            gpii.tests.pouchdb.isSaneRecordBody(body);
-//        });
-//    });
-
 fluid.defaults("gpii.pouch.tests.basic.caseHolder", {
-    gradeNames: ["fluid.test.testCaseHolder"],
+    gradeNames: ["gpii.express.tests.caseHolder"],
     expected: {
         root:             { "express-pouchdb": "Welcome!" },
         massive:          { total_rows: 150 },
@@ -60,24 +23,6 @@ fluid.defaults("gpii.pouch.tests.basic.caseHolder", {
         "delete":         {},
         insert:           { id: "toinsert", foo: "bar"}
     },
-    mergePolicy: {
-        rawModules:    "noexpand",
-        sequenceStart: "noexpand"
-    },
-    moduleSource: {
-        funcName: "gpii.pouch.tests.addRequiredSequences",
-        args:     ["{that}.options.sequenceStart", "{that}.options.rawModules"]
-    },
-    sequenceStart: [
-        { // This sequence point is required because of a QUnit bug - it defers the start of sequence by 13ms "to avoid any current callbacks" in its words
-            func: "{testEnvironment}.events.constructServer.fire"
-        },
-        {
-            listener: "fluid.identity",
-            event:    "{testEnvironment}.events.onReady"
-        }
-    ],
-    // Our raw test cases, that will have `sequenceStart` prepended before they are run.
     rawModules: [
         {
             tests: [
@@ -306,25 +251,10 @@ fluid.defaults("gpii.pouch.tests.basic.caseHolder", {
 });
 
 fluid.defaults("gpii.pouch.tests.basic.environment", {
-    gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+    gradeNames: ["gpii.pouch.tests.environment"],
     port:       6798,
     baseUrl:    "/",
-    events: {
-        constructServer: null,
-        onReady: null
-    },
     components: {
-        harness: {
-            type: "gpii.pouch.tests.harness",
-            createOnEvent: "constructServer",
-            options: {
-                port:       "{testEnvironment}.options.port",
-                baseUrl:    "{testEnvironment}.options.baseUrl",
-                listeners: {
-                    onReady: "{testEnvironment}.events.onReady.fire"
-                }
-            }
-        },
         testCaseHolder: {
             type: "gpii.pouch.tests.basic.caseHolder"
         }

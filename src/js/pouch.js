@@ -58,7 +58,7 @@ gpii.pouch.init = function (that) {
             if (dbConfig.data) {
                 var dataSets = fluid.makeArray(dbConfig.data);
                 fluid.each(dataSets, function (dataSet) {
-                    var data = require(dataSet);
+                    var data = require(fluid.module.resolvePath(dataSet));
                     promises.push(db.bulkDocs(data));
                 });
             }

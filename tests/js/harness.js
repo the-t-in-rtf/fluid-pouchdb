@@ -1,18 +1,11 @@
 // Common test harness for use both in tests and for manual QA.  To use for manual QA, run the `launch-test-harness.js`
 // script in this directory.
 "use strict";
-var fluid = fluid || require("infusion");
+var fluid = require("infusion");
 
 require("gpii-express");
-require("../../src/js/pouch");
+require("../../");
 
-var path             = require("path");
-var sampleData       = path.resolve(__dirname, "../data/data.json");
-var supplementalData = path.resolve(__dirname, "../data/supplemental.json");
-var userData         = path.resolve(__dirname, "../data/users.json");
-
-// A ~100k data set to confirm that the async data loads do not take too long.
-var massiveDataFile = path.resolve(__dirname, "../data/massive.json");
 
 fluid.defaults("gpii.pouch.tests.harness", {
     gradeNames: ["fluid.component"],
@@ -51,9 +44,10 @@ fluid.defaults("gpii.pouch.tests.harness", {
                         options: {
                             path: "/",
                             databases: {
-                                sample:  { data: [ sampleData, supplementalData] },
-                                _users:  { data: userData},
-                                massive: { data: massiveDataFile},
+                                sample:  { data: [ "%gpii-pouchdb/tests/data/data.json", "%gpii-pouchdb/tests/data/supplemental.json"] },
+                                _users:  { data: "%gpii-pouchdb/tests/data/users.json"},
+                                // A ~100k data set to confirm that the async data loads do not take too long.
+                                massive: { data: "%gpii-pouchdb/tests/data/massive.json"},
                                 nodata:  {}
                             },
                             listeners: {

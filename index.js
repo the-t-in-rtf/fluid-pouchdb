@@ -1,4 +1,5 @@
 "use strict";
+var fluid = require("infusion");
+fluid.module.register("gpii-pouchdb", __dirname, require);
 
-// Convenience file to include all modules when requiring the entire package.
 require("./src/js/pouch");
