@@ -1,5 +1,5 @@
 {
-  "name": "gpii-pouch",
+  "name": "gpii-pouchdb",
   "version": "1.0.0",
   "private": false,
   "repository": "https://github.com/GPII/gpii-pouchdb",
