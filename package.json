@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "express-pouchdb": "0.14.0",
-    "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#47cc039b86c5271c27ce5432a9fb6afe72b91568",
+    "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#3d0760413da426575ad962432c7160de0c046489",
     "express": "4.13.3",
     "infusion": "2.0.0-dev.20151211T025229Z.eabb4fc",
     "memdown": "1.0.0",
