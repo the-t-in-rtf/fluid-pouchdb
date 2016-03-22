@@ -142,6 +142,7 @@ fluid.defaults("gpii.pouch", {
     config:           "{gpii.express}.options.config",
     method:           "use", // We have to support all HTTP methods, as does our underlying router.
     path:             "/",
+    namespace:        "pouch", // Namespace to allow other routers to put themselves in the chain before or after us.
     pouchConfigPath:  pouchConfigPath,
     pouchConfig: {
         log: {
