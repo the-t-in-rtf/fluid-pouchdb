@@ -25,16 +25,8 @@ fluid.defaults("gpii.pouch.tests.harness", {
         pouch: {
             type: "gpii.express",
             options: {
-                config: {
-                    express: {
-                        "port" : "{harness}.options.port",
-                        baseUrl: "{harness}.options.baseUrl"
-                    },
-                    app: {
-                        name: "Pouch Test Server",
-                        url:  "{harness}.options.baseUrl"
-                    }
-                },
+                "port" : "{harness}.options.port",
+                baseUrl: "{harness}.options.baseUrl",
                 listeners: {
                     onStarted: "{harness}.events.expressStarted.fire"
                 },
