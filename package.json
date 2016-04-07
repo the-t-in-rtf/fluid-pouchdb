@@ -1,7 +1,7 @@
 {
-  "name": "gpii-pouch",
-  "version": "0.0.0",
-  "private": true,
+  "name": "gpii-pouchdb",
+  "version": "1.0.0",
+  "private": false,
   "repository": "https://github.com/GPII/gpii-pouchdb",
   "license": "BSD-3-Clause",
   "scripts": {
@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "express-pouchdb": "0.14.0",
-    "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#d7b995bc5d210439699c269ce8ef327280167550",
+    "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#d3e732ceb19bf6a0f65f2b05641f9efd232d5919",
     "express": "4.13.3",
     "infusion": "2.0.0-dev.20151211T025229Z.eabb4fc",
     "memdown": "1.0.0",
@@ -24,7 +24,7 @@
     "grunt-jsonlint": "1.0.4",
     "kettle": "git://github.com/amb26/kettle.git#2517cc1d9d047d58aef70db48d1580da718ffc16",
     "node-jqunit": "~1.1.3",
-    "request": "2.51.0",
+    "request": "^2.63.0",
     "tough-cookie": "0.12.1"
   }
 }
