@@ -10,7 +10,7 @@ var gpii  = fluid.registerNamespace("gpii");
 require("./includes");
 
 fluid.defaults("gpii.pouch.tests.reload.caseHolder", {
-    gradeNames: ["gpii.express.tests.caseHolder"],
+    gradeNames: ["gpii.tests.express.caseHolder"],
     rawModules: [
         {
             tests: [

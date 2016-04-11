@@ -13,7 +13,7 @@ fluid.defaults("gpii.pouch.tests.basic.request", {
 });
 
 fluid.defaults("gpii.pouch.tests.basic.caseHolder", {
-    gradeNames: ["gpii.express.tests.caseHolder"],
+    gradeNames: ["gpii.tests.express.caseHolder"],
     expected: {
         root:             { "express-pouchdb": "Welcome!" },
         massive:          { total_rows: 150 },

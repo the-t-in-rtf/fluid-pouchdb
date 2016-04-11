@@ -10,7 +10,7 @@ gpii.pouch.tests.basic.checkResponse = function (response, body, expectedStatus,
 
     var bodyData = JSON.parse(body);
 
-    gpii.express.tests.helpers.isSaneResponse(response, body, expectedStatus);
+    gpii.tests.express.helpers.isSaneResponse(response, body, expectedStatus);
 
     // NOTE:  This only works for results where you know the exact response or a simple subset.  Deeply inserted
     // "couchisms" such as record `_id` and `_rev` values must be checked separately.  See the tests in gpii-pouchdb-lucene for an example.
