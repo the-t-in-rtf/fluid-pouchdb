@@ -7,4 +7,4 @@ require("./harness");
 
 fluid.setLogging(true);
 
-gpii.pouch.tests.harness();
+gpii.test.pouch.harness();

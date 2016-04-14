@@ -79,7 +79,7 @@ gpii.pouch.init = function (that) {
     }
 };
 
-gpii.pouch.route = function (that, req, res) {
+gpii.pouch.middleware = function (that, req, res) {
     that.expressPouchdb(req, res);
 };
 
@@ -138,7 +138,7 @@ gpii.pouch.transformRecord = function (record) {
 };
 
 fluid.defaults("gpii.pouch", {
-    gradeNames:       ["fluid.modelComponent", "gpii.express.router"],
+    gradeNames:       ["fluid.modelComponent", "gpii.express.middleware"],
     method:           "use", // We have to support all HTTP methods, as does our underlying router.
     path:             "/",
     namespace:        "pouch", // Namespace to allow other routers to put themselves in the chain before or after us.
@@ -165,8 +165,8 @@ fluid.defaults("gpii.pouch", {
         }
     },
     invokers: {
-        route: {
-            funcName: "gpii.pouch.route",
+        middleware: {
+            funcName: "gpii.pouch.middleware",
             args:     ["{that}", "{arguments}.0", "{arguments}.1"]
         },
         cleanup: {

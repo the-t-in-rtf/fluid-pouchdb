@@ -3,14 +3,15 @@
 // This test only works at the moment because we have enacted a workaround and added an `_id` variable for all records.
 //
 // See https://issues.gpii.net/browse/GPII-1239 for details.
+//
 "use strict";
 var fluid = require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
 
 require("./includes");
 
-fluid.defaults("gpii.pouch.tests.reload.caseHolder", {
-    gradeNames: ["gpii.tests.express.caseHolder"],
+fluid.defaults("gpii.tests.pouch.reload.caseHolder", {
+    gradeNames: ["gpii.test.express.caseHolder"],
     rawModules: [
         {
             tests: [
@@ -22,7 +23,7 @@ fluid.defaults("gpii.pouch.tests.reload.caseHolder", {
                             func: "{firstRequest}.send"
                         },
                         {
-                            listener: "gpii.pouch.tests.reload.checkResponse",
+                            listener: "gpii.test.pouch.checkRecordCount",
                             event:    "{firstRequest}.events.onComplete",
                             args:     ["{firstRequest}.nativeResponse", "{arguments}.0"]
                         }
@@ -36,7 +37,7 @@ fluid.defaults("gpii.pouch.tests.reload.caseHolder", {
                             func: "{secondRequest}.send"
                         },
                         {
-                            listener: "gpii.pouch.tests.reload.checkResponse",
+                            listener: "gpii.test.pouch.checkRecordCount",
                             event:    "{secondRequest}.events.onComplete",
                             args:     ["{firstRequest}.nativeResponse", "{arguments}.0"]
                         }
@@ -65,16 +66,16 @@ fluid.defaults("gpii.pouch.tests.reload.caseHolder", {
     }
 });
 
-fluid.defaults("gpii.pouch.tests.reload.environment", {
-    gradeNames: ["gpii.pouch.tests.environment"],
+fluid.defaults("gpii.tests.pouch.reload.environment", {
+    gradeNames: ["gpii.test.pouch.environment"],
     port:       6792,
     baseUrl:    "http://localhost:6792/",
     testUrl:    "/sample/",
     components: {
         testCaseHolder: {
-            type: "gpii.pouch.tests.reload.caseHolder"
+            type: "gpii.tests.pouch.reload.caseHolder"
         }
     }
 });
 
-gpii.pouch.tests.reload.environment();
+gpii.tests.pouch.reload.environment();

@@ -1,6 +1,6 @@
 var fluid = require("infusion");
 
-fluid.defaults("gpii.pouch.tests.environment", {
+fluid.defaults("gpii.test.pouch.environment", {
     gradeNames: ["fluid.test.testEnvironment"],
     port:       6792,
     baseUrl:    "http://localhost:6792/",
@@ -11,7 +11,7 @@ fluid.defaults("gpii.pouch.tests.environment", {
     },
     components: {
         harness: {
-            type: "gpii.pouch.tests.harness",
+            type: "gpii.test.pouch.harness",
             createOnEvent: "constructServer",
             options: {
                 port:       "{testEnvironment}.options.port",
