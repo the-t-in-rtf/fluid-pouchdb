@@ -1,7 +1,6 @@
 /* Tests for the "pouch" module */
 "use strict";
 var fluid      = require("infusion");
-var gpii       = fluid.registerNamespace("gpii");
 
 require("./includes");
 
@@ -25,6 +24,7 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
     },
     rawModules: [
         {
+            name: "Testing gpii-pouchdb...",
             tests: [
                 {
                     name: "Testing loading pouch root...",
@@ -261,4 +261,4 @@ fluid.defaults("gpii.tests.pouch.basic.environment", {
     }
 });
 
-gpii.tests.pouch.basic.environment();
+fluid.test.runTests("gpii.tests.pouch.basic.environment");

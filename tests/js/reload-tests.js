@@ -6,7 +6,6 @@
 //
 "use strict";
 var fluid = require("infusion");
-var gpii  = fluid.registerNamespace("gpii");
 
 require("./includes");
 
@@ -14,6 +13,7 @@ fluid.defaults("gpii.tests.pouch.reload.caseHolder", {
     gradeNames: ["gpii.test.express.caseHolder"],
     rawModules: [
         {
+            name: "Testing multiple launches of pouch in a row...",
             tests: [
                 {
                     name: "Testing initial pouch load...",
@@ -78,4 +78,4 @@ fluid.defaults("gpii.tests.pouch.reload.environment", {
     }
 });
 
-gpii.tests.pouch.reload.environment();
+fluid.test.runTests("gpii.tests.pouch.reload.environment");
