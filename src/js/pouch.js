@@ -27,11 +27,10 @@ fluid.registerNamespace("gpii.pouch");
 var os             = require("os");
 var path           = require("path");
 var fs             = require("fs");
-var when           = require("when");
+var memdown        = require("memdown");
 
 var expressPouchdb = require("express-pouchdb");
 var PouchDB        = require("pouchdb");
-var memdown        = require("memdown");
 
 // We want to output our generated config file to the temporary directory instead of the working directory.
 var pouchConfigPath = path.resolve(os.tmpdir(), "config.json");
@@ -45,15 +44,17 @@ gpii.pouch.init = function (that) {
     //
     fs.writeFileSync(that.options.pouchConfigPath, JSON.stringify(that.options.pouchConfig, null, 2));
 
-    var MemPouchDB = PouchDB.defaults({ db: memdown });
-    that.expressPouchdb = expressPouchdb(MemPouchDB, { configPath: pouchConfigPath });
+    var uniqueOptions    = fluid.copy(that.options.dbOptions);
+    uniqueOptions.prefix = that.id;
+    var MyPouchDB        = PouchDB.defaults(uniqueOptions);
 
-    // TODO:  When this pull request is merged, we can simply clear the MemPouchDB cache: https://github.com/Level/memdown/pull/39
+    that.expressPouchdb  = expressPouchdb(MyPouchDB, { configPath: pouchConfigPath });
+
     var initWork = function () {
         delete PouchDB.isBeingCleaned;
         var promises = [];
         fluid.each(that.options.databases, function (dbConfig, key) {
-            var db = new MemPouchDB(key);
+            var db = new MyPouchDB(key);
             that.databaseInstances[key] = db;
             if (dbConfig.data) {
                 var dataSets = fluid.makeArray(dbConfig.data);
@@ -64,7 +65,7 @@ gpii.pouch.init = function (that) {
             }
         });
 
-        when.all(promises).then(function () {
+        fluid.promise.sequence(promises).then(function () {
             that.events.onStarted.fire();
         });
     };
@@ -94,31 +95,17 @@ gpii.pouch.cleanup = function (that) {
 
     var promises = [];
     fluid.each(that.databaseInstances, function (db, key) {
-            // If we use the simpler method, the next attempt to recreate the database fails with a 409 document update conflict.
-            //var promise = db.destroy();
+        var promise = db.destroy()
+            .then(function () {
+                fluid.log("Destroyed database '" + key + "'...");
+            })
+            .catch(fluid.fail); // jshint ignore:line
 
-            // Instead, we retrieve the list of all document IDs and revisions, and then bulk delete them.
-            var promise = db.allDocs()
-                .then(function (result) {
-                    var bulkPayloadDocs = fluid.transform(result.rows, gpii.pouch.transformRecord);
-                    var bulkPayload     = {docs: bulkPayloadDocs};
-                    return db.bulkDocs(bulkPayload);
-                })
-                .then(function () {
-                    fluid.log("Deleted existing data from database '" + key + "'...");
-                    return db.compact();
-                })
-                .then(function () {
-                    fluid.log("Compacted existing database '" + key + "'...");
-                })
-                .catch(fluid.fail); // jshint ignore:line
-
-            promises.push(promise);
-        }
-    );
+        promises.push(promise);
+    });
 
     // Make sure that the next instance of pouch knows to wait for us to finish cleaning up.
-    PouchDB.isBeingCleaned = when.all(promises);
+    PouchDB.isBeingCleaned = fluid.promise.sequence(promises);
 };
 
 gpii.pouch.transformRecord = function (record) {
@@ -147,6 +134,11 @@ fluid.defaults("gpii.pouch", {
         log: {
             file: pouchLogPath
         }
+    },
+    // Options to use when creating individual databases.
+    dbOptions:        {
+        auto_compaction: true,
+        db: memdown
     },
     events: {
         onStarted: null
