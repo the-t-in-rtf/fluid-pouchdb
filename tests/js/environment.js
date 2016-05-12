@@ -7,7 +7,12 @@ fluid.defaults("gpii.test.pouch.environment", {
     testUrl:    "/sample/",
     events: {
         constructFixtures: null,
-        onAllReady: null
+        onHarnessReady: null,
+        onFixturesConstructed: {
+            events: {
+                onHarnessReady: "onHarnessReady"
+            }
+        }
     },
     components: {
         harness: {
@@ -17,7 +22,7 @@ fluid.defaults("gpii.test.pouch.environment", {
                 port:       "{testEnvironment}.options.port",
                 baseUrl:    "{testEnvironment}.options.baseUrl",
                 listeners: {
-                    onReady: "{testEnvironment}.events.onAllReady.fire"
+                    onReady: "{testEnvironment}.events.onHarnessReady.fire"
                 }
             }
         }
