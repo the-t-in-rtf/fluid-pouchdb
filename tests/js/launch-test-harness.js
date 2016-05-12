@@ -7,4 +7,7 @@ require("./harness");
 
 fluid.setLogging(true);
 
-gpii.test.pouch.harness();
+gpii.test.pouch.harness({
+    port:       6789,
+    baseUrl:    "http://localhost:6789/"
+});

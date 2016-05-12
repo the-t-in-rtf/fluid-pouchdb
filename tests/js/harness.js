@@ -9,8 +9,6 @@ require("../../");
 
 fluid.defaults("gpii.test.pouch.harness", {
     gradeNames: ["fluid.component"],
-    port:       6789,
-    baseUrl:    "http://localhost:6789/",
     events: {
         expressStarted: null,
         pouchStarted:   null,
