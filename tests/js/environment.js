@@ -6,18 +6,18 @@ fluid.defaults("gpii.test.pouch.environment", {
     baseUrl:    "http://localhost:6792/",
     testUrl:    "/sample/",
     events: {
-        constructServer: null,
-        onStarted: null
+        constructFixtures: null,
+        onAllReady: null
     },
     components: {
         harness: {
             type: "gpii.test.pouch.harness",
-            createOnEvent: "constructServer",
+            createOnEvent: "constructFixtures",
             options: {
                 port:       "{testEnvironment}.options.port",
                 baseUrl:    "{testEnvironment}.options.baseUrl",
                 listeners: {
-                    onReady: "{testEnvironment}.events.onStarted.fire"
+                    onReady: "{testEnvironment}.events.onAllReady.fire"
                 }
             }
         }
