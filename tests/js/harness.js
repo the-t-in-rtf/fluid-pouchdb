@@ -9,6 +9,13 @@ require("../../");
 
 fluid.defaults("gpii.test.pouch.harness", {
     gradeNames: ["fluid.component"],
+    databases: {
+        sample:  { data: [ "%gpii-pouchdb/tests/data/data.json", "%gpii-pouchdb/tests/data/supplemental.json"] },
+        _users:  { data: "%gpii-pouchdb/tests/data/users.json"},
+        // A ~100k data set to confirm that the async data loads do not take too long.
+        massive: { data: "%gpii-pouchdb/tests/data/massive.json"},
+        nodata:  {}
+    },
     events: {
         expressStarted: null,
         pouchStarted:   null,
@@ -33,13 +40,7 @@ fluid.defaults("gpii.test.pouch.harness", {
                         type: "gpii.pouch",
                         options: {
                             path: "/",
-                            databases: {
-                                sample:  { data: [ "%gpii-pouchdb/tests/data/data.json", "%gpii-pouchdb/tests/data/supplemental.json"] },
-                                _users:  { data: "%gpii-pouchdb/tests/data/users.json"},
-                                // A ~100k data set to confirm that the async data loads do not take too long.
-                                massive: { data: "%gpii-pouchdb/tests/data/massive.json"},
-                                nodata:  {}
-                            },
+                            databases: "{harness}.options.databases",
                             listeners: {
                                 onStarted: "{harness}.events.pouchStarted.fire"
                             }
