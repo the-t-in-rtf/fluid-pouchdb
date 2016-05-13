@@ -1,8 +1,18 @@
 /* Tests for the "pouch" module */
 "use strict";
-var fluid      = require("infusion");
+var fluid = require("infusion");
+var gpii  = fluid.registerNamespace("gpii");
 
-require("./includes");
+fluid.require("%gpii-pouchdb");
+gpii.pouch.loadTestingSupport();
+
+var kettle = require("kettle");
+kettle.loadTestingSupport();
+
+require("gpii-express");
+gpii.express.loadTestingSupport();
+
+require("./pouch-config");
 
 // Convenience grade to avoid putting the same settings into all of our request components
 fluid.defaults("gpii.test.pouch.basic.request", {
@@ -253,7 +263,7 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
 fluid.defaults("gpii.tests.pouch.basic.environment", {
     gradeNames: ["gpii.test.pouch.environment"],
     port:       6798,
-    baseUrl:    "/",
+    databases:  gpii.tests.pouch.config.databases,
     components: {
         testCaseHolder: {
             type: "gpii.tests.pouch.basic.caseHolder"

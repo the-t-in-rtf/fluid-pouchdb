@@ -1,10 +1,26 @@
 var fluid = require("infusion");
 
+require("./harness");
+
 fluid.defaults("gpii.test.pouch.environment", {
     gradeNames: ["fluid.test.testEnvironment"],
     port:       6792,
-    baseUrl:    "http://localhost:6792/",
-    testUrl:    "/sample/",
+    baseUrl:    {
+        expander: {
+            funcName: "fluid.stringTemplate",
+            args:     ["http://localhost:%port/", { port: "{that}.options.port" }]
+        }
+    },
+    distributeOptions: [
+        {
+            source: "{that}.options.databases",
+            target: "{that gpii.pouch}.options.databases"
+        },
+        {
+            source: "{that}.options.harnessGrades",
+            target: "{that > gpii.test.pouch.harness}.options.gradeNames"
+        }
+    ],
     events: {
         constructFixtures: null,
         onHarnessReady: null,
@@ -20,7 +36,6 @@ fluid.defaults("gpii.test.pouch.environment", {
             createOnEvent: "constructFixtures",
             options: {
                 port:       "{testEnvironment}.options.port",
-                baseUrl:    "{testEnvironment}.options.baseUrl",
                 listeners: {
                     onReady: "{testEnvironment}.events.onHarnessReady.fire"
                 }

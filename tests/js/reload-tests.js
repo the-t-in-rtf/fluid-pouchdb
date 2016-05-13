@@ -6,8 +6,18 @@
 //
 "use strict";
 var fluid = require("infusion");
+var gpii  = fluid.registerNamespace("gpii");
 
-require("./includes");
+fluid.require("%gpii-pouchdb");
+gpii.pouch.loadTestingSupport();
+
+var kettle = require("kettle");
+kettle.loadTestingSupport();
+
+require("gpii-express");
+gpii.express.loadTestingSupport();
+
+require("./pouch-config");
 
 fluid.defaults("gpii.tests.pouch.reload.caseHolder", {
     gradeNames: ["gpii.test.express.caseHolder"],
@@ -68,8 +78,8 @@ fluid.defaults("gpii.tests.pouch.reload.caseHolder", {
 
 fluid.defaults("gpii.tests.pouch.reload.environment", {
     gradeNames: ["gpii.test.pouch.environment"],
+    databases: gpii.tests.pouch.config.databases,
     port:       6792,
-    baseUrl:    "http://localhost:6792/",
     testUrl:    "/sample/",
     components: {
         testCaseHolder: {
