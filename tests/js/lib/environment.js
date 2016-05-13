@@ -13,8 +13,8 @@ fluid.defaults("gpii.test.pouch.environment", {
     },
     distributeOptions: [
         {
-            source: "{that}.options.databases",
-            target: "{that gpii.pouch}.options.databases"
+            source: "{that}.options.pouchConfig",
+            target: "{that gpii.pouch}.options"
         },
         {
             source: "{that}.options.harnessGrades",

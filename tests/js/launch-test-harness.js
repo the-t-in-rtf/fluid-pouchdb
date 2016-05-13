@@ -10,11 +10,13 @@ fluid.setLogging(true);
 
 gpii.test.pouch.harness({
     port: 6789,
-    databases: gpii.tests.pouch.config.databases,
+    pouchConfig: {
+        databases: gpii.tests.pouch.config.databases
+    },
     distributeOptions: [
         {
-            source: "{that}.options.databases",
-            target: "{that gpii.pouch}.options.databases"
+            source: "{that}.options.pouchConfig",
+            target: "{that gpii.pouch}.options"
         }
     ]
 });

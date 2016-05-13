@@ -78,7 +78,9 @@ fluid.defaults("gpii.tests.pouch.reload.caseHolder", {
 
 fluid.defaults("gpii.tests.pouch.reload.environment", {
     gradeNames: ["gpii.test.pouch.environment"],
-    databases: gpii.tests.pouch.config.databases,
+    pouchConfig: {
+        databases:  gpii.tests.pouch.config.databases
+    },
     port:       6792,
     testUrl:    "/sample/",
     components: {

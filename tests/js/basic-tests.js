@@ -263,7 +263,9 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
 fluid.defaults("gpii.tests.pouch.basic.environment", {
     gradeNames: ["gpii.test.pouch.environment"],
     port:       6798,
-    databases:  gpii.tests.pouch.config.databases,
+    pouchConfig: {
+        databases:  gpii.tests.pouch.config.databases
+    },
     components: {
         testCaseHolder: {
             type: "gpii.tests.pouch.basic.caseHolder"
