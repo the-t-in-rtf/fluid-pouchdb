@@ -35,7 +35,7 @@ fluid.defaults("gpii.tests.pouch.reload.caseHolder", {
                         {
                             listener: "gpii.test.pouch.checkRecordCount",
                             event:    "{firstRequest}.events.onComplete",
-                            args:     ["{firstRequest}.nativeResponse", "{arguments}.0"]
+                            args:     ["{firstRequest}.nativeResponse", "{arguments}.0", 4] // response, body, expectedRecords
                         }
                     ]
                 },
@@ -49,7 +49,7 @@ fluid.defaults("gpii.tests.pouch.reload.caseHolder", {
                         {
                             listener: "gpii.test.pouch.checkRecordCount",
                             event:    "{secondRequest}.events.onComplete",
-                            args:     ["{firstRequest}.nativeResponse", "{arguments}.0"]
+                            args:     ["{firstRequest}.nativeResponse", "{arguments}.0", 4] // response, body, expectedRecords
                         }
                     ]
                 }
