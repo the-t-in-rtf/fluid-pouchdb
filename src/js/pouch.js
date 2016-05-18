@@ -102,7 +102,7 @@ gpii.pouch.cleanup = function (that) {
 };
 
 fluid.defaults("gpii.pouch", {
-    gradeNames: ["fluid.modelComponent", "gpii.express.middleware"],
+    gradeNames: ["fluid.component", "gpii.express.middleware"],
     method: "use", // We have to support all HTTP methods, as does our underlying router.
     path: "/",
     namespace: "pouch", // Namespace to allow other routers to put themselves in the chain before or after us.
