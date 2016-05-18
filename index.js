@@ -12,7 +12,7 @@ gpii.pouch.loadTestingSupport = function () {
     // require("gpii-express");
     // gpii.express.loadTestingSupport();
     
-    require("./tests/js/lib/environment");
-    require("./tests/js/lib/harness");
-    require("./tests/js/lib/helpers");
+    require("./src/test/environment");
+    require("./src/test/harness");
+    require("./src/test/helpers");
 };

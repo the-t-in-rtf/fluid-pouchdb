@@ -3,7 +3,7 @@
 var fluid = require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
 
-require("./lib/harness");
+fluid.require("%gpii-pouchdb/src/test/harness");
 require("./pouch-config.js");
 
 fluid.setLogging(true);
