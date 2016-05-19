@@ -8,14 +8,13 @@
     "test": "node tests/js/all-tests.js"
   },
   "dependencies": {
-    "express-pouchdb": "0.14.0",
-    "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#d3e732ceb19bf6a0f65f2b05641f9efd232d5919",
+    "express-pouchdb": "1.0.3",
+    "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#d3a21a9247a30a9bd9d0e8a3b6ffa9152a572b03",
     "express": "4.13.3",
-    "infusion": "2.0.0-dev.20151211T025229Z.eabb4fc",
-    "memdown": "1.0.0",
-    "pouchdb": "3.3.1",
-    "underscore-node": "0.1.2",
-    "when": "^3.7.3"
+    "infusion": "2.0.0-dev.20160505T142427Z.63b8a53",
+    "memdown": "1.1.0",
+    "pouchdb": "5.3.2",
+    "underscore-node": "0.1.2"
   },
   "devDependencies": {
     "grunt": "~0.4.4",

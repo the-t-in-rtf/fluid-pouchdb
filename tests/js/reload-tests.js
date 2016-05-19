@@ -3,16 +3,27 @@
 // This test only works at the moment because we have enacted a workaround and added an `_id` variable for all records.
 //
 // See https://issues.gpii.net/browse/GPII-1239 for details.
+//
 "use strict";
 var fluid = require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
 
-require("./includes");
+fluid.require("%gpii-pouchdb");
+gpii.pouch.loadTestingSupport();
 
-fluid.defaults("gpii.pouch.tests.reload.caseHolder", {
-    gradeNames: ["gpii.express.tests.caseHolder"],
+var kettle = require("kettle");
+kettle.loadTestingSupport();
+
+require("gpii-express");
+gpii.express.loadTestingSupport();
+
+require("./pouch-config");
+
+fluid.defaults("gpii.tests.pouch.reload.caseHolder", {
+    gradeNames: ["gpii.test.express.caseHolder"],
     rawModules: [
         {
+            name: "Testing multiple launches of pouch in a row...",
             tests: [
                 {
                     name: "Testing initial pouch load...",
@@ -22,9 +33,9 @@ fluid.defaults("gpii.pouch.tests.reload.caseHolder", {
                             func: "{firstRequest}.send"
                         },
                         {
-                            listener: "gpii.pouch.tests.reload.checkResponse",
+                            listener: "gpii.test.pouch.checkRecordCount",
                             event:    "{firstRequest}.events.onComplete",
-                            args:     ["{firstRequest}.nativeResponse", "{arguments}.0"]
+                            args:     ["{firstRequest}.nativeResponse", "{arguments}.0", 4] // response, body, expectedRecords
                         }
                     ]
                 },
@@ -36,9 +47,9 @@ fluid.defaults("gpii.pouch.tests.reload.caseHolder", {
                             func: "{secondRequest}.send"
                         },
                         {
-                            listener: "gpii.pouch.tests.reload.checkResponse",
+                            listener: "gpii.test.pouch.checkRecordCount",
                             event:    "{secondRequest}.events.onComplete",
-                            args:     ["{firstRequest}.nativeResponse", "{arguments}.0"]
+                            args:     ["{firstRequest}.nativeResponse", "{arguments}.0", 4] // response, body, expectedRecords
                         }
                     ]
                 }
@@ -65,16 +76,18 @@ fluid.defaults("gpii.pouch.tests.reload.caseHolder", {
     }
 });
 
-fluid.defaults("gpii.pouch.tests.reload.environment", {
-    gradeNames: ["gpii.pouch.tests.environment"],
+fluid.defaults("gpii.tests.pouch.reload.environment", {
+    gradeNames: ["gpii.test.pouch.environment"],
+    pouchConfig: {
+        databases:  gpii.tests.pouch.config.databases
+    },
     port:       6792,
-    baseUrl:    "http://localhost:6792/",
     testUrl:    "/sample/",
     components: {
         testCaseHolder: {
-            type: "gpii.pouch.tests.reload.caseHolder"
+            type: "gpii.tests.pouch.reload.caseHolder"
         }
     }
 });
 
-gpii.pouch.tests.reload.environment();
+fluid.test.runTests("gpii.tests.pouch.reload.environment");

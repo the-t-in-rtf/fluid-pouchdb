@@ -3,8 +3,20 @@
 var fluid = require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
 
-require("./harness");
+fluid.require("%gpii-pouchdb/src/test/harness");
+require("./pouch-config.js");
 
 fluid.setLogging(true);
 
-gpii.pouch.tests.harness();
+gpii.test.pouch.harness({
+    port: 6789,
+    pouchConfig: {
+        databases: gpii.tests.pouch.config.databases
+    },
+    distributeOptions: [
+        {
+            source: "{that}.options.pouchConfig",
+            target: "{that gpii.pouch}.options"
+        }
+    ]
+});
