@@ -9,5 +9,6 @@ gpii.tests.pouch.config.databases = {
     _users:  { data: "%gpii-pouchdb/tests/data/users.json"},
     // A ~100k data set to confirm that the async data loads do not take too long.
     massive: { data: "%gpii-pouchdb/tests/data/massive.json"},
+    rgb:     { data: "%gpii-pouchdb/tests/data/rgb.json"},
     nodata:  {}
 };

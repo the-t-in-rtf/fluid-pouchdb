@@ -1,0 +1,15 @@
+{
+  "docs": [
+    { "_id": "strawberry", "color": "red" },
+    { "_id": "mango", "color": "green"},
+    { "_id": "blueberry", "color": "blue"},
+    {
+      "_id": "_design/rgb",
+      "views": {
+        "byColor": {
+          "map": "function (doc) {\n    emit(doc.color, doc);\n}"
+        }
+      }
+    }
+  ]
+}
