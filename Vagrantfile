@@ -17,6 +17,8 @@ app_tcp_port = qi_vars["app_tcp_port"]
 
 app_start_service = qi_vars["app_start_service"]
 
+app_commands = qi_vars["commands"]
+
 # Check for the existence of 'VM_HOST_TCP_PORT' or 'VM_GUEST_TCP_PORT'
 # environment variables. Otherwise if 'nodejs_app_tcp_port' is defined
 # in vars.yml then use that port. Failing that use defaults provided
@@ -34,7 +36,7 @@ elsif app_env_runtime == "linux"
 else
   fail "Unable to find suitable Vagrant box. Please specify valid env_runtime."
 end
-  
+
 Vagrant.configure(2) do |config|
 
   if app_env_runtime == "linux-desktop"
@@ -50,10 +52,11 @@ Vagrant.configure(2) do |config|
   # using the following format:
   # config.vm.synced_folder "../path/on/your/host/os/your-project", "/home/vagrant/sync/your-project"
 
-  # Port forwarding takes place here. The 'guest' port is used inside the VM
-  # whereas the 'host' port is used by your host operating system.
-  config.vm.network "forwarded_port", guest: guest_tcp_port, host: host_tcp_port, protocol: "tcp",
-    auto_correct: true
+  if app_tcp_port.to_s.strip.length != 0
+    # Port forwarding takes place here. The 'guest' port is used inside the VM
+    # whereas the 'host' port is used by your host operating system.
+    config.vm.network "forwarded_port", guest: guest_tcp_port, host: host_tcp_port, protocol: "tcp", auto_correct: true
+  end
 
   config.vm.hostname = app_name
 
@@ -81,7 +84,7 @@ cat <<-'EOF' >/home/vagrant/playbook.yml
   vars:
     nodejs_app_name: "{{ app_name }}"
     nodejs_version: "{{ software_stack_version }}"
-    nodejs_app_commands: "{{ setup }}"
+    #nodejs_app_commands: "{{ setup }}"
     nodejs_app_start_script: "{{ app_start_script }}"
     nodejs_app_tcp_port: "{{ app_tcp_port }}"
     nodejs_app_git_clone: false
@@ -96,7 +99,7 @@ SHELL
     sudo ansible-galaxy install -fr /home/vagrant/requirements.yml
   SHELL
 
-  if app_start_service == true
+  if app_start_service == true && app_tcp_port.to_s.strip.length != 0
     config.vm.provision "shell", inline: <<-SHELL
       sudo PYTHONUNBUFFERED=1 ansible-playbook /home/vagrant/playbook.yml --tags="install,configure,deploy"
     SHELL
@@ -111,7 +114,7 @@ SHELL
     instance_eval File.read("Vagrantfile.local"), "Vagrantfile.local"
   end
 
-  if app_env_runtime == "linux" && app_start_service == true
+  if app_env_runtime == "linux" && app_start_service == true && app_tcp_port.to_s.strip.length != 0
     # Port 19531 is needed so logs can be viewed using systemd-journal-gateway
     config.vm.network "forwarded_port", guest: 19531, host: 19531, protocol: "tcp",
       auto_correct: true
@@ -123,6 +126,10 @@ SHELL
 
     config.vm.provision "shell", inline: "sudo systemctl restart systemd-journal-gatewayd.service",
       run: "always"
+  end
+
+  app_commands.each do |command|
+    config.vm.provision "shell", inline: "cd #{app_directory} && #{command}"
   end
 
 end

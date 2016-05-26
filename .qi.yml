@@ -2,16 +2,11 @@ app_name: gpii-pouchdb
 
 git_repository: https://github.com/the-t-in-rtf/gpii-pouchdb.git
 
-git_branches:
-  - GPII-1803
-
 email: tony@raisingthefloor.org
 
 env_runtime: linux
 
 app_start_service: false
-
-app_tcp_port: 9999
 
 software_stack: nodejs
 
