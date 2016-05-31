@@ -5,13 +5,14 @@
   "repository": "https://github.com/GPII/gpii-pouchdb",
   "license": "BSD-3-Clause",
   "scripts": {
-    "test": "node tests/js/all-tests.js"
+    "test": "node node_modules/istanbul/lib/cli.js cover tests/js/all-tests.js"
   },
   "dependencies": {
+    "express": "4.13.3",
     "express-pouchdb": "1.0.3",
     "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#84279ed065b0429eb71b7f13a17916353362263a",
-    "express": "4.13.3",
     "infusion": "2.0.0-dev.20160519T222603Z.754d2c6",
+    "istanbul": "0.4.3",
     "memdown": "1.1.0",
     "pouchdb": "5.3.2",
     "underscore-node": "0.1.2"
