@@ -91,8 +91,7 @@ gpii.pouch.cleanup = function (that) {
         var promise = db.destroy()
             .then(function () {
                 fluid.log("Destroyed database '" + key + "'...");
-            })
-            .catch(fluid.fail); // jshint ignore:line
+            })["catch"](fluid.fail);
 
         promises.push(promise);
     });

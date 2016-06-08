@@ -11,7 +11,7 @@ fluid.registerNamespace("gpii.pouch");
 gpii.pouch.loadTestingSupport = function () {
     require("gpii-express");
     gpii.express.loadTestingSupport();
-    
+
     require("./src/test/environment");
     require("./src/test/harness");
     require("./src/test/helpers");
