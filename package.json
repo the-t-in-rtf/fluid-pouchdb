@@ -8,22 +8,22 @@
     "test": "node node_modules/istanbul/lib/cli.js cover tests/js/all-tests.js"
   },
   "dependencies": {
-    "express": "4.13.3",
-    "express-pouchdb": "1.0.3",
-    "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#52b1701d46868eeb3943d6d85bba09eba47938ce",
+    "express": "4.14.0",
+    "express-pouchdb": "1.0.6",
+    "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#2f224862730bca57fa1f036f24f26e1d43748419",
     "infusion": "2.0.0-dev.20160519T222603Z.754d2c6",
-    "istanbul": "0.4.3",
-    "memdown": "1.1.0",
-    "pouchdb": "5.3.2",
+    "istanbul": "0.4.4",
+    "memdown": "1.2.0",
+    "pouchdb": "5.4.5",
     "underscore-node": "0.1.2"
   },
   "devDependencies": {
     "grunt": "1.0.1",
-    "grunt-eslint": "18.1.0",
-    "grunt-jsonlint": "1.0.4",
-    "kettle": "git://github.com/amb26/kettle.git#d808f3d5e326265aab9aaa1014703d75fa8ef0d0",
+    "grunt-eslint": "19.0.0",
+    "grunt-jsonlint": "1.1.0",
+    "kettle": "1.1.0",
     "node-jqunit": "1.1.4",
-    "request": "^2.63.0",
-    "tough-cookie": "0.12.1"
+    "request": "2.63.0",
+    "tough-cookie": "2.3.1"
   }
 }
