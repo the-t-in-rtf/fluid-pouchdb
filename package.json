@@ -23,7 +23,7 @@
     "grunt-jsonlint": "1.1.0",
     "kettle": "1.1.0",
     "node-jqunit": "1.1.4",
-    "request": "2.63.0",
+    "request": "2.74.0",
     "tough-cookie": "2.3.1"
   }
 }
