@@ -1,5 +1,7 @@
 // Run all tests in this package in series.
 "use strict";
+var fluid = require("infusion");
+fluid.setLogging(false);
 
 // There is a leak when repeatedly launching express-pouchdb, there is currently no fix.
 //

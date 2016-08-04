@@ -11,14 +11,30 @@ var fluid = require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
 fluid.registerNamespace("gpii.pouch");
 
+/*
+
+    TODO: In summmary...
+
+    1. Separate the express-pouchdb initialization and middleware bits from pouch itself.
+    2. Separate the node-specific parts of the pouch component from the base browser-safe parts.
+    3. Add browser tests.
+
+ */
+
+// TODO:  Isolate this node-specific set of requires from a base "common" grade
 var os             = require("os");
 var path           = require("path");
 var fs             = require("fs");
 var memdown        = require("memdown");
 
+// TODO:  The "base" grade should not make use of express pouchdb.  Cleanly separate pouch from its middleware wrapper.
 var expressPouchdb = require("express-pouchdb");
+
+// TODO:  This should be part of the "base" grade
+// TODO:  This should be a client-first include, ala `PouchDB = PouchDB || require("pouchdb")`
 var PouchDB        = require("pouchdb");
 
+// TODO:  Isolate this to the node-specific parts of the grade
 // We want to output our generated config file to the temporary directory instead of the working directory.
 var expressPouchConfigPath = path.resolve(os.tmpdir(), "config.json");
 var pouchLogPath           = path.resolve(os.tmpdir(), "log.txt");
@@ -29,18 +45,21 @@ var pouchLogPath           = path.resolve(os.tmpdir(), "log.txt");
  *
  * @param that {Object} The `gpii.pouch` component itself.
  */
+// TODO:  Isolate the express-pouchdb and pouch initialization from each other
 gpii.pouch.init = function (that) {
     // There are unfortunately options that can only be configured via a configuration file.
     //
     // To allow ourselves (and users configuring and extending this grade) to control these options, we create the file
     // with the contents of options.pouchConfig before configuring and starting express-pouchdb.
     //
+    // TODO:  Isolate this from the pouch initialization
     fs.writeFileSync(that.options.expressPouchConfigPath, JSON.stringify(that.options.expressPouchConfig, null, 2));
 
     var uniqueOptions    = fluid.copy(that.options.dbOptions);
     uniqueOptions.prefix = that.id;
     var MyPouchDB        = PouchDB.defaults(uniqueOptions);
 
+    // TODO: Isolate the express-pouchdb initialization from the pouch initialization
     that.expressPouchdb  = expressPouchdb(MyPouchDB, { configPath: expressPouchConfigPath });
 
     var initWork = function () {
@@ -91,8 +110,7 @@ gpii.pouch.cleanup = function (that) {
         var promise = db.destroy()
             .then(function () {
                 fluid.log("Destroyed database '" + key + "'...");
-            })
-            .catch(fluid.fail); // jshint ignore:line
+            })["catch"](fluid.fail);
 
         promises.push(promise);
     });
@@ -115,7 +133,7 @@ fluid.defaults("gpii.pouch", {
     // Options to use when creating individual databases.
     dbOptions: {
         auto_compaction: true,
-        db: memdown
+        db: memdown // TODO:  This option only belongs as a default for a test grade in ../test.  We need tested settings for a persistant databse
     },
     events: {
         onStarted: null
