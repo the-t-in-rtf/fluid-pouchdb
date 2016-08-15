@@ -4,7 +4,8 @@ var gpii  = fluid.registerNamespace("gpii");
 
 fluid.module.register("gpii-pouchdb", __dirname, require);
 
-require("./src/js/pouch");
+require("./src/js/pouch-express");
+require("./src/js/pouch-harness");
 
 fluid.registerNamespace("gpii.pouch");
 
@@ -13,6 +14,8 @@ gpii.pouch.loadTestingSupport = function () {
     gpii.express.loadTestingSupport();
 
     require("./src/test/environment");
-    require("./src/test/harness");
+    require("./src/test/test-harness");
     require("./src/test/helpers");
+    require("./src/test/request");
+    require("./src/test/caseHolder");
 };

@@ -1,7 +1,14 @@
 "use strict";
 var fluid = require("infusion");
+var gpii  = fluid.registerNamespace("gpii");
 
-require("./harness");
+require("./test-harness");
+
+fluid.registerNamespace("gpii.test.pouch.environment");
+
+gpii.test.pouch.environment.startCleanups = function (that) {
+    that.harness.express.expressPouch.events.onCleanup.fire();
+};
 
 fluid.defaults("gpii.test.pouch.environment", {
     gradeNames: ["fluid.test.testEnvironment"],
@@ -15,7 +22,7 @@ fluid.defaults("gpii.test.pouch.environment", {
     distributeOptions: [
         {
             source: "{that}.options.pouchConfig",
-            target: "{that gpii.pouch}.options"
+            target: "{that gpii.pouch.express.base}.options"
         },
         {
             source: "{that}.options.harnessGrades",
@@ -29,6 +36,14 @@ fluid.defaults("gpii.test.pouch.environment", {
             events: {
                 onHarnessReady: "onHarnessReady"
             }
+        },
+        onCleanup:         null,
+        onCleanupComplete: null
+    },
+    listeners: {
+        "onCleanup.cleanup": {
+            funcName: "gpii.test.pouch.environment.startCleanups",
+            args:     ["{that}"]
         }
     },
     components: {
@@ -39,8 +54,34 @@ fluid.defaults("gpii.test.pouch.environment", {
                 port:       "{testEnvironment}.options.port",
                 listeners: {
                     onReady: "{testEnvironment}.events.onHarnessReady.fire"
+                },
+                components: {
+                    express: {
+                        options: {
+                            components: {
+                                expressPouch: {
+                                    options: {
+                                        listeners: {
+                                            onCleanupComplete: {
+                                                func: "{testEnvironment}.events.onCleanupComplete.fire"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
+        }
+    }
+});
+
+fluid.defaults("gpii.test.pouch.environment.inMemory", {
+    gradeNames: ["gpii.test.pouch.environment"],
+    components: {
+        harness: {
+            type: "gpii.test.pouch.harness.inMemory"
         }
     }
 });

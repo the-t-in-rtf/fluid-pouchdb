@@ -20,7 +20,7 @@ gpii.express.loadTestingSupport();
 require("./pouch-config");
 
 fluid.defaults("gpii.tests.pouch.reload.caseHolder", {
-    gradeNames: ["gpii.test.express.caseHolder"],
+    gradeNames: ["gpii.test.pouch.caseHolder"],
     rawModules: [
         {
             name: "Testing multiple launches of pouch in a row...",
@@ -76,13 +76,24 @@ fluid.defaults("gpii.tests.pouch.reload.caseHolder", {
     }
 });
 
-fluid.defaults("gpii.tests.pouch.reload.environment", {
-    gradeNames: ["gpii.test.pouch.environment"],
+fluid.defaults("gpii.tests.pouch.reload.caseHolder.inMemory", {
+    gradeNames: ["gpii.tests.pouch.reload.caseHolder"],
+    distributeOptions: {
+        record: "Testing multiple launches of pouch in a row (in memory)...",
+        target: "{that}.options.rawModules.0.name"
+    }
+});
+
+fluid.defaults("gpii.tests.pouch.reload.environment.base", {
     pouchConfig: {
         databases:  gpii.tests.pouch.config.databases
     },
     port:       6792,
-    testUrl:    "/sample/",
+    testUrl:    "/sample/"
+});
+
+fluid.defaults("gpii.tests.pouch.reload.environment", {
+    gradeNames: ["gpii.test.pouch.environment", "gpii.tests.pouch.reload.environment.base"],
     components: {
         testCaseHolder: {
             type: "gpii.tests.pouch.reload.caseHolder"
@@ -90,4 +101,14 @@ fluid.defaults("gpii.tests.pouch.reload.environment", {
     }
 });
 
+fluid.defaults("gpii.tests.pouch.reload.environment.inMemory", {
+    gradeNames: ["gpii.test.pouch.environment.inMemory", "gpii.tests.pouch.reload.environment.base"],
+    components: {
+        testCaseHolder: {
+            type: "gpii.tests.pouch.reload.caseHolder.inMemory"
+        }
+    }
+});
+
 fluid.test.runTests("gpii.tests.pouch.reload.environment");
+fluid.test.runTests("gpii.tests.pouch.reload.environment.inMemory");

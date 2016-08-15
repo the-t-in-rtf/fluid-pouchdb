@@ -66,7 +66,7 @@ fluid.tests.runTests("my.tests.environment");
 
 An instance of `gpii.express` which has an instance of `gpii.pouch` wired into it.  Provides a working HTTP REST API
 equivalent to CouchDB.  Although you will generally use this in combination with the test enviroment above, it can
-also be used on its own. As an example, the file `tests/js/launch-test-harness.js` included with this package can be
+also be used on its own. As an example, the file `tests/js/launch-test-test-harness.js` included with this package can be
 used to launch a standalone test instance of this package for manual QA.
 
 ## Component Options
