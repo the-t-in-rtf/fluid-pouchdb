@@ -14,9 +14,6 @@ gpii.express.loadTestingSupport();
 
 require("./pouch-config");
 
-// Convenience grade to avoid putting the same settings into all of our request components
-
-
 fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
     gradeNames: ["gpii.test.pouch.caseHolder"],
     expected: {
@@ -294,7 +291,7 @@ fluid.defaults("gpii.tests.pouch.basic.environment.inMemory", {
 });
 
 
-// fluid.test.runTests("gpii.tests.pouch.basic.environment");
 fluid.test.runTests("gpii.tests.pouch.basic.environment");
-// fluid.test.runTests("gpii.tests.pouch.basic.environment.inMemory");
+
+// TODO: Discuss whether we need to preserve the inMemory grade for use with express.
 fluid.test.runTests("gpii.tests.pouch.basic.environment.inMemory");

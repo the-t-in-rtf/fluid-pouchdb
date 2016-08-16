@@ -7,6 +7,18 @@
 
  */
 "use strict";
+
+/*
+
+    TODO:  Work through the express-pouchdb setup and code with Antranig, as we see many warnings like:
+
+    `Warning: a promise was created in a handler but was not returned from it`
+
+    The workaround for now is to set the `BLUEBIRD_WARNINGS` environment variable to `0`.
+
+ */
+process.env.BLUEBIRD_WARNINGS = 0;
+
 var fluid = require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
 fluid.registerNamespace("gpii.pouch.express");
@@ -28,25 +40,6 @@ var PouchDB        = require("pouchdb");
 // event listener warnings, but only for PouchDB itself.
 PouchDB.setMaxListeners(250);
 
-// TODO:  Isolate this to the node-specific parts of the grade
-// We want to output our generated config file to the temporary directory instead of the working directory.
-var expressPouchConfigPath = path.resolve(os.tmpdir(), "config.json");
-var pouchLogPath           = path.resolve(os.tmpdir(), "log.txt");
-var defaultBaseDbPath      = os.tmpdir() + "/";
-
-/**
- *
- * For grades backed by the filesystem, this function is provided to ensure that the directory is created if it does
- * not already exist.
- *
- * @param that - The component itself.
- */
-gpii.pouch.express.initWorkingDirectory = function (that) {
-    if (!fs.existsSync(that.options.dbPath)) {
-        fs.mkdirSync(that.options.dbPath);
-    }
-};
-
 /**
  *
  * Initialize our instance of express-pouchdb.
@@ -56,25 +49,21 @@ gpii.pouch.express.initWorkingDirectory = function (that) {
  *
  */
 gpii.pouch.express.initExpressPouchdb = function (that) {
+    // Create any of our directories that don't already exist
+    fluid.each([that.options.baseDir, that.options.dbPath], function (path) {
+        if (path && !fs.existsSync(path)) {
+            fs.mkdirSync(path);
+        }
+    });
+
     // There are unfortunately options that can only be configured via a configuration file.
     //
     // To allow ourselves (and users configuring and extending this grade) to control these options, we create the file
     // with the contents of options.pouchConfig before configuring and starting express-pouchdb.
-    if (!fs.existsSync(that.options.expressPouchConfigPath)) {
-        fs.writeFileSync(that.options.expressPouchConfigPath, JSON.stringify(that.options.expressPouchConfig, null, 2));
-    }
+    fs.writeFileSync(that.options.expressPouchConfigPath, JSON.stringify(that.options.expressPouchConfig, null, 2));
 
-    /*
-
-     TODO:  Work through the express-pouchdb setup and code with Antranig, as we see many warnings like:
-
-     `Warning: a promise was created in a handler but was not returned from it`
-
-     The workaround for now is to set the `BLUEBIRD_WARNINGS` environment variable to `0`.
-
-     */
     that.PouchDB = PouchDB.defaults(that.options.dbOptions);
-    that.expressPouchdb = expressPouchdb(that.PouchDB, { configPath: expressPouchConfigPath });
+    that.expressPouchdb = expressPouchdb(that.PouchDB, { configPath: that.options.expressPouchConfigPath });
 
     return that.expressPouchdb;
 };
@@ -190,10 +179,20 @@ fluid.defaults("gpii.pouch.express.base", {
     method: "use", // We have to support all HTTP methods, as does our underlying router.
     path: "/",
     namespace: "pouch-express", // Namespace to allow other routers to put themselves in the chain before or after us.
-    expressPouchConfigPath: expressPouchConfigPath,
+    /*
+     var expressPouchBasePath   = path.resolve(os.tmpdir(), "expressPouchdb");
+     var expressPouchConfigPath = path.resolve(expressPouchBasePath, "config.json");
+     var pouchLogPath           = path.resolve(expressPouchBasePath, "log.txt");
+
+     */
+    tmpDir:  os.tmpdir(),
+    baseDir: "@expand:path.resolve({that}.options.tmpDir, {that}.id)",
+    expressPouchConfigFilename: "config.json",
+    expressPouchConfigPath:     "@expand:path.resolve({that}.options.tmpDir, {that}.options.expressPouchConfigFilename)",
+    expressPouchLogFilename:    "log.txt",
     expressPouchConfig: {
         log: {
-            file: pouchLogPath
+            file: "@expand:path.resolve({that}.options.tmpDir, {that}.options.expressPouchLogFilename)"
         }
     },
     events: {
@@ -227,8 +226,7 @@ fluid.defaults("gpii.pouch.express.base", {
             funcName: "fluid.notImplemented"
         },
         initDb: {
-            funcName: "gpii.pouch.express.initDb",
-            args:     ["{that}", "{arguments}.0", "{arguments}.1"]
+            funcName: "fluid.notImplemented"
         },
         initDbs: {
             funcName: "fluid.notImplemented"
@@ -236,43 +234,9 @@ fluid.defaults("gpii.pouch.express.base", {
     }
 });
 
-fluid.defaults("gpii.pouch.express", {
-    gradeNames: ["gpii.pouch.express.base"],
-    dbPath: {
-        expander: {
-            funcName: "path.resolve",
-            args:     [defaultBaseDbPath, "{that}.id"]
-        }
-    },
-    // Options to use when creating individual databases.
-    dbOptions: {
-        auto_compaction: true,
-        prefix: "{that}.options.dbPath"
-    },
-    listeners: {
-        "onCreate.initWorkingDir": {
-            priority: "first",
-            funcName: "gpii.pouch.express.initWorkingDirectory",
-            args:     ["{that}"]
-        }
-    },
-    invokers: {
-        cleanup: {
-            funcName: "gpii.pouch.express.cleanup",
-            args:     ["{that}"]
-        },
-        initDbs: {
-            funcName: "gpii.pouch.express.initDbs",
-            args:     ["{that}"]
-        }
-    }
-});
-
-fluid.registerNamespace("gpii.pouch.express.checkFileSystemOnDbCreation");
-
 /**
  *
- * Initialize an individual database, but only if it does not already exist.
+ * Only initialize databases that do not already exist.  For filesystem-backed databases only.
  *
  * @param that - The component itself.
  * @param dbKey {String} - The name of the database we are creating
@@ -280,8 +244,8 @@ fluid.registerNamespace("gpii.pouch.express.checkFileSystemOnDbCreation");
  * @returns {Promise} - A promise which will be resolved when this database has been initialized.
  *
  */
-gpii.pouch.express.checkFileSystemOnDbCreation.initDb = function (that, dbKey, dbOptions) {
-    var dbPath = path.resolve(that.options.dbPath, dbKey);
+gpii.pouch.express.initOnlyOnce = function (that, dbKey, dbOptions) {
+    var dbPath = path.resolve(that.options.dbPath, that.options.dbPrefix + dbKey);
     if (fs.existsSync(dbPath)) {
         fluid.log("Database '" + dbKey + "' found, it will not be created...");
     }
@@ -290,15 +254,30 @@ gpii.pouch.express.checkFileSystemOnDbCreation.initDb = function (that, dbKey, d
     }
 };
 
-fluid.defaults("gpii.pouch.express.checkFileSystemOnDbCreation", {
-    gradeNames: ["gpii.pouch.express"],
+fluid.defaults("gpii.pouch.express", {
+    gradeNames: ["gpii.pouch.express.base"],
+    dbPath:     "{that}.options.baseDir",
+    dbPrefix:   "gpii-pouchdb-",
+    // Options to use when creating individual databases.
+    dbOptions: {
+        auto_compaction: true,
+        // The trailing slash and prefix are required to ensure that we end up with /path/to/dir/dbname instead of /path/to/dirdbname.
+        prefix: "@expand:path.resolve({that}.options.dbPath, {that}.options.dbPrefix)"
+    },
     invokers: {
+        cleanup: {
+            funcName: "gpii.pouch.express.cleanup",
+            args:     ["{that}"]
+        },
         initDb: {
-            funcName: "gpii.pouch.express.checkFileSystemOnDbCreation.initDb",
-            args: ["{that}", "{arguments}.0", "{arguments}.1"]
+            funcName: "gpii.pouch.express.initOnlyOnce",
+            args:     ["{that}", "{arguments}.0", "{arguments}.1"]
+        },
+        initDbs: {
+            funcName: "gpii.pouch.express.initDbs",
+            args:     ["{that}"]
         }
     }
-
 });
 
 fluid.registerNamespace("gpii.pouch.express.inMemory");
@@ -362,6 +341,10 @@ fluid.defaults("gpii.pouch.express.inMemory", {
         cleanup: {
             funcName: "gpii.pouch.express.inMemory.cleanup",
             args:     ["{that}"]
+        },
+        initDb: {
+            funcName: "gpii.pouch.express.initDb",
+            args:     ["{that}", "{arguments}.0", "{arguments}.1"]
         },
         initDbs: {
             funcName: "gpii.pouch.express.inMemory.initDbs",

@@ -1,7 +1,6 @@
 /*
 
-    Confirm that a new instance using the same path and the `gpii.pouch.express.checkFileSystemOnDbCreation` grade
-    will end up with the same data.
+    Confirm that we can consistently choose to persist or reset data between runs.
 
  */
 /* eslint-env node */
@@ -22,15 +21,8 @@ var jqUnit = require("node-jqunit");
 
 jqUnit.module("Testing filesystem persistence...");
 
-fluid.defaults("gpii.tests.pouchdb.checkFileSystemOnDbCreation", {
-    gradeNames: ["gpii.pouch.express.checkFileSystemOnDbCreation"],
-    databases: {
-        sample: ""
-    }
-});
-
 fluid.defaults("gpii.tests.pouch.persistent.caseHolder.base", {
-    gradeNames: ["gpii.test.express.caseHolder"],
+    gradeNames: ["gpii.test.pouch.caseHolder.base"],
     sampleRecord: { _id: "new", foo: "bar"},
     components: {
         getRequest: {
@@ -86,8 +78,7 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder.insertRecord", {
 });
 
 fluid.defaults("gpii.tests.pouch.persistent.caseHolder.clearData", {
-    gradeNames: ["gpii.tests.pouch.persistent.caseHolder.base"],
-    sequenceEnd: gpii.test.pouch.caseHolder.standardSequenceEnd,
+    gradeNames: ["gpii.test.pouch.caseHolder"],
     rawModules: [{
         name: "Testing persistence across restarts...",
         tests: [
@@ -165,9 +156,6 @@ fluid.defaults("gpii.tests.pouch.persistent.environment", {
         target: "{that gpii.pouch.express}.options.dbPath"
     },
     components: {
-        harness: {
-            type: "gpii.pouch.harness"
-        },
         testCaseHolder: {
             type: "gpii.tests.pouch.persistent.caseHolder.insertRecord"
         }
@@ -216,4 +204,5 @@ fluid.test.runTests("gpii.tests.pouch.persistent.environment.shouldNotHaveRecord
 fluid.test.runTests("gpii.tests.pouch.persistent.environment.insertRecord");
 fluid.test.runTests("gpii.tests.pouch.persistent.environment.shouldHaveRecord");
 fluid.test.runTests("gpii.tests.pouch.persistent.environment.clearData");
-// fluid.test.runTests("gpii.tests.pouch.persistent.environment.shouldNotHaveRecord");
+fluid.test.runTests("gpii.tests.pouch.persistent.environment.shouldNotHaveRecord");
+fluid.test.runTests("gpii.tests.pouch.persistent.environment.clearData");

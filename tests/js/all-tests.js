@@ -5,4 +5,4 @@ fluid.setLogging(false);
 
 require("./basic-tests");
 require("./reload-tests");
-require("./checkFileSystemOnDbCreation-tests");
+require("./persistence-tests");

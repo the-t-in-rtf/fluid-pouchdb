@@ -111,4 +111,6 @@ fluid.defaults("gpii.tests.pouch.reload.environment.inMemory", {
 });
 
 fluid.test.runTests("gpii.tests.pouch.reload.environment");
+
+// TODO:  Discuss how best to work around recent problems with clearing away the inMemory data between runs.
 fluid.test.runTests("gpii.tests.pouch.reload.environment.inMemory");

@@ -93,6 +93,8 @@ Initialize all of the databases configured in `options.databases` (see above).
 
 # `gpii.pouch.express.inMemory`
 
+A component which is configured to store data in-memory rather than on the filesystem.
+
 ## Component Options
 
 This grade does not have any unique configuration options beyond those provided by `gpii.pouch.express.base`
@@ -100,21 +102,16 @@ This grade does not have any unique configuration options beyond those provided 
 ## Component Invokers
 
 ### `{that}.cleanup()`
-* Returns: A `Promise` that will be resolved once cleanup is complete (the `onCleanupComplete` event should also be fired.
+* Returns: A `Promise` that will be resolved once cleanup is complete.
 
 This invoker is called when the `onCleanup` event is fired, which should indicate that it is time to remove any existing
-data.  Calls each database's `destroy` method and clears `memdown`'s cache.
+data.  Calls each database's `destroy` method and clears `memdown`'s cache.  Most tests will use the standard caseHolder
+(see [the test docs for this package](tests.md)), which will fire `onCleanup` and then listen for `onCleanupComplete`.
 
 ### `{that}.initDbs()`
 * Returns: A `Promise` that will be resolved once all databases have been initialized.
 
 Initialize all of the databases configured in `options.databases` (see above).
-
-# `gpii.pouch.express.checkFileSystemOnDbCreation`
-
-This is a mix-in grade which configures a `gpii.pouch.express` component to preserve data between runs.  This is
-designed for standalone development servers and manual QA environments.  Note that this grade cannot be meaningfully
-used with a `gpii.pouch.express.inMemory` instance.
 
 ## Component Invokers
 
