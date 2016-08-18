@@ -3,7 +3,7 @@
     Provide a CouchDB-like API using `PouchDB` and `express-pouchdb`.  This in only useful in association with an
     existing `gpii.express` instance.  See the documentation for details:
 
-    https://github.com/GPII/gpii-pouchdb/blob/master/docs/pouch-component.md
+    https://github.com/GPII/gpii-pouchdb/blob/master/docs/pouch-express.md
 
  */
 "use strict";

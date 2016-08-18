@@ -1,3 +1,8 @@
+/*
+
+    Node-specific test helper functions.
+
+ */
 "use strict";
 var fluid = require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
