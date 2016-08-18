@@ -71,7 +71,8 @@ Check the [PouchDB `bulkGet` docs](https://pouchdb.com/api.html#bulk_get) for mo
 
 #`{that}.compact([options])`
 
-Compact the database, removing deleted data and older revisions.
+Compact the database, removing deleted data and older revisions.  This method is not tested and is used at your own
+risk.
 
 Check the [PouchDB `compact` docs](https://pouchdb.com/api.html#compaction) for more details.
 
@@ -93,7 +94,8 @@ Check the [PouchDB `get` docs](https://pouchdb.com/api.html#fetch_document) for 
 
 #`{that}.getAttachment(docId, attachmentId, [options])`
 
-Retrieve an attachment from `docId` whose id matches `attachmentId`.
+Retrieve an attachment from `docId` whose id matches `attachmentId`.  This method is not tested and is used at your own
+risk.
 
 Check the [PouchDB `getAttachment` docs](https://pouchdb.com/api.html#get_attachment) for more details.
 
@@ -123,7 +125,8 @@ Check the [PouchDB `put` docs](https://pouchdb.com/api.html#create_document) for
 
 Create or update an attachment.
 
-Check the [PouchDB `putAttachment` docs](https://pouchdb.com/api.html#save_attachment) for more details.
+Check the [PouchDB `putAttachment` docs](https://pouchdb.com/api.html#save_attachment) for more details.  This method is
+not tested and is used at your own risk.
 
 
 #`{that}.query(fun, [options])`
@@ -144,11 +147,12 @@ Check the [PouchDB `remove` docs](https://pouchdb.com/api.html#delete_document) 
 
 Remove an existing attachment.
 
-Check the [PouchDB `removeAttachment` docs](https://pouchdb.com/api.html#delete_attachment) for more details.
+Check the [PouchDB `removeAttachment` docs](https://pouchdb.com/api.html#delete_attachment) for more details.  This
+method is not tested and is used at your own risk.
 
 
 #`{that}.viewCleanup()`
 
-Clean up any stale map/reduce indexes.
+Clean up any stale map/reduce indexes.  This method is not tested and is used at your own risk.
 
 Check the [PouchDB X docs](https://pouchdb.com/api.html#view_cleanup) for more details.

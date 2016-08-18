@@ -11,8 +11,33 @@ if (!gpii.pouch) {
 }
 
 fluid.registerNamespace("gpii.tests.pouchdb.component");
-gpii.tests.pouchdb.component.wtf = function () {
-    console.log("yo");
+
+// A simple function to test support for "map" functions using the query method.
+/* globals emit */
+gpii.tests.pouchdb.component.map = function (doc) {
+    if (doc.color) {
+        emit(doc.color, doc);
+    }
+};
+
+// A simple function to test the support for "reduce" functions using the query method.
+gpii.tests.pouchdb.component.reduce = function (keys, values, rereduce) {
+    var colorSummary = {};
+    if (rereduce) {
+        values.forEach(function (toReduce) {
+            Object.keys(toReduce).forEach(function (key) {
+                var subtotal = toReduce[key];
+                colorSummary[key] = colorSummary[key] ? colorSummary[key] + subtotal : subtotal;
+            });
+        });
+    }
+    else {
+        keys.forEach(function (entry) {
+            var color = entry[0];
+            colorSummary[color] = colorSummary[color] ? colorSummary[color] + 1 : 1;
+        });
+    }
+    return colorSummary; // { red: 1, yellow: 2 }
 };
 
 fluid.defaults("gpii.tests.pouchdb.component.caseHolder", {
@@ -26,6 +51,27 @@ fluid.defaults("gpii.tests.pouchdb.component.caseHolder", {
             {
                 "_id": "two",
                 "saying": "are required to tango"
+            }
+        ],
+        mapReduce: [
+            {
+                "color": "red",
+                "name": "strawberry"
+            },
+            {
+                "color": "yellow",
+                "name": "banana"
+            },
+            {
+                "color": "red",
+                "name": "cherry"
+            },
+            {
+                "color": "blue",
+                "name": "blueberry"
+            },
+            {
+                name: "colorless glass noodles"
             }
         ]
     },
@@ -52,7 +98,7 @@ fluid.defaults("gpii.tests.pouchdb.component.caseHolder", {
         type: "test",
         tests: [
             {
-                name: "Test the info method...",
+                name: "Test the `info` method...",
                 sequence: [
                     {
                         func: "{testEnvironment}.pouchDb.info"
@@ -75,6 +121,20 @@ fluid.defaults("gpii.tests.pouchdb.component.caseHolder", {
                         event: "{testEnvironment}.pouchDb.events.onPostComplete",
                         listener: "jqUnit.assertLeftHand",
                         args: ["The POST should have been successful...", { ok: true, id: "foo"}, "{arguments}.0"]
+                    }
+                ]
+            },
+            {
+                name: "Test the `GET` method (with a non-existent ID)...",
+                sequence: [
+                    {
+                        func: "{testEnvironment}.pouchDb.get",
+                        args: [{ _id: "notGonnaFindIt"}]
+                    },
+                    {
+                        event: "{testEnvironment}.pouchDb.events.onError",
+                        listener: "jqUnit.assert",
+                        args: ["An error should be thrown if a record cannot be found..."]
                     }
                 ]
             },
@@ -112,7 +172,7 @@ fluid.defaults("gpii.tests.pouchdb.component.caseHolder", {
                 ]
             },
             {
-                name: "Test the bulkDocs function...",
+                name: "Test the `bulkDocs` function...",
                 sequence: [
                     {
                         func: "{testEnvironment}.pouchDb.bulkDocs",
@@ -126,7 +186,7 @@ fluid.defaults("gpii.tests.pouchdb.component.caseHolder", {
                 ]
             },
             {
-                name: "Test the allDocs function...",
+                name: "Test the `allDocs` function...",
                 sequence: [
                     {
                         func: "{testEnvironment}.pouchDb.bulkDocs",
@@ -145,7 +205,7 @@ fluid.defaults("gpii.tests.pouchdb.component.caseHolder", {
                 ]
             },
             {
-                name: "Test the bulkGet function...",
+                name: "Test the `bulkGet` function...",
                 sequence: [
                     {
                         func: "{testEnvironment}.pouchDb.bulkDocs",
@@ -164,7 +224,7 @@ fluid.defaults("gpii.tests.pouchdb.component.caseHolder", {
                 ]
             },
             {
-                name: "Test the remove function...",
+                name: "Test the `remove` function...",
                 sequence: [
                     {
                         func: "{testEnvironment}.pouchDb.bulkDocs",
@@ -189,6 +249,77 @@ fluid.defaults("gpii.tests.pouchdb.component.caseHolder", {
                         event:    "{testEnvironment}.pouchDb.events.onInfoComplete",
                         listener: "jqUnit.assertLeftHand",
                         args:     ["The database should now only contain one record...", { db_name: "test", doc_count: 1 }, "{arguments}.0"]
+                    }
+                ]
+            },
+            {
+                name: "Test the `remove` method (with a non-existent ID)...",
+                sequence: [
+                    {
+                        func: "{testEnvironment}.pouchDb.remove",
+                        args: [{ _id: "notGonnaFindIt"}]
+                    },
+                    {
+                        event: "{testEnvironment}.pouchDb.events.onError",
+                        listener: "jqUnit.assert",
+                        args: ["An error should be thrown if a record cannot be found..."]
+                    }
+                ]
+            },
+            {
+                name: "Testing `query` handling (passing a single map function)...",
+                sequence: [
+                    {
+                        func: "{testEnvironment}.pouchDb.bulkDocs",
+                        args: ["{that}.options.inputs.mapReduce"]
+                    },
+                    {
+                        event:    "{testEnvironment}.pouchDb.events.onBulkDocsComplete",
+                        listener: "{testEnvironment}.pouchDb.query",
+                        args:     [gpii.tests.pouchdb.component.map]
+                    },
+                    {
+                        event:    "{testEnvironment}.pouchDb.events.onQueryComplete",
+                        listener: "jqUnit.assertEquals",
+                        args:     ["The view should return the right number of records...", 4, "{arguments}.0.rows.length" ]
+                    }
+                ]
+            },
+            {
+                name: "Testing `query` handling (passing a map function as part of a JSON document)...",
+                sequence: [
+                    {
+                        func: "{testEnvironment}.pouchDb.bulkDocs",
+                        args: ["{that}.options.inputs.mapReduce"]
+                    },
+                    {
+                        event:    "{testEnvironment}.pouchDb.events.onBulkDocsComplete",
+                        listener: "{testEnvironment}.pouchDb.query",
+                        args:     [{ map: gpii.tests.pouchdb.component.map}]
+                    },
+                    {
+                        event:    "{testEnvironment}.pouchDb.events.onQueryComplete",
+                        listener: "jqUnit.assertEquals",
+                        args:     ["The view should return the right number of records...", 4, "{arguments}.0.rows.length" ]
+                    }
+                ]
+            },
+            {
+                name: "Testing `query` handling (passing both map and reduce function)...",
+                sequence: [
+                    {
+                        func: "{testEnvironment}.pouchDb.bulkDocs",
+                        args: ["{that}.options.inputs.mapReduce"]
+                    },
+                    {
+                        event:    "{testEnvironment}.pouchDb.events.onBulkDocsComplete",
+                        listener: "{testEnvironment}.pouchDb.query",
+                        args:     [{ map: gpii.tests.pouchdb.component.map, reduce: gpii.tests.pouchdb.component.reduce}]
+                    },
+                    {
+                        event:    "{testEnvironment}.pouchDb.events.onQueryComplete",
+                        listener: "jqUnit.assertDeepEq",
+                        args:     ["The reduced data should be correct...", { red: 2, yellow: 1, blue: 1 }, "{arguments}.0.rows.0.value" ]
                     }
                 ]
             }
@@ -220,38 +351,8 @@ fluid.defaults("gpii.tests.pouchdb.component.environment", {
 fluid.test.runTests("gpii.tests.pouchdb.component.environment");
 
 /*
- // TODO:  Test each of these
 
- compact: {
- funcName: "gpii.pouch.callPouchFunction",
- args: ["compact", "{arguments}", "onCompactComplete"] // fnName, fnArgs, eventName
- },
+404 testing for all record methods
 
- getAttachment: {
- funcName: "gpii.pouch.callPouchFunction",
- args: ["getAttachment", "{arguments}", "onGetAttachmentComplete"] // fnName, fnArgs, eventName
- },
-
- putAttachment: {
- funcName: "gpii.pouch.callPouchFunction",
- args: ["putAttachment", "{arguments}", "onPutAttachmentComplete"] // fnName, fnArgs, eventName
- },
- query: {
- funcName: "gpii.pouch.callPouchFunction",
- args: ["query", "{arguments}", "onQueryComplete"] // fnName, fnArgs, eventName
- },
- remove: {
- funcName: "gpii.pouch.callPouchFunction",
- args: ["remove", "{arguments}", "onRemoveComplete"] // fnName, fnArgs, eventName
- },
- removeAttachment: {
- funcName: "gpii.pouch.callPouchFunction",
- args: ["removeAttachment", "{arguments}", "onRemoveAttachmentComplete"] // fnName, fnArgs, eventName
- },
- viewCleanup: {
- funcName: "gpii.pouch.callPouchFunction",
- args: ["viewCleanup", "{arguments}", "onViewCleanupComplete"] // fnName, fnArgs, eventName
- }
-
- // TODO: The change listeners fire too quickly, we need another way to test them.
+ // TODO: The change listeners appear to fire too quickly, we need another way to test them.
  */
