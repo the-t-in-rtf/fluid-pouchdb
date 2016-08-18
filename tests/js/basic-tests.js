@@ -253,23 +253,8 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
     }
 });
 
-fluid.defaults("gpii.tests.pouch.basic.caseHolder.inMemory", {
-    gradeNames: ["gpii.tests.pouch.basic.caseHolder"],
-    distributeOptions: {
-        record: "Testing gpii-pouchdb (in memory)...",
-        target: "{that}.options.rawModules.0.name"
-    }
-});
-
-fluid.defaults("gpii.tests.pouch.basic.environment.base", {
-    port: 6798,
-    pouchConfig: {
-        databases: gpii.tests.pouch.config.databases
-    }
-});
-
 fluid.defaults("gpii.tests.pouch.basic.environment", {
-    gradeNames: ["gpii.test.pouch.environment", "gpii.tests.pouch.basic.environment.base"],
+    gradeNames: ["gpii.test.pouch.environment"],
     port:       6798,
     pouchConfig: {
         databases:  gpii.tests.pouch.config.databases
@@ -281,17 +266,4 @@ fluid.defaults("gpii.tests.pouch.basic.environment", {
     }
 });
 
-fluid.defaults("gpii.tests.pouch.basic.environment.inMemory", {
-    gradeNames: ["gpii.test.pouch.environment.inMemory", "gpii.tests.pouch.basic.environment.base"],
-    components: {
-        testCaseHolder: {
-            type: "gpii.tests.pouch.basic.caseHolder.inMemory"
-        }
-    }
-});
-
-
 fluid.test.runTests("gpii.tests.pouch.basic.environment");
-
-// TODO: Discuss whether we need to preserve the inMemory grade for use with express.
-fluid.test.runTests("gpii.tests.pouch.basic.environment.inMemory");

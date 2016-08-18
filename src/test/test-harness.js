@@ -17,22 +17,3 @@ fluid.defaults("gpii.test.pouch.harness", {
         target: "{that gpii.pouch.express}.options.gradeNames"
     }
 });
-
-fluid.defaults("gpii.test.pouch.harness.inMemory", {
-    gradeNames: ["gpii.pouch.harness"],
-    distributeOptions: {
-        record: ["gpii.pouch.express.singleUse"],
-        target: "{that gpii.pouch.express}.options.gradeNames"
-    },
-    components: {
-        express: {
-            options: {
-                components: {
-                    expressPouch: {
-                        type: "gpii.pouch.express.inMemory"
-                    }
-                }
-            }
-        }
-    }
-});

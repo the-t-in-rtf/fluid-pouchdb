@@ -76,24 +76,13 @@ fluid.defaults("gpii.tests.pouch.reload.caseHolder", {
     }
 });
 
-fluid.defaults("gpii.tests.pouch.reload.caseHolder.inMemory", {
-    gradeNames: ["gpii.tests.pouch.reload.caseHolder"],
-    distributeOptions: {
-        record: "Testing multiple launches of pouch in a row (in memory)...",
-        target: "{that}.options.rawModules.0.name"
-    }
-});
-
-fluid.defaults("gpii.tests.pouch.reload.environment.base", {
+fluid.defaults("gpii.tests.pouch.reload.environment", {
+    gradeNames: ["gpii.test.pouch.environment"],
     pouchConfig: {
         databases:  gpii.tests.pouch.config.databases
     },
     port:       6792,
-    testUrl:    "/sample/"
-});
-
-fluid.defaults("gpii.tests.pouch.reload.environment", {
-    gradeNames: ["gpii.test.pouch.environment", "gpii.tests.pouch.reload.environment.base"],
+    testUrl:    "/sample/",
     components: {
         testCaseHolder: {
             type: "gpii.tests.pouch.reload.caseHolder"
@@ -101,16 +90,4 @@ fluid.defaults("gpii.tests.pouch.reload.environment", {
     }
 });
 
-fluid.defaults("gpii.tests.pouch.reload.environment.inMemory", {
-    gradeNames: ["gpii.test.pouch.environment.inMemory", "gpii.tests.pouch.reload.environment.base"],
-    components: {
-        testCaseHolder: {
-            type: "gpii.tests.pouch.reload.caseHolder.inMemory"
-        }
-    }
-});
-
 fluid.test.runTests("gpii.tests.pouch.reload.environment");
-
-// TODO:  Discuss how best to work around recent problems with clearing away the inMemory data between runs.
-fluid.test.runTests("gpii.tests.pouch.reload.environment.inMemory");
