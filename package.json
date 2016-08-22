@@ -5,7 +5,9 @@
   "repository": "https://github.com/GPII/gpii-pouchdb",
   "license": "BSD-3-Clause",
   "scripts": {
-    "test": "node node_modules/istanbul/lib/cli.js cover tests/js/all-tests.js"
+    "test": "npm run test:browser; npm run test:node",
+    "test:browser": "node node_modules/testem/testem.js ci",
+    "test:node": "node node_modules/istanbul/lib/cli.js cover tests/js/all-tests.js"
   },
   "dependencies": {
     "express": "4.14.0",
@@ -17,6 +19,7 @@
     "memdown": "1.2.0",
     "pouchdb": "5.4.5",
     "rimraf": "2.5.4",
+    "testem": "1.10.4",
     "underscore-node": "0.1.2"
   },
   "devDependencies": {
