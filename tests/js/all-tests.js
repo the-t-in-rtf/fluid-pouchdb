@@ -6,4 +6,4 @@ fluid.setLogging(false);
 require("./basic-tests");
 require("./reload-tests");
 require("./persistence-tests");
-require("./pouchdb-component-tests");
+require("./pouchdb-component-tests/");

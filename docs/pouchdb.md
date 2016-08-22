@@ -4,17 +4,14 @@ A Fluid component that wraps a PouchDB instance and exposes select methods from 
 
 # Component Events
 
-
 | Event                        | Description |
 | ---------------------------- | ----------- |
 | `onAllDocsComplete`          | Fired when a call to `{that}.allDocs` (see below) is successfully completed. |
 | `onBulkDocsComplete`         | Fired when a call to `{that}.bulkDocs` (see below) is successfully completed. |
 | `onBulkGetComplete`          | Fired when a call to `{that}.bulkGet` (see below) is successfully completed. |
-| `onChangeComplete`           | Fired when a database change is completed. |
-| `onChangeError`              | Fired when a database change results in an error. |
-| `onChangeStarted`            | Fired when a database change begins. |
 | `onCompactComplete`          | Fired when a call to `{that}.compact` (see below) is successfully completed. |
 | `onDestroyPouchComplete`     | Fired when a call to `{that}.destroyPouch` (see below) is successfully completed. |
+| `onError`                    | Fired when an error occurs. |
 | `onGetComplete`              | Fired when a call to `{that}.get` (see below) is successfully completed. |
 | `onGetAttachmentComplete`    | Fired when a call to `{that}.getAttachment` (see below) is successfully completed. |
 | `onInfoComplete`             | Fired when a call to `{that}.info` (see below) is successfully completed. |
@@ -31,10 +28,8 @@ A Fluid component that wraps a PouchDB instance and exposes select methods from 
 
 | Option                      | Type        | Description |
 | --------------------------- | ----------- | ----------- |
-| `changeOptions`             | `{Object}`  | Options to control listening for database changes.  Only used if `listenForChanges` is true (see below) See [the PouchDB `change` documentation](https://pouchdb.com/api.html#changes) for supported options.  The default options configure live listening for changes. |
 | `dbOptions`                 | `{Object}`  | The options to use when creating this database.  See [the PouchDB documentation](https://pouchdb.com/api.html#create_database) for supported options. |
 | `dbOptions.name` (required) | `{String}`  | The name of the database. |
-| `listenForChanges`          | `{Boolean}` | Whether to listen for database changes.  If this is `true`, changes will be wired up using `changeOptions` (see above), and database changes will result in `onChangeStart` and other events (see above). |
 
 
 # Component Invokers

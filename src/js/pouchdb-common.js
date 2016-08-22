@@ -17,21 +17,6 @@ fluid.registerNamespace("gpii.pouch");
 gpii.pouch.init = function (that) {
     that.pouchDb = new PouchDB(that.options.dbOptions);
     fluid.log("Pouch instance `" + that.id + "` created...");
-
-    if (that.options.listenForChanges) {
-        fluid.log("Started listening for database changes...");
-        that.changes = that.pouchDb.changes();
-        that.changes.on("change", that.events.onChangeStarted.fire);
-        that.changes.on("complete", that.events.onChangeComplete.fire);
-        that.changes.on("error", that.events.onChangeError.fire);
-    }
-};
-
-gpii.pouch.tearDown = function (that) {
-    if (that.options.listenForChanges && that.changes) {
-        fluid.log("Stopped listening for database changes...");
-        that.changes.cancel();
-    }
 };
 
 /**
@@ -45,11 +30,15 @@ gpii.pouch.tearDown = function (that) {
  *
  */
 gpii.pouch.callPouchFunction = function (that, fnName, fnArgs, eventName) {
+    var promise = fluid.promise();
+
     var wrappedCallback = function (err, results) {
         if (err) {
+            promise.reject(err);
             that.events.onError.fire(err);
         }
         else {
+            promise.resolve(results);
             that.events[eventName].fire(results);
         }
     };
@@ -58,6 +47,8 @@ gpii.pouch.callPouchFunction = function (that, fnName, fnArgs, eventName) {
     // an empty array first.
     var fullArgs = fluid.makeArray(fnArgs).concat(wrappedCallback);
     that.pouchDb[fnName].apply(that.pouchDb, fullArgs);
+
+    return promise;
 };
 
 fluid.defaults("gpii.pouch", {
@@ -67,14 +58,10 @@ fluid.defaults("gpii.pouch", {
     },
     dbOptions: {
     },
-    listenForChanges: true,
     events: {
         onAllDocsComplete: null,
         onBulkDocsComplete: null,
         onBulkGetComplete: null,
-        onChangeComplete: null,
-        onChangeError: null,
-        onChangeStarted: null,
         onCompactComplete: null,
         onDestroyPouchComplete: null,
         onError: null,
@@ -154,10 +141,6 @@ fluid.defaults("gpii.pouch", {
     listeners: {
         "onCreate.init": {
             funcName: "gpii.pouch.init",
-            args:     ["{that}"]
-        },
-        "onDestroy.stopListeningForChanges": {
-            funcName: "gpii.pouch.tearDown",
             args:     ["{that}"]
         }
     }
