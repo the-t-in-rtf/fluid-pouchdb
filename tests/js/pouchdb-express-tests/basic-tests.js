@@ -12,7 +12,7 @@ kettle.loadTestingSupport();
 require("gpii-express");
 gpii.express.loadTestingSupport();
 
-require("./pouch-config");
+require("../pouch-config");
 
 fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
     gradeNames: ["gpii.test.pouch.caseHolder"],

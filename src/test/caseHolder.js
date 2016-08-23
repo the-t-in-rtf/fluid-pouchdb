@@ -22,7 +22,7 @@ gpii.test.pouch.caseHolder.standardSequenceEnd = [
     },
     {
         event:    "{testEnvironment}.events.onCleanupComplete",
-        listener: "console.log",
+        listener: "fluid.log",
         args:     ["Database cleanup complete..."]
     }
 ];

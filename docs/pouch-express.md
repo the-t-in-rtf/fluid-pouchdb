@@ -22,7 +22,8 @@ options.
 The `databases` option is a hash, keyed by database name.  Each database may optionally contain a `data` element, which
 is a string or an array of strings that represents the path to a JSON file (see below for the formats supported).  A
 path can be the full path to a file on the local machine, or can be a package-relative path, such as `%my-package/tests/data/users.json`.
-Here is an example of a `databases` option:
+
+Here is an example `databases` option that demonstrates all variations:
 
 ```
 databases: {
@@ -30,6 +31,17 @@ databases: {
     packageRelative: { data: "%my-package/tests/data/file.json" },
     array: {
         data: [ "%my-other-package/tests/data/file1.json", "%my-other-package/tests/data/file2.json"]
+    },
+    withCustomOptions: {
+        dbOptions: {
+            autoCompaction: true
+        }
+    },
+    withCustomOptionsAndData: {
+        data: "%my-package/tests/data/file.json",
+        dbOptions: {
+            autoCompaction: true
+        }
     },
     empty: {} // Will be created, but without any data
 }
@@ -41,11 +53,6 @@ databases: {
 
 This invoker is called when the `onCleanup` event is fired, which should indicate that it is time to remove any existing
 data.  This grade provides only a stub, implementations are expected to override it with their own invoker.
-
-### `{that}.initDb(dbKey, dbOptions)`
-* `dbKey {String}`: The name of the database we are creating.
-* `dbOptions {Object}`: The configuration options for the database we are creating.  This will typically be either a [`levelup`](https://github.com/Level/levelup#options) (filesystem) or [`memdown`](https://github.com/Level/memdown) (in-memory) database.
-* Returns: A `Promise` that will be resolved once the database has been initialized.
 
 ### `{that}.initDbs()`
 * Returns: A `Promise` that will be resolved once all databases have been initialized.
@@ -90,40 +97,6 @@ data.  Removes the full contents of `options.dbPath` (see above).
 
 Initialize all of the databases configured in `options.databases` (see above).
 
-
-# `gpii.pouch.express.inMemory`
-
-A component which is configured to store data in-memory rather than on the filesystem.
-
-## Component Options
-
-This grade does not have any unique configuration options beyond those provided by `gpii.pouch.express.base`
-
-## Component Invokers
-
-### `{that}.cleanup()`
-* Returns: A `Promise` that will be resolved once cleanup is complete.
-
-This invoker is called when the `onCleanup` event is fired, which should indicate that it is time to remove any existing
-data.  Calls each database's `destroy` method and clears `memdown`'s cache.  Most tests will use the standard caseHolder
-(see [the test docs for this package](tests.md)), which will fire `onCleanup` and then listen for `onCleanupComplete`.
-
-### `{that}.initDbs()`
-* Returns: A `Promise` that will be resolved once all databases have been initialized.
-
-Initialize all of the databases configured in `options.databases` (see above).
-
-## Component Invokers
-
-### `{that}.initDb(dbKey, dbOptions)`
-* `dbKey {String}`: The name of the database we are creating.
-* `dbOptions {Object}`: The configuration options for the database we are creating.  Check the [`levelup` documentation](https://github.com/Level/levelup#options) for details.
-* Returns: A `Promise` that will be resolved once the database has been initialized.
-
-This invoker overrides the default `initDb` invoker and adds a check to confirm whether the database has already been populated.  If
-the database already exists, it will be left alone.  If it does not already exist, it will be created and its data
-will be loaded as outlined above.
-
 # Using these grades in [Fluid IoC Tests](http://docs.fluidproject.org/infusion/development/IoCTestingFramework.html).
 
 There are convenience grades and helper functions that make it easier to use `gpii.pouch` in Fluid IoC tests.  Please
@@ -154,22 +127,3 @@ as shown in this example:
     my.pouch.server.grade();
     ```
 
-# Supported data file formats
-
-There are two supported JSON file formats.  The first is simply an array of records, as in the following example:
-
-```
-[{ "name": "apple", "color": "red"}, { "name": "banana", "color": "yellow" }]
-```
-
-The second format is the same as used with [the CouchDB bulk document API](https://wiki.apache.org/couchdb/HTTP_Bulk_Document_API#Modify_Multiple_Documents_With_a_Single_Request).
-Here's an example:
-
-```
-{
-  "docs": [ { "_id": "myId", "foo": "bar"} ]
-}
-```
-
-In both formats, an `_id` variable is optional, but if supplied, the value must be unique across all of the supplied
-data files.

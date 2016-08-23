@@ -16,7 +16,7 @@ fluid.registerNamespace("gpii.pouch");
 
 gpii.pouch.init = function (that) {
     that.pouchDb = new PouchDB(that.options.dbOptions);
-    fluid.log("Pouch instance `" + that.id + "` created...");
+    // fluid.log("Pouch instance `" + that.options.dbOptions.name + "` (" + that.id + ") initialized...");
 };
 
 /**
@@ -53,10 +53,8 @@ gpii.pouch.callPouchFunction = function (that, fnName, fnArgs, eventName) {
 
 fluid.defaults("gpii.pouch", {
     gradeNames: ["fluid.component"],
-    changeOptions: {
-        live: true
-    },
     dbOptions: {
+        skip_setup: true
     },
     events: {
         onAllDocsComplete: null,
@@ -139,7 +137,7 @@ fluid.defaults("gpii.pouch", {
         }
     },
     listeners: {
-        "onCreate.init": {
+        "onCreate.initPouch": {
             funcName: "gpii.pouch.init",
             args:     ["{that}"]
         }

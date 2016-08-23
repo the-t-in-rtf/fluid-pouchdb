@@ -9,12 +9,7 @@ var fluid  = require("infusion");
 fluid.setLogging(true);
 var gpii   = fluid.registerNamespace("gpii");
 
-var os     = require("os");
-var path   = require("path");
-var dbPath = path.resolve(os.tmpdir(), "persistent") + "/";
-
-require("../../");
-
+require("../../../");
 gpii.pouch.loadTestingSupport();
 
 var jqUnit = require("node-jqunit");
@@ -146,19 +141,10 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder.shouldNotHaveRecord", {
 });
 
 fluid.defaults("gpii.tests.pouch.persistent.environment", {
-    gradeNames: ["gpii.test.pouch.environment"],
+    gradeNames: ["gpii.test.pouch.environment.persistent"],
     port:       6798,
     pouchConfig: {
         databases: { sample:  {} }
-    },
-    distributeOptions: {
-        record: dbPath,
-        target: "{that gpii.pouch.express}.options.dbPath"
-    },
-    components: {
-        testCaseHolder: {
-            type: "gpii.tests.pouch.persistent.caseHolder.insertRecord"
-        }
     }
 });
 

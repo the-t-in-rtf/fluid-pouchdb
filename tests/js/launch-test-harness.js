@@ -9,7 +9,7 @@ require("./pouch-config.js");
 
 fluid.setLogging(true);
 
-gpii.pouch.harness({
+gpii.test.pouch.harness.persistent({
     port: 6789,
     pouchConfig: {
         databases: gpii.tests.pouch.config.databases
@@ -23,7 +23,7 @@ gpii.pouch.harness({
     listeners: {
         "onCreate.log": {
             funcName: "fluid.log",
-            args: ["dbPath:", "{that}.express.expressPouch.options.dbPath"]
+            args: ["baseDir:", "{that}.express.expressPouch.options.baseDir"]
         }
     }
 });

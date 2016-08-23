@@ -10,10 +10,54 @@ var fluid = require("infusion");
 require("gpii-express");
 fluid.require("%gpii-pouchdb");
 
+var path = require("path");
+var os   = require("os");
+
+var defaultDir = path.resolve(os.tmpdir(), "gpii-pouch-express-persistent");
+
 fluid.defaults("gpii.test.pouch.harness", {
-    gradeNames: ["gpii.pouch.harness"],
-    distributeOptions: {
-        record: ["gpii.pouch.express.singleUse"],
-        target: "{that gpii.pouch.express}.options.gradeNames"
+    gradeNames: ["fluid.component"],
+    events: {
+        expressStarted: null,
+        pouchStarted:   null,
+        onReady: {
+            events: {
+                expressStarted: "expressStarted",
+                pouchStarted:   "pouchStarted"
+            }
+        }
+    },
+    components: {
+        express: {
+            type: "gpii.express",
+            options: {
+                "port" : "{harness}.options.port",
+                listeners: {
+                    onStarted: "{harness}.events.expressStarted.fire"
+                },
+                components: {
+                    expressPouch: {
+                        type: "gpii.pouch.express",
+                        options: {
+                            path: "/",
+                            listeners: {
+                                onStarted: "{harness}.events.pouchStarted.fire"
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+});
+
+fluid.defaults("gpii.test.pouch.harness.persistent", {
+    gradeNames: ["gpii.test.pouch.harness"],
+    baseDir:    defaultDir,
+    distributeOptions: [
+        {
+            source: "{that}.options.baseDir",
+            target: "{that gpii.pouch.express}.options.baseDir"
+        }
+    ]
 });

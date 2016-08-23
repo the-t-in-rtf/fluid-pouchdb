@@ -3,7 +3,5 @@
 var fluid = require("infusion");
 fluid.setLogging(false);
 
-require("./basic-tests");
-require("./reload-tests");
-require("./persistence-tests");
+require("./pouchdb-express-tests/");
 require("./pouchdb-component-tests/");

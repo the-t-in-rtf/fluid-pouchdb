@@ -23,22 +23,47 @@ var fluid = require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
 fluid.registerNamespace("gpii.pouch.express");
 
-// TODO:  Isolate this node-specific set of requires from a base "common" grade
 var os             = require("os");
-var path           = require("path");
 var fs             = require("fs");
 var rimraf         = require("rimraf");
 var memdown        = require("memdown");
 
+// Needs to exist for our expanders, not called directly in code.
+var path           = require("path"); // eslint-disable-line
+
 var expressPouchdb = require("express-pouchdb");
 
-// TODO:  This should be part of the "base" grade
-// TODO:  This should be a client-first include, ala `PouchDB = PouchDB || require("pouchdb")`
 var PouchDB        = require("pouchdb");
 
 // The cleanup cycle used by express-pouchdb leaves a shedload of listeners around.  To avoid these, we disable the
 // event listener warnings, but only for PouchDB itself.
 PouchDB.setMaxListeners(250);
+
+/**
+ * A static function to expand all variations on the definitions used in `options.databases`:
+ *
+ *   1. dbName: { data: "singlePath"} // One single file to be loaded, long notation.  No custom options.
+ *   2. dbName: { data: ["path1", "path2"] } // Multiple files to be loaded, long notation, no custom options.
+ *   3. dbName: { data: ["path1", "path2"], dbOptions: { db: memdown } } // Long notation, including additional custom database options.
+ *   4. dbName: { dbOptions: { db: memdown} } // Long notation, no data, but with custom database options.
+ *   5. dbName: {} // No data, no custom options.
+ *
+ * @param dbDef - The definition of a single database in any of the above formats.
+ * @returns {Object} - An expanded record in Object form.
+ *
+ */
+gpii.pouch.express.expandDbDef = function (dbDef) {
+    var expandedDef = {};
+    if (typeof dbDef === "object" && dbDef !== null && dbDef !== undefined) {
+        expandedDef = dbDef;
+        if (expandedDef.data) {
+            expandedDef.data = gpii.pouch.node.expandPath(expandedDef.data);
+        }
+    }
+
+    return expandedDef;
+};
+
 
 /**
  *
@@ -49,12 +74,13 @@ PouchDB.setMaxListeners(250);
  *
  */
 gpii.pouch.express.initExpressPouchdb = function (that) {
-    // Create any of our directories that don't already exist
-    fluid.each([that.options.baseDir, that.options.dbPath], function (path) {
-        if (path && !fs.existsSync(path)) {
-            fs.mkdirSync(path);
-        }
-    });
+    fluid.log("express pouchdb instance '", that.id, "' initalizing...");
+
+    // Create our base directory if it doesn't already exist.
+    if (that.options.baseDir && !fs.existsSync(that.options.baseDir)) {
+        fluid.log("Creating directory '", that.options.baseDir, "' for express pouchdb instance '", that.id, "'...");
+        fs.mkdirSync(that.options.baseDir);
+    }
 
     // There are unfortunately options that can only be configured via a configuration file.
     //
@@ -77,11 +103,18 @@ gpii.pouch.express.initExpressPouchdb = function (that) {
  *
  */
 gpii.pouch.express.initDbs = function (that) {
+    // We create our components programatically because we need:
+    //
+    //   1. To be notified when all databases are ready for use.  We do this with a `fluid.promise.sequence`.
+    //   2. A way to clean up each database later on.  We do this by retaining a list of database instances.
+    //   3. A way to know when all of them have been destroyed.  We do this with another `sequence` in our cleanup invoker (see below).
+    //
+    // I can think of ways to accomplish #2 with dynamic components, but not 1 and 3.
+    // TODO: Review with Antranig.
+
     var promises = [];
-    fluid.each(that.options.databases, function (dbConfig, key) {
-        var initPromise = that.initDb(key, dbConfig);
-        promises.push(initPromise);
-        return initPromise;
+    fluid.each(that.options.databases, function (dbOptions, dbKey) {
+        promises.push(gpii.pouch.express.initDb(that, dbKey, dbOptions));
     });
 
     var sequence = fluid.promise.sequence(promises);
@@ -96,32 +129,34 @@ gpii.pouch.express.initDbs = function (that) {
  *
  * Initialize a single database instance.
  *
- * @param that - The component itself.
- * @param dbKey {String} - The name of the database we are creating
- * @param dbOptions {Object} - The configuration options for the individual database.
- * @returns {Promise} - A promise which will be resolved when this database has been initialized.
- *
+ * @param that - The component itself
+ * @param dbKey {String} - The database name.
+ * @param dbDef {Object} - Our convention for representing multiple databases.  See the docs for examples.
+ * @returns {Promise} A promise that will be resolved with the database is initialized.
  */
-gpii.pouch.express.initDb = function (that, dbKey, dbOptions) {
-    var promises = [];
-
-    that.databaseInstances[dbKey] = that.PouchDB(dbKey);
-
-    if (dbOptions.data) {
-        var dataSetPaths = fluid.makeArray(dbOptions.data);
-        fluid.each(dataSetPaths, function (dataSetPath) {
-            var data = fluid.require(dataSetPath);
-            var bulkDocsPromise = that.databaseInstances[dbKey].bulkDocs(data);
-            bulkDocsPromise["catch"](function (error) {
-                fluid.fail("Error initializing database '" + dbKey + "'...", error);
-            });
-
-            promises.push(bulkDocsPromise);
-            return bulkDocsPromise;
-        });
+gpii.pouch.express.initDb = function (that, dbKey, dbDef) {
+    var expandedDef = gpii.pouch.express.expandDbDef(dbDef);
+    var initPromise = fluid.promise();
+    var dbOptions = expandedDef.dbOptions ? fluid.merge(that.options.dbOptions, expandedDef.dbOptions) : fluid.copy(that.options.dbOptions);
+    dbOptions.name = dbKey;
+    var dbComponentOptions = {
+        gradeNames: that.options.pouchGradeNames,
+        dbOptions: dbOptions,
+        baseDir: that.options.baseDir,
+        listeners: {
+            "onDataLoaded.resolvePromise": {
+                func: initPromise.resolve
+            }
+        }
+    };
+    if (expandedDef.data) {
+        dbComponentOptions.dbPaths = expandedDef.data;
     }
 
-    return fluid.promise.sequence(promises);
+    var dbComponent = fluid.component(dbComponentOptions);
+    that.databaseInstances[dbKey] = dbComponent;
+
+    return initPromise;
 };
 
 /**
@@ -135,43 +170,52 @@ gpii.pouch.express.initDb = function (that, dbKey, dbOptions) {
  *
  */
 gpii.pouch.express.middleware = function (that, req, res, next) {
+    // fluid.log("express pouchdb instance '", that.id, "' responding...")
     that.expressPouchdb(req, res, next);
 };
 
 /**
  *
- * Clean up the filesystem content in `options.dbPath`, completely removing all data.
+ * Clean up any instance of `gpii.pouchdb` that we're aware of.  Then, to get rid of databases created by
+ * express-pouchdb, complete remove all data in `options.baseDir`.
  *
- * @param that
- * @returns {*}
+ * @param that - The component itself.
+ * @returns {Promise} - A promise that will be resolved when cleanup is complete.
+ *
  */
 gpii.pouch.express.cleanup = function (that) {
-    var promise = fluid.promise();
-    promise.then(that.events.onCleanupComplete.fire);
+    // fluid.log("express pouchdb instance '", that.id, "' cleaning up...");
+    var promises = [];
 
-    // We cannot simply call db.destroy() on all databases, because express-pouchdb creates a few database on its own
-    // and gives us no way to clean those up.
-    //
-    // The surest approach is to completely remove the underlying directory.  However, express-pouchdb will have one
-    // or more of those files open while it's running.
-    //
-    // Since express-pouchdb does not provide any means to kill itself, we tell it to use an alternate instance of pouch
-    // that stores its content in memory.  That way we can remove the content from the "real" directory.
-    // TODO: Review with Antranig.
+    fluid.each(that.databaseInstances, function (databaseInstance) {
+        promises.push(databaseInstance.destroyPouch());
+    });
 
-    var tmpPouchDB = PouchDB.defaults({ db: memdown});
-    that.expressPouchdb.setPouchDB(tmpPouchDB).then(function () {
-        rimraf(that.options.dbPath, function (error) {
-            if (error) {
-                promise.reject(error);
-            }
-            else {
-                promise.resolve(true);
-            }
+    var sequence = fluid.promise.sequence(promises);
+    sequence.then(function () {
+        // We cannot simply call db.destroy() on all databases, because express-pouchdb creates a few databases on its own
+        // and gives us no way to clean those up.
+        //
+        // The surest approach is to completely remove the underlying directory.  However, express-pouchdb will have one
+        // or more of those files open while it's running.
+        //
+        // Since express-pouchdb does not provide any means to kill itself, we tell it to use an alternate instance of pouch
+        // that stores its content in memory.  That way we can remove the content from the "real" directory.
+        // TODO: Review with Antranig.
+        var tmpPouchDB = PouchDB.defaults({ db: memdown});
+        that.expressPouchdb.setPouchDB(tmpPouchDB).then(function () {
+            rimraf(that.options.baseDir, function (error) {
+                if (error) {
+                    fluid.fail(error);
+                }
+                else {
+                    that.events.onCleanupComplete.fire()
+                }
+            });
         });
     });
 
-    return promise;
+    return sequence;
 };
 
 fluid.defaults("gpii.pouch.express.base", {
@@ -179,16 +223,10 @@ fluid.defaults("gpii.pouch.express.base", {
     method: "use", // We have to support all HTTP methods, as does our underlying router.
     path: "/",
     namespace: "pouch-express", // Namespace to allow other routers to put themselves in the chain before or after us.
-    /*
-     var expressPouchBasePath   = path.resolve(os.tmpdir(), "expressPouchdb");
-     var expressPouchConfigPath = path.resolve(expressPouchBasePath, "config.json");
-     var pouchLogPath           = path.resolve(expressPouchBasePath, "log.txt");
-
-     */
     tmpDir:  os.tmpdir(),
     baseDir: "@expand:path.resolve({that}.options.tmpDir, {that}.id)",
     expressPouchConfigFilename: "config.json",
-    expressPouchConfigPath:     "@expand:path.resolve({that}.options.tmpDir, {that}.options.expressPouchConfigFilename)",
+    expressPouchConfigPath:     "@expand:path.resolve({that}.options.baseDir, {that}.options.expressPouchConfigFilename)",
     expressPouchLogFilename:    "log.txt",
     expressPouchConfig: {
         log: {
@@ -203,6 +241,7 @@ fluid.defaults("gpii.pouch.express.base", {
     members: {
         databaseInstances: {} // The actual PouchDB databases
     },
+    pouchGradeNames: ["gpii.pouch.node.base"],
     databases: {}, // The configuration we will use to create the required databases on startup.
     listeners: {
         "onCreate.initExpressPouchdb": {
@@ -215,63 +254,30 @@ fluid.defaults("gpii.pouch.express.base", {
         },
         "onCleanup.cleanup": {
             func: "{that}.cleanup"
+        },
+        "onCreate.log": {
+            funcName: "fluid.log",
+            args: ["express baseDir: '", "{that}.options.baseDir", "'..."]
         }
     },
     invokers: {
         middleware: {
             funcName: "gpii.pouch.express.middleware",
             args:     ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"] // request, response, next
-        },
-        cleanup: {
-            funcName: "fluid.notImplemented"
-        },
-        initDb: {
-            funcName: "fluid.notImplemented"
-        },
-        initDbs: {
-            funcName: "fluid.notImplemented"
         }
     }
 });
 
-/**
- *
- * Only initialize databases that do not already exist.  For filesystem-backed databases only.
- *
- * @param that - The component itself.
- * @param dbKey {String} - The name of the database we are creating
- * @param dbOptions {Object} - The configuration options for the individual database.
- * @returns {Promise} - A promise which will be resolved when this database has been initialized.
- *
- */
-gpii.pouch.express.initOnlyOnce = function (that, dbKey, dbOptions) {
-    var dbPath = path.resolve(that.options.dbPath, that.options.dbPrefix + dbKey);
-    if (fs.existsSync(dbPath)) {
-        fluid.log("Database '" + dbKey + "' found, it will not be created...");
-    }
-    else {
-        return gpii.pouch.express.initDb(that, dbKey, dbOptions);
-    }
-};
-
 fluid.defaults("gpii.pouch.express", {
     gradeNames: ["gpii.pouch.express.base"],
-    dbPath:     "{that}.options.baseDir",
-    dbPrefix:   "gpii-pouchdb-",
-    // Options to use when creating individual databases.
+    pouchGradeNames: ["gpii.pouch.node"],
     dbOptions: {
-        auto_compaction: true,
-        // The trailing slash and prefix are required to ensure that we end up with /path/to/dir/dbname instead of /path/to/dirdbname.
-        prefix: "@expand:path.resolve({that}.options.dbPath, {that}.options.dbPrefix)"
+        prefix: "@expand:gpii.pouch.node.makeSafePrefix({that}.options.baseDir)"
     },
     invokers: {
         cleanup: {
             funcName: "gpii.pouch.express.cleanup",
             args:     ["{that}"]
-        },
-        initDb: {
-            funcName: "gpii.pouch.express.initOnlyOnce",
-            args:     ["{that}", "{arguments}.0", "{arguments}.1"]
         },
         initDbs: {
             funcName: "gpii.pouch.express.initDbs",

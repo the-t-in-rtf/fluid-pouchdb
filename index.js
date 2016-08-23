@@ -7,7 +7,6 @@ fluid.module.register("gpii-pouchdb", __dirname, require);
 require("./src/js/pouchdb-common");
 require("./src/js/pouchdb-node");
 require("./src/js/pouch-express");
-require("./src/js/pouch-harness");
 
 fluid.registerNamespace("gpii.pouch");
 
