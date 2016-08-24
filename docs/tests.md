@@ -70,10 +70,10 @@ An extension of `gpii.tests.pouch.environment`, which allows for cases in which 
 
 In addition to the options supported by `gpii.test.pouch.environment`, this grade has the following unique options:
 
-| Option            | Type       | Description |
-| ----------------- | ---------- | ----------- |
+| Option    | Type       | Description |
+| --------- | ---------- | ----------- |
 | `baseDir` | `{String}` | A full or package-relative path to the directory we should use to store our express-pouchdb configuration files (and its database content). Defaults to a subdirectory named `gpii-pouch-express-persistent` under `os.tmpDir`.|
-| `dbPath` | `{String}` | A full or package-relative path to the directory that should contain our content. Defaults to a subdirectory named `gpii-pouch-express-persistent` under `os.tmpDir`.|
+| `dbPath`  | `{String}` | A full or package-relative path to the directory that should contain our content. Defaults to a subdirectory named `gpii-pouch-express-persistent` under `os.tmpDir`.|
 
 # `gpii.test.pouch.harness`
 
