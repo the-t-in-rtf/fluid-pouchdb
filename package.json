@@ -12,9 +12,9 @@
   "dependencies": {
     "express": "4.14.0",
     "express-pouchdb": "1.0.7",
-    "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#bf17c0517d10902f61aa2ba491f29eaef49cf1be",
+    "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#baa1558d22ee7abcb6d6b6410af7cc95693f1b80",
     "infusion": "2.0.0-dev.20160519T222603Z.754d2c6",
-    "istanbul": "0.4.4",
+    "istanbul": "0.4.5",
     "lie": "3.1.0",
     "memdown": "1.2.0",
     "pouchdb": "5.4.5",
@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "grunt": "1.0.1",
-    "fluid-grunt-eslint": "18.1.1",
+    "fluid-grunt-eslint": "18.1.2",
     "grunt-jsonlint": "1.1.0",
     "kettle": "1.1.0",
     "node-jqunit": "1.1.4",
