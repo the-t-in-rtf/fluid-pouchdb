@@ -2,7 +2,7 @@
 var fluid = require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
 
-require("./test-harness");
+require("../js/harness");
 
 fluid.registerNamespace("gpii.test.pouch.environment");
 
@@ -26,7 +26,7 @@ fluid.defaults("gpii.test.pouch.environment", {
         },
         {
             source: "{that}.options.harnessGrades",
-            target: "{that > gpii.test.pouch.harness}.options.gradeNames"
+            target: "{that > gpii.pouch.harness}.options.gradeNames"
         }
     ],
     events: {
@@ -48,7 +48,7 @@ fluid.defaults("gpii.test.pouch.environment", {
     },
     components: {
         harness: {
-            type: "gpii.test.pouch.harness",
+            type: "gpii.pouch.harness",
             createOnEvent: "constructFixtures",
             options: {
                 port:       "{testEnvironment}.options.port",
@@ -81,7 +81,7 @@ fluid.defaults("gpii.test.pouch.environment.persistent", {
     gradeNames: ["gpii.test.pouch.environment"],
     components: {
         harness: {
-            type: "gpii.test.pouch.harness.persistent"
+            type: "gpii.pouch.harness.persistent"
         }
     }
 });

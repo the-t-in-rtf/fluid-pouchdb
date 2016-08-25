@@ -34,7 +34,7 @@ instead of `options.modules`.  See [the `gpii-express` documentation](https://gi
 | ----------------- | ---------- | ----------- |
 | `port` (required) | `{Number}` | The port on which the test harness will run (see below). |
 | `pouchConfig`     | `{Object}` | Configuration options to pass to our `gpii.pouch` instance (see [the `gpii.pouch` docs](pouch-component.md) for supported options). |
-| `harnessGrades`   | `{Array}`  | An array of gradeNames to add to the `gpii.test.pouch.harness` instance constructed by the test environment. See example below. |
+| `harnessGrades`   | `{Array}`  | An array of gradeNames to add to the `gpii.pouch.harness` instance constructed by the test environment. See example below. |
 
 The `harnessGrades` option is intended to help you avoid having to pass in deep configuration to the harness instance
 used by the test environment.  Here is an example of how you might use this functionality:
@@ -74,16 +74,3 @@ In addition to the options supported by `gpii.test.pouch.environment`, this grad
 | --------- | ---------- | ----------- |
 | `baseDir` | `{String}` | A full or package-relative path to the directory we should use to store our express-pouchdb configuration files (and its database content). Defaults to a subdirectory named `gpii-pouch-express-persistent` under `os.tmpDir`.|
 | `dbPath`  | `{String}` | A full or package-relative path to the directory that should contain our content. Defaults to a subdirectory named `gpii-pouch-express-persistent` under `os.tmpDir`.|
-
-# `gpii.test.pouch.harness`
-
-An instance of `gpii.express` which has an instance of `gpii.pouch` wired into it.  Provides a working HTTP REST API
-equivalent to CouchDB.  Although you will generally use this in combination with the test enviroment above, it can
-also be used on its own. As an example, the file `tests/js/launch-test-test-harness.js` included with this package can be
-used to launch a standalone test instance of this package for manual QA.
-
-## Component Options
-
-| Option            | Type       | Description |
-| ----------------- | ---------- | ----------- |
-| `port` (required) | `{Number}` | The port on which the test harness will run. |

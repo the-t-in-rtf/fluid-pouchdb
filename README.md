@@ -8,4 +8,5 @@ For more information, see the documentation:
 
 # [`gpii.pouch`](./docs/pouchdb.md) - A wrapper around individual PouchDB instances.
 # [`gpii.pouch.express`](./docs/pouch-express.md) - A wrapper around an instance of express-pouchdb.
+# [`gpii.pouch.harness`](./docs/harness.md) - An instance of `gpii.express` with a full-configured `gpii.pouch.express` subcomponent wired in.
 # [Test fixtures and functions provided by this package.](./docs/tests.md)

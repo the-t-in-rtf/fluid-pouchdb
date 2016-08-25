@@ -15,7 +15,7 @@ var os   = require("os");
 
 var defaultDir = path.resolve(os.tmpdir(), "gpii-pouch-express-persistent");
 
-fluid.defaults("gpii.test.pouch.harness", {
+fluid.defaults("gpii.pouch.harness", {
     gradeNames: ["fluid.component"],
     events: {
         expressStarted: null,
@@ -51,8 +51,8 @@ fluid.defaults("gpii.test.pouch.harness", {
     }
 });
 
-fluid.defaults("gpii.test.pouch.harness.persistent", {
-    gradeNames: ["gpii.test.pouch.harness"],
+fluid.defaults("gpii.pouch.harness.persistent", {
+    gradeNames: ["gpii.pouch.harness"],
     baseDir:    defaultDir,
     distributeOptions: [
         {
