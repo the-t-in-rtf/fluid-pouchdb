@@ -140,6 +140,7 @@ gpii.pouch.express.initDb = function (that, dbKey, dbDef) {
     var dbOptions = expandedDef.dbOptions ? fluid.merge(that.options.dbOptions, expandedDef.dbOptions) : fluid.copy(that.options.dbOptions);
     dbOptions.name = dbKey;
     var dbComponentOptions = {
+        type: "fluid.component",
         gradeNames: that.options.pouchGradeNames,
         dbOptions: dbOptions,
         baseDir: that.options.baseDir,
@@ -153,7 +154,7 @@ gpii.pouch.express.initDb = function (that, dbKey, dbDef) {
         dbComponentOptions.dbPaths = expandedDef.data;
     }
 
-    var dbComponent = fluid.component(dbComponentOptions);
+    var dbComponent = fluid.construct("gpii_pouch_" + that.id + "_" + dbKey, dbComponentOptions);
     that.databaseInstances[dbKey] = dbComponent;
 
     return initPromise;
