@@ -15,7 +15,10 @@ var gpii  = fluid.registerNamespace("gpii");
 
 fluid.registerNamespace("gpii.test.pouch.caseHolder");
 
-gpii.test.pouch.caseHolder.standardSequenceEnd = [
+// A series of test sequence steps that will clear out any existing data.  Designed for use with caseHolders that extend
+// gpii.test.express.caseHolder, which have the ability to wire "start" and "end" sequence steps before and after each
+// test's "body".
+gpii.test.pouch.caseHolder.cleanupSequence = [
     {
         func: "{testEnvironment}.events.onCleanup.fire",
         args: []
@@ -33,5 +36,5 @@ fluid.defaults("gpii.test.pouch.caseHolder.base", {
 
 fluid.defaults("gpii.test.pouch.caseHolder", {
     gradeNames: ["gpii.test.pouch.caseHolder.base"],
-    sequenceEnd: gpii.test.pouch.caseHolder.standardSequenceEnd
+    sequenceEnd: gpii.test.pouch.caseHolder.cleanupSequence
 });
