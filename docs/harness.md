@@ -22,5 +22,5 @@ In addition to the options for `gpii.pouch.harness`, this grade has the followin
 
 | Option               | Type       | Description |
 | -------------------- | ---------- | ----------- |
-| `baseDir` (required) | `{Number}` | A full or package-relative path to the base directory in which all database content, configuration files, and logs will be stored. |
+| `baseDir` (required) | `{String}` | A full or package-relative path to the base directory in which all database content, configuration files, and logs will be stored. |
 

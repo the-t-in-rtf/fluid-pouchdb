@@ -49,9 +49,9 @@ databases: {
 ## Component Invokers
 
 ### `{that}.cleanup()`
-* Returns: A `Promise` that will be resolved once cleanup is complete (the `onCleanupComplete` event should also be fired.
+* Returns: A `Promise` that will be resolved once cleanup is complete (the `onCleanupComplete` event will also be fired).
 
-This invoker is called when the `onCleanup` event is fired, which should indicate that it is time to remove any existing
+This invoker is called when the `onCleanup` event is fired, which indicates that it is time to remove any existing
 data.  This grade provides only a stub, implementations are expected to override it with their own invoker.
 
 ### `{that}.initDbs()`
@@ -62,8 +62,8 @@ whether we are working with filesystem or in-memory storage.  The base package p
 overriden with another invoker.
 
 ### `{that}.middleware(request, response, next)`
-* `request`: The [request object](http://expressjs.com/en/api.html#req) provided by Express, which wraps node's [`http.incomingMessage`](https://nodejs.org/api/http.html#http_class_http_incomingmessage).
-* `response`: The [response object](http://expressjs.com/en/api.html#res) provided by Express, which wraps node's [`http.ServerResponse`](https://nodejs.org/api/http.html#http_class_http_serverresponse).
+* `request`: The [request object](http://expressjs.com/en/api.html#req) provided by Express, which is an instance of node's [`http.incomingMessage`](https://nodejs.org/api/http.html#http_class_http_incomingmessage).
+* `response`: The [response object](http://expressjs.com/en/api.html#res) provided by Express, which is an instance of node's [`http.ServerResponse`](https://nodejs.org/api/http.html#http_class_http_serverresponse).
 * `next`: The next Express middleware or router function in the chain.
 * Returns: Nothing.
 
@@ -80,16 +80,16 @@ In addition to the above component options, the `gpii.pouch.express` grade suppo
 
 | Option                   | Type       | Description |
 | ------------------------ | ---------- | ----------- |
-| `dbPath`  | `{String}` | A full or package-relative path to the directory in which database content should be stored.  By default, a subdirectory with this component's ID is created in `os.tmpDir()`, and content is stored there. |
+| `dbPath`  | `{String}` | A full or package-relative path to the directory in which database content will be stored.  By default, a subdirectory with this component's ID is created in `os.tmpDir()`, and content is stored there. |
 
 If it does not already exist, this grade will create a directory at `options.dbPath` when it is created.
 
 ## Component Invokers
 
 ### `{that}.cleanup()`
-* Returns: A `Promise` that will be resolved once cleanup is complete (the `onCleanupComplete` event should also be fired.
+* Returns: A `Promise` that will be resolved once cleanup is complete (the `onCleanupComplete` event will also be fired).
 
-This invoker is called when the `onCleanup` event is fired, which should indicate that it is time to remove any existing
+This invoker is called when the `onCleanup` event is fired, which indicates that it is time to remove any existing
 data.  Removes the full contents of `options.dbPath` (see above).
 
 ### `{that}.initDbs()`
