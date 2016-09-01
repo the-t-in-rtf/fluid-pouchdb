@@ -76,12 +76,3 @@ fluid.defaults("gpii.test.pouch.environment", {
         }
     }
 });
-
-fluid.defaults("gpii.test.pouch.environment.persistent", {
-    gradeNames: ["gpii.test.pouch.environment"],
-    components: {
-        harness: {
-            type: "gpii.pouch.harness.persistent"
-        }
-    }
-});

@@ -141,7 +141,12 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder.shouldNotHaveRecord", {
 });
 
 fluid.defaults("gpii.tests.pouch.persistent.environment", {
-    gradeNames: ["gpii.test.pouch.environment.persistent"],
+    gradeNames: ["gpii.test.pouch.environment"],
+    components: {
+        harness: {
+            type: "gpii.pouch.harness.persistent"
+        }
+    },
     port:       6798,
     pouchConfig: {
         databases: { sample:  {} }
