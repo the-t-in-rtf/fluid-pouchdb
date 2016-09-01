@@ -12,7 +12,8 @@ if (!gpii.pouch) {
 
 fluid.registerNamespace("gpii.tests.pouchdb.component.common");
 
-// A simple function to test support for "map" functions using the query method.
+// A CouchDB "map" function to test the `query` method.  The view only returns records that have a `color` value.
+// See http://wiki.apache.org/couchdb/Introduction_to_CouchDB_views#Map_Functions
 /* globals emit */
 gpii.tests.pouchdb.component.common.map = function (doc) {
     if (doc.color) {
@@ -20,7 +21,8 @@ gpii.tests.pouchdb.component.common.map = function (doc) {
     }
 };
 
-// A simple function to test the support for "reduce" functions using the query method.
+// A CouchDB "reduce" function to test the query method.  Generates a count of records by `color` value.
+// See: http://wiki.apache.org/couchdb/Introduction_to_CouchDB_views#Reduce_Functions
 gpii.tests.pouchdb.component.common.reduce = function (keys, values, rereduce) {
     var colorSummary = {};
     if (rereduce) {
