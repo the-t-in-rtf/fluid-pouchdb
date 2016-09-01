@@ -2,4 +2,3 @@
 /* eslint-env node */
 "use strict";
 require("./pouchdb-node-tests");
-require("./pouchdb-node-static-function-tests");

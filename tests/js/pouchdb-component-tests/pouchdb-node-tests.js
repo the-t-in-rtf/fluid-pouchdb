@@ -30,20 +30,6 @@ fluid.defaults("gpii.tests.pouchdb.component.node.caseHolder", {
                 ]
             },
             {
-                name: "Confirm that the `onDataLoaded` event is fired if we pass an empty object...",
-                sequence: [
-                    {
-                        func: "{testEnvironment}.pouchDb.loadData",
-                        args: [{}]
-                    },
-                    {
-                        event:    "{testEnvironment}.pouchDb.events.onDataLoaded",
-                        listener: "jqUnit.assert",
-                        args:    ["onDataLoaded should be fired even if we pass an empty object..."]
-                    }
-                ]
-            },
-            {
                 name: "Test loadData with a single value...",
                 sequence: [
                     {

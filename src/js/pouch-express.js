@@ -57,7 +57,7 @@ gpii.pouch.express.expandDbDef = function (dbDef) {
     if (typeof dbDef === "object" && dbDef !== null && dbDef !== undefined) {
         expandedDef = dbDef;
         if (expandedDef.data) {
-            expandedDef.data = gpii.pouch.node.expandPath(expandedDef.data);
+            expandedDef.data = fluid.makeArray(expandedDef.data);
         }
     }
 

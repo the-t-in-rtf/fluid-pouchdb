@@ -49,48 +49,24 @@ gpii.pouch.node.makeSafePrefix = function (toResolve) {
 
 /**
  *
- * Expand a single database definition to handle various "short" and "long" formats, including:
- *
- *   1. "singlePath" // One single file to be loaded.
- *   2. ["path1", "path2"] // Multiple files to be loaded.
- *   3. undefined // No data.
- *
- * @param dbPath - A `String` or `Array` representing one or more files to load (see above for the supported variations).
- * @returns {Array} An array of database paths.
- *
- */
-gpii.pouch.node.expandPath = function (dbPath) {
-    if (Array.isArray(dbPath)) {
-        return dbPath;
-    }
-    else if (typeof dbPath === "string") {
-        return [dbPath];
-    }
-
-    // If we were passed something odd, like undefined or null, return an empty array.
-    return [];
-};
-
-/**
- *
  * Load data from one or more package-relative paths..
  *
  * @param that - The component itself.
- * @param dbPath - A string or array representing data to be loaded.
+ * @param dbPaths - A string or array representing data to be loaded.
  * @returns {Promise} - A promise which will be resolved when all data has been loaded.
  *
  */
-gpii.pouch.node.loadDataFromPath = function (that, dbPath) {
+gpii.pouch.node.loadDataFromPath = function (that, dbPaths) {
     var promises = [];
 
-    var expandedPaths = gpii.pouch.node.expandPath(dbPath);
-    fluid.each(expandedPaths, function (dbPath) {
-        if (dbPath) {
-            var data = fluid.require(dbPath);
+    // This instance may not actually have any data, but it should still incidate that it has finished (not) loading data.
+    if (dbPaths !== undefined) {
+        fluid.each(fluid.makeArray(dbPaths), function (singleDbPath) {
+            var data = fluid.require(fluid.module.resolvePath(singleDbPath));
             var bulkDocsPromise = that.bulkDocs(data);
             promises.push(bulkDocsPromise);
-        }
-    });
+        });
+    }
 
     // An sequence with an empty array of promises will automatically be resolved, so we can safely use this construct.
     var sequence = fluid.promise.sequence(promises);
