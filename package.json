@@ -6,7 +6,7 @@
   "license": "BSD-3-Clause",
   "scripts": {
     "test": "npm run test:browser; npm run test:node",
-    "test:browser": "node node_modules/testem/testem.js ci",
+    "test:browser": "node node_modules/testem/testem.js ci --skip safari",
     "test:node": "node node_modules/istanbul/lib/cli.js cover tests/js/all-tests.js"
   },
   "dependencies": {
