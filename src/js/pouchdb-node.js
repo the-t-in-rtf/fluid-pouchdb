@@ -62,7 +62,7 @@ gpii.pouch.node.loadDataFromPath = function (that, dbPaths) {
     // This instance may not actually have any data, but it should still incidate that it has finished (not) loading data.
     if (dbPaths !== undefined) {
         fluid.each(fluid.makeArray(dbPaths), function (singleDbPath) {
-            var data = fluid.require(fluid.module.resolvePath(singleDbPath));
+            var data = fluid.require(singleDbPath);
             var bulkDocsPromise = that.bulkDocs(data);
             promises.push(bulkDocsPromise);
         });
