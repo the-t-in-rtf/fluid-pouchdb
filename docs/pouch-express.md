@@ -62,9 +62,9 @@ whether we are working with filesystem or in-memory storage.  The base package p
 overriden with another invoker.
 
 ### `{that}.middleware(request, response, next)`
-* `request`: The [request object](http://expressjs.com/en/api.html#req) provided by Express, which is an instance of node's [`http.incomingMessage`](https://nodejs.org/api/http.html#http_class_http_incomingmessage).
-* `response`: The [response object](http://expressjs.com/en/api.html#res) provided by Express, which is an instance of node's [`http.ServerResponse`](https://nodejs.org/api/http.html#http_class_http_serverresponse).
-* `next`: The next Express middleware or router function in the chain.
+* `request`: An object representing the individual user's request.  See [the `gpii-express` documentation](https://github.com/GPII/gpii-express/blob/master/docs/express.md#the-express-request-object) for details.
+* `response`: The response object, which can be used to send information to the requesting user.  See [the `gpii-express` documentation](https://github.com/GPII/gpii-express/blob/master/docs/express.md#the-express-response-object) for details.
+* `next`: The next Express middleware or router function in the chain.  See [the `gpii-express` documentation for details](https://github.com/GPII/gpii-express/blob/master/docs/middleware.md#what-is-middleware).
 * Returns: Nothing.
 
 Fulfills the standard contract for a `gpii.express.middleware` grade.  This invoker is backed by an instance of
