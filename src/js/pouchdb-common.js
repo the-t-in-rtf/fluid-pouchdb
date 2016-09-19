@@ -51,10 +51,66 @@ gpii.pouch.callPouchFunction = function (that, fnName, fnArgs, eventName) {
     return promise;
 };
 
+gpii.pouch.safeDestroy = function (that) {
+    var cleanupPromise = fluid.promise();
+    that.pouchDb.allDocs({ include_docs: true}, function (allDocsErr, allDocsResults) {
+        if (allDocsErr) {
+            cleanupPromise.reject(allDocsErr);
+        }
+        else {
+            if (!allDocsResults.rows || allDocsResults.rows.length === 0) {
+                cleanupPromise.resolve({ ok: true, message: that.options.messages.databaseDestroyed });
+            }
+            else {
+                var docsToDelete = fluid.transform(allDocsResults.rows, function (row) {
+                    var modifiedDoc = fluid.copy(row.doc);
+                    modifiedDoc._deleted = true;
+                    return modifiedDoc;
+                });
+
+                that.pouchDb.bulkDocs(docsToDelete, function (deleteErr, deleteResponses) {
+                    if (deleteErr) {
+                        cleanupPromise.reject(deleteErr);
+                    }
+                    else {
+                        var errors = [];
+                        fluid.each(deleteResponses, function (deleteResponse) {
+                            if (!deleteResponse.ok) {
+                                errors.push(deleteResponse);
+                            }
+                        });
+
+                        if (errors.length) {
+                            cleanupPromise.reject(errors);
+                        }
+                        else {
+                            that.pouchDb.compact(function (compactErr) {
+                                if (compactErr) {
+                                    cleanupPromise.reject(compactErr);
+                                }
+                                else {
+                                    cleanupPromise.resolve({ ok: true, message: that.options.messages.databaseDestroyed });
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }
+    });
+
+    cleanupPromise.then(that.events.onDestroyPouchComplete.fire);
+
+    return cleanupPromise;
+};
+
 fluid.defaults("gpii.pouch", {
     gradeNames: ["fluid.component"],
     dbOptions: {
         skip_setup: true
+    },
+    messages: {
+        databaseDestroyed: "All database records have been deleted."
     },
     events: {
         onAllDocsComplete: null,
@@ -92,8 +148,8 @@ fluid.defaults("gpii.pouch", {
             args: ["{that}", "compact", "{arguments}", "onCompactComplete"] // fnName, fnArgs, eventName
         },
         destroyPouch: {
-            funcName: "gpii.pouch.callPouchFunction",
-            args: ["{that}", "destroy", "{arguments}", "onDestroyPouchComplete"] // fnName, fnArgs, eventName
+            funcName: "gpii.pouch.safeDestroy",
+            args:     ["{that}"]
         },
         get: {
             funcName: "gpii.pouch.callPouchFunction",

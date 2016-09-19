@@ -25,11 +25,7 @@ fluid.registerNamespace("gpii.pouch.express");
 
 var os             = require("os");
 var fs             = require("fs");
-var rimraf         = require("rimraf");
 var memdown        = require("memdown");
-
-// Needs to exist for our expanders, not called directly in code.
-var path           = require("path"); // eslint-disable-line
 
 var expressPouchdb = require("express-pouchdb");
 
@@ -185,38 +181,17 @@ gpii.pouch.express.middleware = function (that, req, res, next) {
  *
  */
 gpii.pouch.express.cleanup = function (that) {
-    // fluid.log("express pouchdb instance '", that.id, "' cleaning up...");
-    var promises = [];
+    var tmpPouchDB = PouchDB.defaults({ db: memdown});
+    that.expressPouchdb.setPouchDB(tmpPouchDB).then(function () {
+        var cleanupPromises = [];
 
-    fluid.each(that.databaseInstances, function (databaseInstance) {
-        promises.push(databaseInstance.destroyPouch());
-    });
-
-    var sequence = fluid.promise.sequence(promises);
-    sequence.then(function () {
-        // We cannot simply call db.destroy() on all databases, because express-pouchdb creates a few databases on its own
-        // and gives us no way to clean those up.
-        //
-        // The surest approach is to completely remove the underlying directory.  However, express-pouchdb will have one
-        // or more of those files open while it's running.
-        //
-        // Since express-pouchdb does not provide any means to kill itself, we tell it to use an alternate instance of pouch
-        // that stores its content in memory.  That way we can remove the content from the "real" directory.
-        // TODO: Review with Antranig.
-        var tmpPouchDB = PouchDB.defaults({ db: memdown});
-        that.expressPouchdb.setPouchDB(tmpPouchDB).then(function () {
-            rimraf(that.options.baseDir, function (error) {
-                if (error) {
-                    fluid.fail(error);
-                }
-                else {
-                    that.events.onCleanupComplete.fire()
-                }
-            });
+        fluid.each(that.databaseInstances, function (databaseInstance) {
+            cleanupPromises.push(databaseInstance.destroyPouch());
         });
-    });
 
-    return sequence;
+        var cleanupSequence = fluid.promise.sequence(cleanupPromises);
+        cleanupSequence.then(that.events.onCleanupComplete.fire);
+    });
 };
 
 fluid.defaults("gpii.pouch.express.base", {
@@ -230,6 +205,10 @@ fluid.defaults("gpii.pouch.express.base", {
     expressPouchConfigPath:     "@expand:path.resolve({that}.options.baseDir, {that}.options.expressPouchConfigFilename)",
     expressPouchLogFilename:    "log.txt",
     expressPouchConfig: {
+        // Disable the unused changes API to avoid a leaked listener.
+        overrideMode: {
+            exclude: ["routes/changes"]
+        },
         log: {
             file: "@expand:path.resolve({that}.options.tmpDir, {that}.options.expressPouchLogFilename)"
         }
