@@ -149,11 +149,11 @@ fluid.defaults("gpii.tests.pouchdb.component.common.caseHolder", {
                 name: "Test the `PUT` method (with an ID)...",
                 sequence: [
                     {
-                        func: "{testEnvironment}.pouchDb.post",
+                        func: "{testEnvironment}.pouchDb.put",
                         args: [{ _id: "bar"}]
                     },
                     {
-                        event: "{testEnvironment}.pouchDb.events.onPostComplete",
+                        event: "{testEnvironment}.pouchDb.events.onPutComplete",
                         listener: "jqUnit.assertLeftHand",
                         args: ["The PUT should have been successful...", { ok: true, id: "bar"}, "{arguments}.0"]
                     }
