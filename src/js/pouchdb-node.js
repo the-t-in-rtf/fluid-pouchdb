@@ -9,11 +9,11 @@
 var fluid  = require("infusion");
 var gpii   = fluid.registerNamespace("gpii");
 
-var fs     = require("fs");
 var os     = require("os");
 var path   = require("path");
 
 var rimraf = require("rimraf");
+var mkdirp = require("mkdirp");
 
 require("../../");
 
@@ -31,20 +31,9 @@ gpii.pouch.node.initDir = function (that) {
 
     // fluid.log("pouch component '" , that.id, "' saving data to '", fullPath, "'...");
 
-    // TODO: Make a saner check for existing data.
-    if (fs.existsSync(that.options.baseDir)) {
-        if (fs.existsSync(fullPath)) {
-            that.hasExistingDataDir = true;
-        }
-        else {
-            that.hasExistingDataDir = false;
-            fs.mkdirSync(fullPath);
-        }
-    }
-    else {
-        that.hasExistingDataDir = false;
-        fs.mkdirSync(that.options.baseDir);
-    }
+    // Right now we have to keep this synchronous so that the ordered group of "onCreate" listeners is executed correctly.
+    // TODO: Update this to use whatever we end up calling "chained" promises.
+    mkdirp.sync(fullPath);
 };
 
 gpii.pouch.node.makeSafePrefix = function (toResolve) {
@@ -83,19 +72,27 @@ gpii.pouch.node.loadDataFromPath = function (that, dbPaths) {
 
 /**
  *
- * Only load data on startup if the database doesn't already exist.
+ * Only load data on startup if the database doesn't already have data.
  *
  * @param that - The component itself.
  *
  */
 gpii.pouch.node.loadDataIfNeeded = function (that) {
-    if (that.hasExistingDataDir) {
-        fluid.log("The data directory for this database already exists, no data will be loaded...");
-        that.events.onDataLoaded.fire(that);
-    }
-    else {
-        that.loadData(that.options.dbPaths);
-    }
+    // As this is a bit of internal housekeeping, call "info" directly to avoid firing an `onInfoComplete` function.
+    that.pouchDb.info(function (err, result) {
+        if (err) {
+            fluid.fail(err);
+        }
+        else {
+            if (result.doc_count) {
+                fluid.log("This database already has one or more records, no data will be loaded...");
+                that.events.onDataLoaded.fire(that);
+            }
+            else {
+                that.loadData(that.options.dbPaths);
+            }
+        }
+    });
 };
 
 /**
@@ -154,6 +151,7 @@ fluid.defaults("gpii.pouch.node.base", {
     },
     events: {
         onDataLoaded:null,
+        onDirExists: null,
         onReady:     null
     },
     invokers: {
