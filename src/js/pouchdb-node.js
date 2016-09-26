@@ -6,12 +6,15 @@
  */
 /* eslint-env node */
 "use strict";
-var fluid = require("infusion");
-var gpii  = fluid.registerNamespace("gpii");
+var fluid  = require("infusion");
+var gpii   = fluid.registerNamespace("gpii");
 
-var fs   = require("fs");
-var os   = require("os");
-var path = require("path");
+var fs     = require("fs");
+var os     = require("os");
+var path   = require("path");
+
+var rimraf = require("rimraf");
+
 require("../../");
 
 fluid.registerNamespace("gpii.pouch.node");
@@ -28,6 +31,7 @@ gpii.pouch.node.initDir = function (that) {
 
     // fluid.log("pouch component '" , that.id, "' saving data to '", fullPath, "'...");
 
+    // TODO: Make a saner check for existing data.
     if (fs.existsSync(that.options.baseDir)) {
         if (fs.existsSync(fullPath)) {
             that.hasExistingDataDir = true;
@@ -94,10 +98,53 @@ gpii.pouch.node.loadDataIfNeeded = function (that) {
     }
 };
 
+/**
+ *
+ * Remove all content, close, and then remove the directory content for this database.
+ *
+ * @param that
+ * @param callback
+ * @returns {*}
+ */
+gpii.pouch.node.cleanPouch = function (that, callback) {
+    var promise = fluid.promise();
+    gpii.pouch.cleanPouch(that, function (cleanupMessage) {
+        if (!cleanupMessage.ok) {
+            promise.reject(cleanupMessage);
+        }
+        else {
+            that.close().then(function (closeError) {
+                if (closeError) {
+                    promise.reject(closeError);
+                }
+                else {
+                    if (that.options.removeDirOnCleanup) {
+                        rimraf(that.options.dbOptions.prefix, function (rmDirError) {
+                            if (rmDirError) {
+                                fluid.fail(rmDirError);
+                            }
+                            else {
+                                promise.resolve({ ok: true, message: that.options.messages.databaseCleaned });
+                            }
+                        });
+                    }
+                    else {
+                        promise.resolve({ ok: true, message: that.options.messages.databaseCleaned });
+                    }
+                }
+            });
+        }
+    });
+
+    promise.then(callback);
+    return promise;
+};
+
 fluid.defaults("gpii.pouch.node.base", {
     gradeNames: ["gpii.pouch"],
     tmpDir:     os.tmpdir(),
     baseDir:    "@expand:path.resolve({that}.options.tmpDir, {that}.id)",
+    removeDirOnCleanup: true,
     // Options to use when creating individual databases.
     dbOptions: {
         auto_compaction: true,
@@ -110,6 +157,10 @@ fluid.defaults("gpii.pouch.node.base", {
         onReady:     null
     },
     invokers: {
+        cleanPouch: {
+            funcName: "gpii.pouch.node.cleanPouch",
+            args:     ["{that}", "{that}.events.onCleanupComplete.fire"] // callback
+        },
         loadData: {
             funcName: "gpii.pouch.node.loadDataFromPath",
             args:     ["{that}", "{arguments}.0"]

@@ -63,6 +63,17 @@ Retrieve a set of full documents based on `options` like the following:
 
 Check the [PouchDB `bulkGet` docs](https://pouchdb.com/api.html#bulk_get) for more details.
 
+##`{that}.cleanPouch([options])`
+
+Remove all records from an individual database.  Returns a promise that will be completed when the records are cleaned
+up.  Also fires the `onCleanupComplete` event when all records are cleaned up.
+
+##`{that}.close([options])`
+
+Close the database.  Returns a promise that will be completed when the database is closed.  Also fires the
+`onCloseComplete` event when the database is closed.
+
+Check the [PouchDB `close` docs](https://pouchdb.com/api.html#close_database) for more details.
 
 ##`{that}.compact([options])`
 
@@ -70,15 +81,6 @@ Compact the database, removing deleted data and older revisions.  This method is
 risk.
 
 Check the [PouchDB `compact` docs](https://pouchdb.com/api.html#compaction) for more details.
-
-
-##`{that}.destroyPouch([options])`
-
-Destroy the underlying PouchDB instance.  The underlying method in the documentation is called `destroy`, we have to use
-a variation on the name to avoid the existing `destroy` invoker provided by every component.
-
-Check the [PouchDB `destroy` docs](https://pouchdb.com/api.html#delete_database) for more details.
-
 
 ##`{that}.get(docId, [options])`
 
@@ -157,12 +159,22 @@ Check the [PouchDB `viewCleanup` docs](https://pouchdb.com/api.html#view_cleanup
 
 ## Component Options
 
-| Option             | Type        | Description |
-| ------------------ | ----------- | ----------- |
-| `baseDir`          | `{String}`  | The path in which our database content will live.  Will be used to populate  `options.dbOptions.prefix` (see below).  Defaults to a subdirectory based on the component's id in `os.tmpDir()`. |
-| `dbOptions.prefix` | `{String}`  | `baseDir`, and `dbOptions.name` (see above), combined into a final path, with a trailing separator. |
+| Option               | Type        | Description |
+| -------------------- | ----------- | ----------- |
+| `baseDir`            | `{String}`  | The path in which our database content will live.  Will be used to populate  `options.dbOptions.prefix` (see below).  Defaults to a subdirectory based on the component's id in `os.tmpDir()`. |
+| `dbOptions.prefix`   | `{String}`  | `baseDir`, and `dbOptions.name` (see above), combined into a final path, with a trailing separator. |
+| `removeDirOnCleanup` | `{Boolean}` | Whether or not to remove all filesystem content when the `cleanPouch` invoker (see below) is called.  Defaults to `true`. |
 
 ## Component Invokers
+
+##`{that}.cleanPouch([options])`
+
+Remove all records from an individual database using the underlying `cleanPouch` function from the base grade (see
+above).  If `options.removeDirOnCleanup` is `true`, removes the filesystem content as well.
+
+As with the underlying method, returns a promise that will be completed when the records are cleaned up.  Also fires
+the `onCleanupComplete` event when all records are cleaned up.
+
 
 ###`{that}.loadData(dbPaths)`
 * `dbPaths {String|Array}`: One or more package-relative paths to a JSON file to be loaded.

@@ -51,10 +51,10 @@ fluid.defaults("gpii.tests.pouchdb.component.common.caseHolder.base", {
     // Destroy the database after each test.
     sequenceEnd:   [
         {
-            func: "{testEnvironment}.pouchDb.destroyPouch"
+            func: "{testEnvironment}.pouchDb.cleanPouch"
         },
         {
-            event:    "{testEnvironment}.pouchDb.events.onDestroyPouchComplete",
+            event:    "{testEnvironment}.pouchDb.events.onCleanupComplete",
             listener: "jqUnit.assertLeftHand",
             args:     ["The database should be destroyed on test completion...", { ok: true}, "{arguments}.0"]
         }
