@@ -116,7 +116,7 @@ gpii.pouch.node.cleanPouch = function (that, callback) {
                 }
                 else {
                     if (that.options.removeDirOnCleanup) {
-                        rimraf(that.options.dbOptions.prefix, function (rmDirError) {
+                        rimraf(path.resolve(that.options.dbOptions.prefix, that.pouchDb.name), function (rmDirError) {
                             if (rmDirError) {
                                 fluid.fail(rmDirError);
                             }
@@ -151,7 +151,6 @@ fluid.defaults("gpii.pouch.node.base", {
     },
     events: {
         onDataLoaded:null,
-        onDirExists: null,
         onReady:     null
     },
     invokers: {
