@@ -184,7 +184,7 @@ gpii.pouch.express.middleware = function (that, req, res, next) {
  */
 gpii.pouch.express.cleanup = function (that) {
     var tmpPouchDB = PouchDB.defaults({ db: memdown});
-    that.expressPouchdb.setPouchDB(tmpPouchDB).then(function () {
+    var togo = that.expressPouchdb.setPouchDB(tmpPouchDB).then(function () {
         var cleanupPromises = [];
 
         fluid.each(that.databaseInstances, function (databaseInstance) {
@@ -193,7 +193,11 @@ gpii.pouch.express.cleanup = function (that) {
 
         var cleanupSequence = fluid.promise.sequence(cleanupPromises);
         cleanupSequence.then(that.events.onCleanupComplete.fire);
+
+        return cleanupSequence;
     });
+
+    return togo;
 };
 
 fluid.defaults("gpii.pouch.express.base", {
