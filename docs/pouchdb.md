@@ -10,7 +10,6 @@ A Fluid component that wraps a PouchDB instance and exposes select methods from 
 | `onBulkDocsComplete`         | Fired when a call to `{that}.bulkDocs` (see below) is successfully completed. |
 | `onBulkGetComplete`          | Fired when a call to `{that}.bulkGet` (see below) is successfully completed. |
 | `onCompactComplete`          | Fired when a call to `{that}.compact` (see below) is successfully completed. |
-| `onDestroyPouchComplete`     | Fired when a call to `{that}.destroyPouch` (see below) is successfully completed. |
 | `onError`                    | Fired when an error occurs. |
 | `onGetComplete`              | Fired when a call to `{that}.get` (see below) is successfully completed. |
 | `onGetAttachmentComplete`    | Fired when a call to `{that}.getAttachment` (see below) is successfully completed. |
