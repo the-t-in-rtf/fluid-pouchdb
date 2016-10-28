@@ -6,32 +6,23 @@
 /* eslint-env node */
 "use strict";
 var fluid  = require("infusion");
-fluid.setLogging(true);
 var gpii   = fluid.registerNamespace("gpii");
+
+fluid.logObjectRenderChars = 102400;
 
 require("../../../");
 gpii.pouch.loadTestingSupport();
 
-var jqUnit = require("node-jqunit");
-
-jqUnit.module("Testing filesystem persistence...");
-
-fluid.defaults("gpii.tests.pouch.persistent.caseHolder.base", {
-    gradeNames: ["gpii.test.pouch.caseHolder.base"],
-    sampleRecord: { _id: "new", foo: "bar"},
-    components: {
-        getRequest: {
-            type: "gpii.test.pouch.request",
-            options: {
-                path:   "/sample/new",
-                method: "GET"
-            }
-        }
-    }
+fluid.defaults("gpii.tests.pouch.persistent.request", {
+    gradeNames: ["gpii.test.pouch.request"],
+    path:   "/sample/new",
+    method: "GET"
 });
 
-fluid.defaults("gpii.tests.pouch.persistent.caseHolder.insertRecord", {
-    gradeNames: ["gpii.tests.pouch.persistent.caseHolder.base"],
+
+fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
+    gradeNames: ["gpii.test.pouch.caseHolder.base"],
+    sampleRecord: { _id: "new", foo: "bar"},
     rawModules: [{
         name: "Testing persistence within a single restart...",
         tests: [
@@ -49,95 +40,70 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder.insertRecord", {
                         args:     ["The status code should be as expected...", 201, "{insertRequest}.nativeResponse.statusCode"]
                     },
                     {
-                        func: "{getRequest}.send",
+                        func: "{getAfterInsertRequest}.send",
                         args: []
                     },
                     {
-                        event:    "{getRequest}.events.onComplete",
+                        event:    "{getAfterInsertRequest}.events.onComplete",
                         listener: "jqUnit.assertLeftHand",
                         args:     ["The record should be readable", "{that}.options.sampleRecord", "@expand:JSON.parse({arguments}.0)"]
                     }
                 ]
-            }
-        ]
-    }],
-    components: {
-        insertRequest: {
-            type: "gpii.test.pouch.request",
-            options: {
-                path:   "/sample/new",
-                method: "PUT"
-            }
-        }
-    }
-});
-
-fluid.defaults("gpii.tests.pouch.persistent.caseHolder.clearData", {
-    gradeNames: ["gpii.test.pouch.caseHolder"],
-    rawModules: [{
-        name: "Testing persistence across restarts...",
-        tests: [
-            {
-                name: "Go through a single run and destroy all data...",
-                type: "test",
-                sequence: [
-                    {
-                        func: "jqUnit.assert",
-                        args: ["Cleanup completed successfully..."]
-                    }
-                ]
-            }
-        ]
-    }]
-});
-
-fluid.defaults("gpii.tests.pouch.persistent.caseHolder.shouldHaveRecord", {
-    gradeNames: ["gpii.tests.pouch.persistent.caseHolder.base"],
-    rawModules: [{
-        name: "Testing persistence across restarts...",
-        tests: [
+            },
             {
                 name: "Confirm that the record is still there after a restart...",
                 type: "test",
                 sequence: [
                     {
-                        func: "{getRequest}.send",
-                        args: []
+                        func: "{getAfterRecreateRequest}.send",
+                        args:     []
                     },
                     {
-                        event:    "{getRequest}.events.onComplete",
+                        event:    "{getAfterRecreateRequest}.events.onComplete",
                         listener: "jqUnit.assertLeftHand",
                         args:     ["The record should still be found.", "{that}.options.sampleRecord", "@expand:JSON.parse({arguments}.0)"]
                     }
                 ]
-            }
-        ]
-    }]
-});
-
-fluid.defaults("gpii.tests.pouch.persistent.caseHolder.shouldNotHaveRecord", {
-    gradeNames: ["gpii.tests.pouch.persistent.caseHolder.base"],
-    rawModules: [{
-        name: "Confirming that the record is not found...",
-        tests: [
+            },
             {
-                name: "Confirm that the record is no longer there...",
+                name: "Confirm that the record is no longer there after cleaning up the data and recreating express-pouchdb...",
                 type: "test",
                 sequence: [
                     {
-                        func: "{getRequest}.send",
-                        args: []
+                        func: "{harness}.cleanup"
                     },
                     {
-                        event:    "{getRequest}.events.onComplete",
+                        event:    "{harness}.events.onExpressPouchRecreated",
+                        listener: "{getAfterResetRequest}.send",
+                        args:     []
+                    },
+                    {
+                        event:    "{getAfterResetRequest}.events.onComplete",
                         listener: "jqUnit.assertEquals",
-                        args:     ["There should no longer be a record.", 404, "{getRequest}.nativeResponse.statusCode"]
+                        args:     ["There should no longer be a record.", 404, "{getAfterResetRequest}.nativeResponse.statusCode"]
                     }
                 ]
 
             }
         ]
-    }]
+    }],
+    components: {
+        insertRequest: {
+            type: "gpii.tests.pouch.persistent.request",
+            options: {
+                method: "PUT"
+            }
+        },
+        getAfterInsertRequest: {
+            type: "gpii.tests.pouch.persistent.request"
+        },
+        getAfterRecreateRequest: {
+            type: "gpii.tests.pouch.persistent.request"
+        },
+        getAfterResetRequest: {
+            type: "gpii.tests.pouch.persistent.request"
+        }
+    }
 });
 
 fluid.defaults("gpii.tests.pouch.persistent.environment", {
@@ -145,6 +111,9 @@ fluid.defaults("gpii.tests.pouch.persistent.environment", {
     components: {
         harness: {
             type: "gpii.pouch.harness.persistent"
+        },
+        caseHolder: {
+            type: "gpii.tests.pouch.persistent.caseHolder"
         }
     },
     port:       6798,
@@ -153,47 +122,4 @@ fluid.defaults("gpii.tests.pouch.persistent.environment", {
     }
 });
 
-fluid.defaults("gpii.tests.pouch.persistent.environment.insertRecord", {
-    gradeNames: ["gpii.tests.pouch.persistent.environment"],
-    components: {
-        testCaseHolder: {
-            type: "gpii.tests.pouch.persistent.caseHolder.insertRecord"
-        }
-    }
-});
-
-fluid.defaults("gpii.tests.pouch.persistent.environment.clearData", {
-    gradeNames: ["gpii.tests.pouch.persistent.environment"],
-    components: {
-        testCaseHolder: {
-            type: "gpii.tests.pouch.persistent.caseHolder.clearData"
-        }
-    }
-});
-
-
-fluid.defaults("gpii.tests.pouch.persistent.environment.shouldHaveRecord", {
-    gradeNames: ["gpii.tests.pouch.persistent.environment"],
-    components: {
-        testCaseHolder: {
-            type: "gpii.tests.pouch.persistent.caseHolder.shouldHaveRecord"
-        }
-    }
-});
-
-fluid.defaults("gpii.tests.pouch.persistent.environment.shouldNotHaveRecord", {
-    gradeNames: ["gpii.tests.pouch.persistent.environment"],
-    components: {
-        testCaseHolder: {
-            type: "gpii.tests.pouch.persistent.caseHolder.shouldNotHaveRecord"
-        }
-    }
-});
-
-fluid.test.runTests("gpii.tests.pouch.persistent.environment.clearData");
-fluid.test.runTests("gpii.tests.pouch.persistent.environment.shouldNotHaveRecord");
-fluid.test.runTests("gpii.tests.pouch.persistent.environment.insertRecord");
-fluid.test.runTests("gpii.tests.pouch.persistent.environment.shouldHaveRecord");
-fluid.test.runTests("gpii.tests.pouch.persistent.environment.clearData");
-fluid.test.runTests("gpii.tests.pouch.persistent.environment.shouldNotHaveRecord");
-fluid.test.runTests("gpii.tests.pouch.persistent.environment.clearData");
+fluid.test.runTests("gpii.tests.pouch.persistent.environment");
