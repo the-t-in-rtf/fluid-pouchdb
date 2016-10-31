@@ -118,10 +118,19 @@ gpii.pouch.node.cleanPouch = function (that, callback) {
                     if (that.options.removeDirOnCleanup) {
                         rimraf(path.resolve(that.options.dbOptions.prefix, that.pouchDb.name), function (rmDirError) {
                             if (rmDirError) {
-                                fluid.fail(rmDirError);
+                                promise.reject(rmDirError);
                             }
                             else {
-                                promise.resolve({ ok: true, message: that.options.messages.databaseCleaned });
+                                // Remove our cached views data as well.
+                                var viewDirs = path.resolve(that.options.dbOptions.prefix, that.pouchDb.name + "-mrview-*");
+                                rimraf(viewDirs, function (rmViewDirError) {
+                                    if (rmViewDirError) {
+                                        promise.reject(rmViewDirError);
+                                    }
+                                    else {
+                                        promise.resolve({ ok: true, message: that.options.messages.databaseCleaned });
+                                    }
+                                })
                             }
                         });
                     }
