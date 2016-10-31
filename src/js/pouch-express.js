@@ -197,11 +197,12 @@ gpii.pouch.express.cleanup = function (that) {
         cleanupSequence.then(function () {
             gpii.pouch.express.initExpressPouchdb(that);
 
-            togo.resolve();
-            that.events.onCleanupComplete.fire();
-        }, that.events.onError.fire);
+            gpii.pouch.express.initDbs(that).then(function () {
+                togo.resolve();
+                that.events.onCleanupComplete.fire();
+            }, that.events.onError.fire);
 
-        return cleanupSequence;
+        }, that.events.onError.fire);
     });
 
     return togo;
@@ -248,9 +249,6 @@ fluid.defaults("gpii.pouch.express.base", {
         },
         "onCleanup.cleanup": {
             func: "{that}.cleanup"
-        },
-        "onCleanupComplete.initDbs": {
-            func:     "{that}.initDbs"
         },
         "onCreate.log": {
             funcName: "fluid.log",
