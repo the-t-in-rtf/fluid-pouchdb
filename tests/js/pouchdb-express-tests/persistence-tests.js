@@ -70,12 +70,9 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
                 type: "test",
                 sequence: [
                     {
-                        func: "{harness}.cleanup"
-                    },
-                    {
-                        event:    "{harness}.events.onExpressPouchRecreated",
-                        listener: "{getAfterResetRequest}.send",
-                        args:     []
+                        task:        "{harness}.cleanup",
+                        resolve:     "{getAfterResetRequest}.send",
+                        resolveArgs: []
                     },
                     {
                         event:    "{getAfterResetRequest}.events.onComplete",

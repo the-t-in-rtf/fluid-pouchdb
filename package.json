@@ -13,7 +13,7 @@
     "express": "4.14.0",
     "express-pouchdb": "2.0.0",
     "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#baa1558d22ee7abcb6d6b6410af7cc95693f1b80",
-    "infusion": "2.0.0-dev.20160519T222603Z.754d2c6",
+    "infusion": "git://github.com/fluid-project/infusion#0bcd507499bf4968630813c25c8146a8163a1e39",
     "istanbul": "0.4.5",
     "lie": "3.1.0",
     "memdown": "1.2.2",

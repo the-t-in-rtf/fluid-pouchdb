@@ -6,7 +6,6 @@
 //
 "use strict";
 var fluid = require("infusion");
-var gpii  = fluid.registerNamespace("gpii");
 
 require("gpii-express");
 fluid.require("%gpii-pouchdb");
@@ -52,22 +51,6 @@ fluid.defaults("gpii.pouch.harness", {
     }
 });
 
-fluid.registerNamespace("gpii.pouch.harness.persistent");
-
-/**
- *
- * Cleanup the existing data and recreate our express-pouchdb instance.
- *
- * @param that - The harness component.
- */
-gpii.pouch.harness.persistent.cleanup = function (that) {
-    that.express.expressPouch.cleanup().then(function () {
-        gpii.pouch.express.initExpressPouchdb(that.express.expressPouch);
-        that.events.onExpressPouchRecreated.fire();
-    });
-};
-
-
 fluid.defaults("gpii.pouch.harness.persistent", {
     gradeNames: ["gpii.pouch.harness"],
     baseDir:    defaultDir,
@@ -77,13 +60,9 @@ fluid.defaults("gpii.pouch.harness.persistent", {
             target: "{that gpii.pouch.express}.options.baseDir"
         }
     ],
-    events: {
-        onExpressPouchRecreated: null
-    },
     invokers: {
         cleanup: {
-            funcName: "gpii.pouch.harness.persistent.cleanup",
-            args:     ["{that}"]
+            func: "{that}.express.expressPouch.cleanup"
         }
     }
 });
