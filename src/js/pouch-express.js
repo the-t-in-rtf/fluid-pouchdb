@@ -249,6 +249,9 @@ fluid.defaults("gpii.pouch.express.base", {
         "onCleanup.cleanup": {
             func: "{that}.cleanup"
         },
+        "onCleanupComplete.initDbs": {
+            func:     "{that}.initDbs"
+        },
         "onCreate.log": {
             funcName: "fluid.log",
             args: ["express baseDir: '", "{that}.options.baseDir", "'..."]
