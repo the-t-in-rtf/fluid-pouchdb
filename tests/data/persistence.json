@@ -1,0 +1,12 @@
+{
+  "docs": [
+    {
+      "_id": "_design/persistence",
+      "views": {
+        "byId": {
+          "map": "function (doc) {\n    emit(doc._id, doc);\n}"
+        }
+      }
+    }
+  ]
+}
