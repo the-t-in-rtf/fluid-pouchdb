@@ -134,7 +134,7 @@ gpii.pouch.express.initDbs = function (that) {
  */
 gpii.pouch.express.initDb = function (that, dbKey, dbDef) {
     var expandedDef = gpii.pouch.express.expandDbDef(dbDef);
-    var initPromise = fluid.promise();
+    var dataLoadedPromise = fluid.promise();
     var dbOptions = expandedDef.dbOptions ? fluid.merge(that.options.dbOptions, expandedDef.dbOptions) : fluid.copy(that.options.dbOptions);
     dbOptions.name = dbKey;
     var dbComponentOptions = {
@@ -144,7 +144,7 @@ gpii.pouch.express.initDb = function (that, dbKey, dbDef) {
         baseDir: that.options.baseDir,
         listeners: {
             "onDataLoaded.resolvePromise": {
-                func: initPromise.resolve
+                func: dataLoadedPromise.resolve
             }
         }
     };
@@ -155,7 +155,13 @@ gpii.pouch.express.initDb = function (that, dbKey, dbDef) {
     var dbComponent = fluid.construct("gpii_pouch_" + that.id + "_" + dbKey, dbComponentOptions);
     that.databaseInstances[dbKey] = dbComponent;
 
-    return initPromise;
+    var viewCleanupPromise = fluid.promise();
+
+    dataLoadedPromise.then(function () {
+        dbComponent.viewCleanup().then(viewCleanupPromise.resolve, viewCleanupPromise.reject);
+    }, viewCleanupPromise.reject);
+
+    return viewCleanupPromise;
 };
 
 /**
