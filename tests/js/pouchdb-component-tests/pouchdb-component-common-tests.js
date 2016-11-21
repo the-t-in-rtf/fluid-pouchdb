@@ -6,7 +6,7 @@ var gpii   = fluid.registerNamespace("gpii");
 var jqUnit = jqUnit || require("node-jqunit");
 
 if (!gpii.pouch) {
-    require("../../../")
+    require("../../../");
     gpii.pouch.loadTestingSupport();
 }
 
@@ -51,10 +51,10 @@ fluid.defaults("gpii.tests.pouchdb.component.common.caseHolder.base", {
     // Destroy the database after each test.
     sequenceEnd:   [
         {
-            func: "{testEnvironment}.pouchDb.cleanPouch"
+            func: "{testEnvironment}.pouchDb.destroyPouch"
         },
         {
-            event:    "{testEnvironment}.pouchDb.events.onCleanupComplete",
+            event:    "{testEnvironment}.pouchDb.events.onPouchDestroyComplete",
             listener: "jqUnit.assertLeftHand",
             args:     ["The database should be destroyed on test completion...", { ok: true}, "{arguments}.0"]
         }

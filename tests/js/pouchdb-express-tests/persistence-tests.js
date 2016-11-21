@@ -153,7 +153,7 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
                     {
                         event:    "{getViewAfterResetRequest}.events.onComplete",
                         listener: "jqUnit.assertLeftHand",
-                        args:     ["The status code should be as expected...", { total_rows: 1 }, "@expand:JSON.parse({arguments}.0)"]
+                        args:     ["The status code should be as expected...", { total_rows: 0 }, "@expand:JSON.parse({arguments}.0)"]
                     },
                     {
                         func: "jqUnit.assertEquals",

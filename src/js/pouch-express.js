@@ -197,7 +197,7 @@ gpii.pouch.express.cleanup = function (that) {
         var cleanupPromises = [];
 
         fluid.each(that.databaseInstances, function (databaseInstance) {
-            cleanupPromises.push(databaseInstance.cleanPouch());
+            cleanupPromises.push(databaseInstance.destroyPouch());
         });
 
         var cleanupSequence = fluid.promise.sequence(cleanupPromises);

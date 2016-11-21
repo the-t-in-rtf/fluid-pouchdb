@@ -16,7 +16,7 @@ fluid.registerNamespace("gpii.pouch");
 
 gpii.pouch.init = function (that) {
     that.pouchDb = new PouchDB(that.options.dbOptions);
-    // fluid.log("Pouch instance `" + that.options.dbOptions.name + "` (" + that.id + ") initialized...");
+    fluid.log(fluid.logLevel.TRACE, "Pouch instance `" + that.options.dbOptions.name + "` (" + that.id + ") initialized...");
 };
 
 /**
@@ -51,59 +51,10 @@ gpii.pouch.callPouchFunction = function (that, fnName, fnArgs, eventName) {
     return promise;
 };
 
-gpii.pouch.cleanPouch = function (that, callback) {
-    var cleanupPromise = fluid.promise();
-    that.pouchDb.allDocs({ include_docs: true}, function (allDocsErr, allDocsResults) {
-        if (allDocsErr) {
-            cleanupPromise.reject(allDocsErr);
-        }
-        else {
-            if (!allDocsResults.rows || allDocsResults.rows.length === 0) {
-                cleanupPromise.resolve({ ok: true, message: that.options.messages.databaseCleaned });
-            }
-            else {
-                var docsToDelete = fluid.transform(allDocsResults.rows, function (row) {
-                    var modifiedDoc = fluid.copy(row.doc);
-                    modifiedDoc._deleted = true;
-                    return modifiedDoc;
-                });
-
-                that.pouchDb.bulkDocs(docsToDelete, function (deleteErr, deleteResponses) {
-                    if (deleteErr) {
-                        cleanupPromise.reject(deleteErr);
-                    }
-                    else {
-                        var errors = [];
-                        fluid.each(deleteResponses, function (deleteResponse) {
-                            if (!deleteResponse.ok) {
-                                errors.push(deleteResponse);
-                            }
-                        });
-
-                        if (errors.length) {
-                            cleanupPromise.reject(errors);
-                        }
-                        else {
-                            cleanupPromise.resolve({ ok: true, message: that.options.messages.databaseCleaned });
-                        }
-                    }
-                });
-            }
-        }
-    });
-
-    cleanupPromise.then(callback);
-
-    return cleanupPromise;
-};
-
 fluid.defaults("gpii.pouch", {
     gradeNames: ["fluid.component"],
     dbOptions: {
         skip_setup: true
-    },
-    messages: {
-        databaseCleaned: "All database records have been deleted."
     },
     events: {
         onAllDocsComplete: null,
@@ -116,6 +67,7 @@ fluid.defaults("gpii.pouch", {
         onGetComplete: null,
         onGetAttachmentComplete: null,
         onInfoComplete: null,
+        onPouchDestroyComplete: null,
         onPostComplete: null,
         onPutComplete: null,
         onPutAttachmentComplete: null,
@@ -141,13 +93,13 @@ fluid.defaults("gpii.pouch", {
             funcName: "gpii.pouch.callPouchFunction",
             args: ["{that}", "compact", "{arguments}", "onCompactComplete"] // fnName, fnArgs, eventName
         },
-        cleanPouch: {
-            funcName: "gpii.pouch.cleanPouch",
-            args:     ["{that}", "{that}.events.onCleanupComplete.fire"] // callback
-        },
         close: {
             funcName: "gpii.pouch.callPouchFunction",
             args: ["{that}", "close", "{arguments}", "onCloseComplete"] // fnName, fnArgs, eventName
+        },
+        destroyPouch: {
+            funcName: "gpii.pouch.callPouchFunction",
+            args: ["{that}", "destroy", "{arguments}", "onPouchDestroyComplete"] // fnName, fnArgs, eventName
         },
         get: {
             funcName: "gpii.pouch.callPouchFunction",

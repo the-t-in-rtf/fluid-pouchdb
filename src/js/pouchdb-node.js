@@ -12,7 +12,6 @@ var gpii   = fluid.registerNamespace("gpii");
 var os     = require("os");
 var path   = require("path");
 
-var rimraf = require("rimraf");
 var mkdirp = require("mkdirp");
 
 require("../../");
@@ -95,57 +94,6 @@ gpii.pouch.node.loadDataIfNeeded = function (that) {
     });
 };
 
-/**
- *
- * Remove all content, close, and then remove the directory content for this database.
- *
- * @param that
- * @param callback
- * @returns {*}
- */
-gpii.pouch.node.cleanPouch = function (that, callback) {
-    var promise = fluid.promise();
-    gpii.pouch.cleanPouch(that, function (cleanupMessage) {
-        if (!cleanupMessage.ok) {
-            promise.reject(cleanupMessage);
-        }
-        else {
-            that.close().then(function (closeError) {
-                if (closeError) {
-                    promise.reject(closeError);
-                }
-                else {
-                    if (that.options.removeDirOnCleanup) {
-                        rimraf(path.resolve(that.options.dbOptions.prefix, that.pouchDb.name), function (rmDirError) {
-                            if (rmDirError) {
-                                promise.reject(rmDirError);
-                            }
-                            else {
-                                // Remove our cached views data as well.
-                                var viewDirs = path.resolve(that.options.dbOptions.prefix, that.pouchDb.name + "-mrview-*");
-                                rimraf(viewDirs, function (rmViewDirError) {
-                                    if (rmViewDirError) {
-                                        promise.reject(rmViewDirError);
-                                    }
-                                    else {
-                                        promise.resolve({ ok: true, message: that.options.messages.databaseCleaned });
-                                    }
-                                })
-                            }
-                        });
-                    }
-                    else {
-                        promise.resolve({ ok: true, message: that.options.messages.databaseCleaned });
-                    }
-                }
-            });
-        }
-    });
-
-    promise.then(callback);
-    return promise;
-};
-
 fluid.defaults("gpii.pouch.node.base", {
     gradeNames: ["gpii.pouch"],
     tmpDir:     os.tmpdir(),
@@ -163,10 +111,6 @@ fluid.defaults("gpii.pouch.node.base", {
         onReady:     null
     },
     invokers: {
-        cleanPouch: {
-            funcName: "gpii.pouch.node.cleanPouch",
-            args:     ["{that}", "{that}.events.onCleanupComplete.fire"] // callback
-        },
         loadData: {
             funcName: "gpii.pouch.node.loadDataFromPath",
             args:     ["{that}", "{arguments}.0"]
