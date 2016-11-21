@@ -1,3 +1,4 @@
+/* eslint-env node */
 //  Testing the express "url encoded" dataSource with PouchDB
 "use strict";
 var fluid = require("infusion");

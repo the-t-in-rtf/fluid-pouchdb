@@ -1,3 +1,4 @@
+/* eslint-env node */
 // A convenience script to start the test harness, used for manual QA.
 "use strict";
 var fluid = require("infusion");

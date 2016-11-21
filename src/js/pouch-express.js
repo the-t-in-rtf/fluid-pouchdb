@@ -1,3 +1,4 @@
+/* eslint-env node */
 /*
 
     Provide a CouchDB-like API using `PouchDB` and `express-pouchdb`.  This in only useful in association with an

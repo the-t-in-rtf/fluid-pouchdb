@@ -1,3 +1,4 @@
+/* eslint-env node */
 // The pouchConfig used in these tests and in the test harness launcher
 "use strict";
 var fluid = require("infusion");

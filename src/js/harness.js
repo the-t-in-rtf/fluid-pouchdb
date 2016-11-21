@@ -1,3 +1,4 @@
+/* eslint-env node */
 // Common test harness for use both in tests and for manual QA.  To use for manual QA, run the `launch-test-harness.js`
 // script in this directory.
 //

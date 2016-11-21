@@ -7,29 +7,31 @@
   "scripts": {
     "test": "npm run test:browser; npm run test:node",
     "test:browser": "node node_modules/testem/testem.js ci --skip safari",
-    "test:node": "node node_modules/istanbul/lib/cli.js cover tests/js/all-tests.js"
+    "test:node": "node node_modules/istanbul/lib/cli.js cover tests/js/all-tests.js --print summary"
   },
   "dependencies": {
     "express": "4.14.0",
-    "express-pouchdb": "2.0.0",
-    "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#baa1558d22ee7abcb6d6b6410af7cc95693f1b80",
-    "infusion": "git://github.com/fluid-project/infusion#0bcd507499bf4968630813c25c8146a8163a1e39",
+    "express-pouchdb": "2.1.0",
+    "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#39c32a4b306640c7c92dd1a7acd6d5af3f37ddef",
+    "infusion": "2.0.0-dev.20161027T155641Z.0bcd507",
     "istanbul": "0.4.5",
     "lie": "3.1.0",
-    "memdown": "1.2.2",
+    "memdown": "1.2.4",
     "mkdirp": "0.5.1",
-    "pouchdb": "6.0.6",
+    "pouchdb": "6.0.7",
     "rimraf": "2.5.4",
-    "testem": "1.12.0",
+    "testem": "1.13.0",
     "underscore-node": "0.1.2"
   },
   "devDependencies": {
+    "eslint": "3.10.2",
+    "eslint-config-fluid": "1.0.0",
     "fluid-grunt-eslint": "18.1.2",
     "grunt": "1.0.1",
     "grunt-jsonlint": "1.1.0",
-    "kettle": "1.1.0",
+    "kettle": "1.2.1",
     "node-jqunit": "1.1.4",
-    "request": "2.75.0",
-    "tough-cookie": "2.3.1"
+    "request": "2.79.0",
+    "tough-cookie": "2.3.2"
   }
 }

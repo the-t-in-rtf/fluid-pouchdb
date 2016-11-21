@@ -1,3 +1,4 @@
+/* eslint-env node */
 // Confirming that pouch can safely be loaded and reloaded without resulting in duplicate data.
 //
 // This test only works at the moment because we have enacted a workaround and added an `_id` variable for all records.
