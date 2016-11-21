@@ -90,7 +90,7 @@ If it does not already exist, this grade will create a directory at `options.dbP
 * Returns: A `Promise` that will be resolved once cleanup is complete (the `onCleanupComplete` event will also be fired).
 
 This invoker is called when the `onCleanup` event is fired, which indicates that it is time to remove any existing
-data.  Removes the full contents of `options.dbPath` (see above).
+data. Calls each database's `destroyPouch` invoker (see [the Pouch component docs](pouchdb.md) for details).
 
 ### `{that}.initDbs()`
 * Returns: A `Promise` that will be resolved once all databases have been initialized.
