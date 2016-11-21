@@ -5,6 +5,7 @@
   "repository": "https://github.com/GPII/gpii-pouchdb",
   "license": "BSD-3-Clause",
   "scripts": {
+    "pretest": "node node_modules/rimraf/bin.js reports/*",
     "test": "npm run test:browser; npm run test:node",
     "test:browser": "node node_modules/testem/testem.js ci --skip safari",
     "test:node": "node node_modules/istanbul/lib/cli.js cover tests/js/all-tests.js --print summary"
