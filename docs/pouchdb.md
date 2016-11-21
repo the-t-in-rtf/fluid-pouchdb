@@ -10,6 +10,7 @@ A Fluid component that wraps a PouchDB instance and exposes select methods from 
 | `onBulkDocsComplete`         | Fired when a call to `{that}.bulkDocs` (see below) is successfully completed. |
 | `onBulkGetComplete`          | Fired when a call to `{that}.bulkGet` (see below) is successfully completed. |
 | `onCompactComplete`          | Fired when a call to `{that}.compact` (see below) is successfully completed. |
+| `onDestroyPouchComplete`     | Fired when a call to `{that}.destroyPouch` (see below) is successfully completed. |
 | `onError`                    | Fired when an error occurs. |
 | `onGetComplete`              | Fired when a call to `{that}.get` (see below) is successfully completed. |
 | `onGetAttachmentComplete`    | Fired when a call to `{that}.getAttachment` (see below) is successfully completed. |
@@ -73,6 +74,13 @@ Close the database.  Returns a promise that will be completed when the database 
 `onCloseComplete` event when the database is closed.
 
 Check the [PouchDB `close` docs](https://pouchdb.com/api.html#close_database) for more details.
+
+##`{that}.destroyPouch()`
+
+Destroy the database, including all records.  This is called `destroyPouch` to avoid overriding the implicit `destroy`
+invoker that is part of [the Fluid component lifecycle](http://docs.fluidproject.org/infusion/development/ComponentLifecycle.html).
+
+Check the [PouchDB `destroy` docs](https://pouchdb.com/api.html#destroy) for more details.
 
 ##`{that}.compact([options])`
 
