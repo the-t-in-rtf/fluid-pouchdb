@@ -29,3 +29,4 @@ node_modules
 log.txt
 .vagrant
 reports
+yarn.lock

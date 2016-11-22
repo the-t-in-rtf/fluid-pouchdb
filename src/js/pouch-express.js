@@ -207,9 +207,15 @@ gpii.pouch.express.cleanup = function (that) {
             gpii.pouch.express.initDbs(that).then(function () {
                 togo.resolve();
                 that.events.onCleanupComplete.fire();
-            }, that.events.onError.fire);
+            }, function (error) {
+                that.events.onError.fire(error);
+                togo.reject(error);
+            });
 
-        }, that.events.onError.fire);
+        }, function (error) {
+            that.events.onError.fire(error);
+            togo.reject(error);
+        });
     });
 
     return togo;
