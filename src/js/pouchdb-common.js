@@ -14,6 +14,16 @@ var PouchDB = PouchDB || require("pouchdb");
 
 fluid.registerNamespace("gpii.pouch");
 
+// Hot-patch console.error in order to suppress conflict warnings as described in GPII-2157
+var origConsoleError = console.error;
+
+console.error = function (arg0) {
+    if (arg0 && arg0.constructor.name === "PouchError" && arg0.name === "conflict") {
+        return;
+    }
+    return origConsoleError.apply(console, arguments);
+};
+
 gpii.pouch.init = function (that) {
     that.pouchDb = new PouchDB(that.options.dbOptions);
     fluid.log(fluid.logLevel.TRACE, "Pouch instance `" + that.options.dbOptions.name + "` (" + that.id + ") initialized...");
