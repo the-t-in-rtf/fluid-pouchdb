@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <title>Browser tests for PouchDB component...</title>
+
+        <!-- Bring in jQuery and other dependencies -->
+        <script type="text/javascript" src="../../../../node_modules/infusion/src/lib/jquery/core/js/jquery.js"></script>
+
+        <!-- Bring in fluid dependencies -->
+        <script type="text/javascript" src="../../../../node_modules/infusion/src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../node_modules/infusion/src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../node_modules/infusion/src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../node_modules/infusion/src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../node_modules/infusion/src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../node_modules/infusion/src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../node_modules/infusion/src/framework/core/js/FluidPromises.js"></script>
+        <script type="text/javascript" src="../../../../node_modules/infusion/src/framework/core/js/ModelTransformation.js"></script>
+        <script type="text/javascript" src="../../../../node_modules/infusion/src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script type="text/javascript" src="../../../../node_modules/infusion/src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script type="text/javascript" src="../../../../node_modules/infusion/src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+
+        <script type="text/javascript" src="../../../../node_modules/infusion/tests/test-core/utils/js/IoCTestUtils.js"></script>
+
+        <!-- QUnit/jqUnit dependencies -->
+        <script type="text/javascript" src="../../../../node_modules/infusion/tests/lib/qunit/js/qunit.js"></script>
+        <script type="text/javascript" src="../../../../node_modules/infusion/tests/test-core/jqUnit/js/jqUnit.js"></script>
+        <script type="text/javascript" src="../../../../node_modules/infusion/tests/test-core/jqUnit/js/jqUnit-browser.js"></script>
+
+        <!-- The client-side PouchDB dependencies -->
+        <script type="text/javascript" src="../../../../node_modules/pouchdb/dist/pouchdb.js"></script>
+
+        <!-- The gpii-express dependency for our test harness -->
+        <script type="text/javascript" src="../../../../node_modules/gpii-express/tests/js/lib/test-helpers.js"></script>
+
+
+        <!-- This package's code to be tested-->
+        <script type="text/javascript" src="../../../../src/test/common-helpers.js"></script>
+        <script type="text/javascript" src="../../../../src/js/pouchdb-common.js"></script>
+
+        <!-- required for use with Testem -->
+        <script type="text/javascript" src="/testem.js"></script>
+
+        <link rel="stylesheet" href="../../../../node_modules/node-jqunit/node_modules/infusion/tests/lib/qunit/css/qunit.css"/>
+    </head>
+    <body>
+        <h1 id="qunit-header">PouchDB Component Tests</h1>
+        <h2 id="qunit-banner"></h2>
+        <div id="qunit-testrunner-toolbar"></div>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests"></ol>
+
+        <!-- our QUnit tests -->
+        <script type="text/javascript" src="../pouchdb-component-common-tests.js"></script>
+        <script type="text/javascript">
+            fluid.test.runTests("gpii.tests.pouchdb.component.common.environment");
+        </script>
+    </body>
+</html>

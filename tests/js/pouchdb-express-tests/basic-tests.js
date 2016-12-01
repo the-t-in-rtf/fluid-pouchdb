@@ -1,3 +1,4 @@
+/* eslint-env node */
 /* Tests for the "pouch" module */
 "use strict";
 var fluid = require("infusion");
@@ -12,17 +13,10 @@ kettle.loadTestingSupport();
 require("gpii-express");
 gpii.express.loadTestingSupport();
 
-require("./pouch-config");
-
-// Convenience grade to avoid putting the same settings into all of our request components
-fluid.defaults("gpii.test.pouch.basic.request", {
-    gradeNames: ["kettle.test.request.http"],
-    port:       "{testEnvironment}.options.port",
-    method:     "GET"
-});
+require("../pouch-config");
 
 fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
-    gradeNames: ["gpii.test.express.caseHolder"],
+    gradeNames: ["gpii.test.pouch.caseHolder"],
     expected: {
         root:             { "express-pouchdb": "Welcome!" },
         massive:          { total_rows: 150 },
@@ -34,7 +28,7 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
     },
     rawModules: [
         {
-            name: "Testing gpii-pouchdb...",
+            name: "Testing gpii-pouchdb (filesystem)...",
             tests: [
                 {
                     name: "Testing loading pouch root...",
@@ -189,69 +183,69 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
     ],
     components: {
         rootRequest: {
-            type: "gpii.test.pouch.basic.request",
+            type: "gpii.test.pouch.request",
             options: {
                 path: "/"
             }
         },
         massiveRequest: {
-            type: "gpii.test.pouch.basic.request",
+            type: "gpii.test.pouch.request",
             options: {
                 path: "/massive/_all_docs"
             }
         },
         noDataRequest: {
-            type: "gpii.test.pouch.basic.request",
+            type: "gpii.test.pouch.request",
             options: {
                 path: "/nodata/_all_docs"
             }
         },
         readRequest: {
-            type: "gpii.test.pouch.basic.request",
+            type: "gpii.test.pouch.request",
             options: {
                 path: "/sample/foo"
             }
         },
         supplementalReadRequest: {
-            type: "gpii.test.pouch.basic.request",
+            type: "gpii.test.pouch.request",
             options: {
                 path: "/sample/supplemental"
             }
         },
         preDeleteRequest: {
-            type: "gpii.test.pouch.basic.request",
+            type: "gpii.test.pouch.request",
             options: {
                 path: "/sample/todelete"
             }
         },
         deleteRequest: {
-            type: "gpii.test.pouch.basic.request",
+            type: "gpii.test.pouch.request",
             options: {
                 path:   "/sample/todelete",
                 method: "DELETE"
             }
         },
         verifyDeleteRequest: {
-            type: "gpii.test.pouch.basic.request",
+            type: "gpii.test.pouch.request",
             options: {
                 path: "/sample/todelete"
             }
         },
         preInsertRequest: {
-            type: "gpii.test.pouch.basic.request",
+            type: "gpii.test.pouch.request",
             options: {
                 path:   "/sample/toinsert"
             }
         },
         insertRequest: {
-            type: "gpii.test.pouch.basic.request",
+            type: "gpii.test.pouch.request",
             options: {
                 path:   "/sample/toinsert",
                 method: "PUT"
             }
         },
         verifyInsertRequest: {
-            type: "gpii.test.pouch.basic.request",
+            type: "gpii.test.pouch.request",
             options: {
                 path:   "/sample/toinsert"
             }

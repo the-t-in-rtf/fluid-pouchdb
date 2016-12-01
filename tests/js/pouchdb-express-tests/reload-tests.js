@@ -1,3 +1,4 @@
+/* eslint-env node */
 // Confirming that pouch can safely be loaded and reloaded without resulting in duplicate data.
 //
 // This test only works at the moment because we have enacted a workaround and added an `_id` variable for all records.
@@ -17,10 +18,10 @@ kettle.loadTestingSupport();
 require("gpii-express");
 gpii.express.loadTestingSupport();
 
-require("./pouch-config");
+require("../pouch-config");
 
 fluid.defaults("gpii.tests.pouch.reload.caseHolder", {
-    gradeNames: ["gpii.test.express.caseHolder"],
+    gradeNames: ["gpii.test.pouch.caseHolder"],
     rawModules: [
         {
             name: "Testing multiple launches of pouch in a row...",

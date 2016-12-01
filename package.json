@@ -5,25 +5,34 @@
   "repository": "https://github.com/GPII/gpii-pouchdb",
   "license": "BSD-3-Clause",
   "scripts": {
-    "test": "node node_modules/istanbul/lib/cli.js cover tests/js/all-tests.js"
+    "pretest": "node node_modules/rimraf/bin.js reports/*",
+    "test": "npm run test:browser && npm run test:node",
+    "test:browser": "node node_modules/testem/testem.js ci --skip safari",
+    "test:node": "node node_modules/istanbul/lib/cli.js cover tests/js/all-tests.js --print summary"
   },
   "dependencies": {
     "express": "4.14.0",
-    "express-pouchdb": "1.0.6",
-    "gpii-express": "git://github.com/the-t-in-rtf/gpii-express#2f224862730bca57fa1f036f24f26e1d43748419",
-    "infusion": "2.0.0-dev.20160519T222603Z.754d2c6",
-    "istanbul": "0.4.4",
-    "memdown": "1.2.0",
-    "pouchdb": "5.4.5",
+    "express-pouchdb": "https://github.com/the-t-in-rtf/express-pouchdb.git#fa2778d1fdb6ac7c9d8adf7894b12df2e9e134f0",
+    "gpii-express": "1.0.0",
+    "infusion": "2.0.0-dev.20161027T155641Z.0bcd507",
+    "istanbul": "0.4.5",
+    "lie": "3.1.0",
+    "memdown": "1.2.4",
+    "mkdirp": "0.5.1",
+    "pouchdb": "6.0.7",
+    "rimraf": "2.5.4",
+    "testem": "1.13.0",
     "underscore-node": "0.1.2"
   },
   "devDependencies": {
+    "eslint": "3.10.2",
+    "eslint-config-fluid": "1.0.0",
+    "fluid-grunt-eslint": "18.1.2",
     "grunt": "1.0.1",
-    "grunt-eslint": "19.0.0",
     "grunt-jsonlint": "1.1.0",
-    "kettle": "1.1.0",
+    "kettle": "1.2.1",
     "node-jqunit": "1.1.4",
-    "request": "2.74.0",
-    "tough-cookie": "2.3.1"
+    "request": "2.79.0",
+    "tough-cookie": "2.3.2"
   }
 }
