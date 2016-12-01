@@ -32,7 +32,7 @@ var expressPouchdb = require("express-pouchdb");
 
 var PouchDB        = require("pouchdb");
 
-var path           = require("path"); // eslint-disable-line no-unused-vars
+fluid.require("path", require, "path");
 
 // The cleanup cycle used by express-pouchdb leaves a shedload of listeners around.  To avoid these, we disable the
 // event listener warnings, but only for PouchDB itself.
