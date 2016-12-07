@@ -15,4 +15,4 @@ apps:
     setup:
       - yarn install
     test_cmds:
-      - yarn test
+      - TMPDIR=/var/tmp yarn test
