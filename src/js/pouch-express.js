@@ -75,10 +75,14 @@ gpii.pouch.express.expandDbDef = function (dbDef) {
 gpii.pouch.express.initExpressPouchdb = function (that) {
     fluid.log("express pouchdb instance '", that.id, "' initalizing...");
 
+    if (!that.options.baseDir) {
+        fluid.fail("You must specify a basedir option...");
+    }
     // Create our base directory if it doesn't already exist.
-    if (that.options.baseDir && !fs.existsSync(that.options.baseDir)) {
+    else if (!fs.existsSync(that.options.baseDir)) {
         fluid.log("Creating directory '", that.options.baseDir, "' for express pouchdb instance '", that.id, "'...");
         fs.mkdirSync(that.options.baseDir);
+        that.baseDirBelongsToUs = true;
     }
 
     // There are unfortunately options that can only be configured via a configuration file.
@@ -192,6 +196,7 @@ gpii.pouch.express.middleware = function (that, req, res, next) {
 gpii.pouch.express.cleanup = function (that) {
     var tmpPouchDB = PouchDB.defaults({ db: memdown});
     var togo = fluid.promise();
+    togo.then(that.events.onCleanupComplete.fire, that.events.onError.fire);
 
     that.expressPouchdb.setPouchDB(tmpPouchDB).then(function () {
         var cleanupPromises = [];
@@ -200,22 +205,36 @@ gpii.pouch.express.cleanup = function (that) {
             cleanupPromises.push(databaseInstance.destroyPouch());
         });
 
+        var optionsFileCleanupPromise = fluid.promise();
+
+        fs.unlink(that.options.expressPouchConfigPath, function (error) {
+            if (error) {
+                optionsFileCleanupPromise.reject(error);
+            }
+            else {
+                optionsFileCleanupPromise.resolve();
+            }
+        });
+
+        cleanupPromises.push(optionsFileCleanupPromise);
+
         var cleanupSequence = fluid.promise.sequence(cleanupPromises);
         cleanupSequence.then(function () {
-            gpii.pouch.express.initExpressPouchdb(that);
-
-            gpii.pouch.express.initDbs(that).then(function () {
+            if (that.baseDirBelongsToUs) {
+                fs.rmdir(that.options.baseDir, function (error) {
+                    if (error) {
+                        togo.reject(error);
+                    }
+                    else {
+                        fluid.log("Removed temporary directory '", that.options.baseDir, "'...");
+                        togo.resolve();
+                    }
+                });
+            }
+            else {
                 togo.resolve();
-                that.events.onCleanupComplete.fire();
-            }, function (error) {
-                that.events.onError.fire(error);
-                togo.reject(error);
-            });
-
-        }, function (error) {
-            that.events.onError.fire(error);
-            togo.reject(error);
-        });
+            }
+        }, togo.reject);
     });
 
     return togo;
@@ -241,24 +260,30 @@ fluid.defaults("gpii.pouch.express.base", {
         }
     },
     events: {
+        initDbs:           null,
         onError:           null,
         onStarted:         null,
         onCleanup:         null,
         onCleanupComplete: null
     },
     members: {
+        baseDirBelongsToUs: false, // Whether we created our working directory (and thus should clean it up when we're done).
         databaseInstances: {} // The actual PouchDB databases
     },
     pouchGradeNames: ["gpii.pouch.node.base"],
     databases: {}, // The configuration we will use to create the required databases on startup.
     listeners: {
-        "onCreate.initExpressPouchdb": {
+        "initDbs.initExpressPouchdb": {
+            priority: "first",
             funcName: "gpii.pouch.express.initExpressPouchdb",
             args:     ["{that}"]
         },
-        "onCreate.initDbs": {
+        "initDbs.initDbs": {
             priority: "last",
             func:     "{that}.initDbs"
+        },
+        "onCreate.initDbs": {
+            func: "{that}.events.initDbs.fire"
         },
         "onCleanup.cleanup": {
             func: "{that}.cleanup"
