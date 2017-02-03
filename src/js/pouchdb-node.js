@@ -57,7 +57,12 @@ gpii.pouch.node.makeSafePrefix = function (toResolve) {
  */
 gpii.pouch.node.cleanup = function (that) {
     if (that.baseDirBelongsToUs) {
-        fs.rmdirSync(that.options.baseDir);
+        try {
+            fs.rmdirSync(that.options.baseDir);
+        }
+        catch (error) {
+            fluid.log("ERROR: Unable to remove base directory...\n", error);
+        }
     }
 
     that.events.onCleanupComplete.fire();
