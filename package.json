@@ -14,7 +14,7 @@
     "express": "4.14.0",
     "express-pouchdb": "https://github.com/the-t-in-rtf/express-pouchdb.git#fa2778d1fdb6ac7c9d8adf7894b12df2e9e134f0",
     "gpii-express": "1.0.2",
-    "infusion": "2.0.0",
+    "infusion": "3.0.0-dev.20170131T153243Z.6aab53a",
     "istanbul": "0.4.5",
     "lie": "3.1.0",
     "memdown": "1.2.4",
@@ -29,7 +29,7 @@
     "fluid-grunt-eslint": "18.1.2",
     "grunt": "1.0.1",
     "grunt-jsonlint": "1.1.0",
-    "kettle": "1.3.1",
+    "kettle": "1.3.2",
     "node-jqunit": "1.1.4",
     "request": "2.79.0",
     "tough-cookie": "2.3.2"
