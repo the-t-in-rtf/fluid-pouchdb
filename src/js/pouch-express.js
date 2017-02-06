@@ -253,6 +253,7 @@ fluid.defaults("gpii.pouch.express.base", {
     expressPouchConfigPath:     "@expand:path.resolve({that}.options.baseDir, {that}.options.expressPouchConfigFilename)",
     expressPouchLogFilename:    "log.txt",
     expressPouchConfig: {
+        mode: "minimumForPouchDB",
         overrideMode: {
             exclude: [
                 "routes/changes", // Disable the unused changes API to avoid a leaked listener.
