@@ -26,6 +26,7 @@ fluid.registerNamespace("gpii.pouch.express");
 
 var os             = require("os");
 var fs             = require("fs");
+var rimraf         = require("rimraf");
 var memdown        = require("memdown");
 
 var expressPouchdb = require("express-pouchdb");
@@ -221,7 +222,7 @@ gpii.pouch.express.cleanup = function (that) {
         var cleanupSequence = fluid.promise.sequence(cleanupPromises);
         cleanupSequence.then(function () {
             if (that.baseDirBelongsToUs) {
-                fs.rmdir(that.options.baseDir, function (error) {
+                rimraf(that.options.baseDir, function (error) {
                     if (error) {
                         togo.reject(error);
                     }
