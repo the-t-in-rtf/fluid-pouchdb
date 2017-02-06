@@ -224,12 +224,12 @@ gpii.pouch.express.cleanup = function (that) {
             if (that.baseDirBelongsToUs) {
                 rimraf(that.options.baseDir, function (error) {
                     if (error) {
-                        togo.reject(error);
+                        fluid.log("ERROR: Unable to remove base directory...\n", error);
                     }
                     else {
                         fluid.log("Removed temporary directory '", that.options.baseDir, "'...");
-                        togo.resolve();
                     }
+                    togo.resolve();
                 });
             }
             else {
