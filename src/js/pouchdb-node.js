@@ -57,15 +57,22 @@ gpii.pouch.node.makeSafePrefix = function (toResolve) {
  * @param that - The component itself.
  */
 gpii.pouch.node.cleanup = function (that) {
+    var togo = fluid.promise();
+
     if (that.baseDirBelongsToUs) {
         rimraf(that.options.baseDir, function (error) {
             if (error) {
                 fluid.log("ERROR: Unable to remove base directory...\n", error);
             }
+            togo.resolve();
         });
+    }
+    else {
+        togo.resolve();
     }
 
     that.events.onCleanupComplete.fire();
+    return togo;
 };
 
 
@@ -124,6 +131,27 @@ gpii.pouch.node.loadDataIfNeeded = function (that) {
     });
 };
 
+/**
+ *
+ * Our pouch destruction needs to account for the directory removal before resolving its promise.
+ *
+ * @param that
+ * @param fnArgs
+ * @returns {*}
+ */
+gpii.pouch.node.destroyPouch = function (that, fnArgs) {
+    var togo = fluid.promise();
+
+    var dbDestroyPromise = gpii.pouch.callPouchFunction(that, "destroy", fnArgs, "onPouchDestroyComplete");
+
+    dbDestroyPromise.then(function () {
+        var dirCleanupPromise = gpii.pouch.node.cleanup(that);
+        dirCleanupPromise.then(togo.resolve, togo.reject);
+    }, togo.reject);
+
+    return togo;
+};
+
 fluid.defaults("gpii.pouch.node.base", {
     gradeNames: ["gpii.pouch"],
     tmpDir:     os.tmpdir(),
@@ -144,6 +172,10 @@ fluid.defaults("gpii.pouch.node.base", {
         onReady:     null
     },
     invokers: {
+        destroyPouch: {
+            funcName: "gpii.pouch.node.destroyPouch",
+            args:     ["{that}", "{arguments}"] // fnName, fnArgs, eventName
+        },
         loadData: {
             funcName: "gpii.pouch.node.loadDataFromPath",
             args:     ["{that}", "{arguments}.0"]
@@ -158,10 +190,6 @@ fluid.defaults("gpii.pouch.node.base", {
         "onDataLoaded.log": {
             funcName: "fluid.log",
             args:     ["Data loaded for database '", "{that}.options.dbOptions.name", "'..."]
-        },
-        "onPouchDestroyComplete.cleanup": {
-            funcName: "gpii.pouch.node.cleanup",
-            args:     ["{that}"]
         }
     }
 });
