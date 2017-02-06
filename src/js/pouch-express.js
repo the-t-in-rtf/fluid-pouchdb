@@ -222,7 +222,7 @@ gpii.pouch.express.cleanup = function (that) {
         var cleanupSequence = fluid.promise.sequence(cleanupPromises);
         cleanupSequence.then(function () {
             if (that.baseDirBelongsToUs) {
-                rimraf(that.options.baseDir, { maxBusyTries: 5 }, function (error) {
+                rimraf(that.options.baseDir, function (error) {
                     if (error) {
                         togo.reject(error);
                     }
