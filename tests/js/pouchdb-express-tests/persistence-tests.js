@@ -218,7 +218,10 @@ fluid.defaults("gpii.tests.pouch.persistent.environment", {
     hangWait:   15000,
     pouchConfig: {
         databases: {
-            persistence: { data: ["%gpii-pouchdb/tests/data/persistence"]}
+            persistence: { data: ["%gpii-pouchdb/tests/data/persistence"]},
+            _replicator: {},
+            _users: {},
+            pouch__all_dbs__: {}
         }
     },
     // We cannot use the normal logic to determine whether to delete the test directory, as we intentionally persist it
