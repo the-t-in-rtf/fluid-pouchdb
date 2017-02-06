@@ -203,7 +203,8 @@ gpii.pouch.express.cleanup = function (that) {
         var cleanupPromises = [];
 
         fluid.each(that.databaseInstances, function (databaseInstance) {
-            cleanupPromises.push(databaseInstance.destroyPouch());
+            // Ensure that one cleanup at a time takes place.
+            cleanupPromises.push(function () { return databaseInstance.destroyPouch(); });
         });
 
         var optionsFileCleanupPromise = fluid.promise();
