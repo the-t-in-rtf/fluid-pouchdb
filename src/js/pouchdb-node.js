@@ -58,6 +58,7 @@ gpii.pouch.node.makeSafePrefix = function (toResolve) {
  */
 gpii.pouch.node.cleanup = function (that) {
     var togo = fluid.promise();
+    togo.then(that.events.onCleanupComplete.fire);
 
     if (that.baseDirBelongsToUs) {
         rimraf(that.options.baseDir, function (error) {
@@ -71,7 +72,6 @@ gpii.pouch.node.cleanup = function (that) {
         togo.resolve();
     }
 
-    that.events.onCleanupComplete.fire();
     return togo;
 };
 

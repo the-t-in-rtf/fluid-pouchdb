@@ -231,6 +231,10 @@ fluid.defaults("gpii.tests.pouch.persistent.environment", {
         {
             record: true,
             target: "{that gpii.pouch.express.base}.options.members.baseDirBelongsToUs"
+        },
+        {
+            record: true,
+            target: "{that gpii.pouch.node.base}.options.members.baseDirBelongsToUs"
         }
     ]
 });
