@@ -62,7 +62,7 @@ gpii.pouch.node.cleanup = function (that) {
     if (that.baseDirBelongsToUs) {
         rimraf(that.options.baseDir, function (error) {
             if (error) {
-                fluid.log("ERROR: Unable to remove base directory...\n", error);
+                fluid.log("ERROR: Unable to remove pouch base directory...\n", error);
             }
             togo.resolve();
         });

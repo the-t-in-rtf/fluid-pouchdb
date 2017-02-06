@@ -227,7 +227,7 @@ gpii.pouch.express.cleanup = function (that) {
                 setTimeout(function () {
                     rimraf(that.options.baseDir, function (error) {
                         if (error) {
-                            fluid.log("ERROR: Unable to remove base directory...\n", error);
+                            fluid.log("ERROR: Unable to remove express-pouchdb base directory...\n", error);
                         }
                         else {
                             fluid.log("Removed temporary directory '", that.options.baseDir, "'...");
