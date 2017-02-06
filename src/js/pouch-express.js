@@ -223,15 +223,18 @@ gpii.pouch.express.cleanup = function (that) {
         var cleanupSequence = fluid.promise.sequence(cleanupPromises);
         cleanupSequence.then(function () {
             if (that.baseDirBelongsToUs) {
-                rimraf(that.options.baseDir, function (error) {
-                    if (error) {
-                        fluid.log("ERROR: Unable to remove base directory...\n", error);
-                    }
-                    else {
-                        fluid.log("Removed temporary directory '", that.options.baseDir, "'...");
-                    }
-                    togo.resolve();
-                });
+                // Delay removing our directory to give stubborn code elsewhere time to clean itself up
+                setTimeout(function () {
+                    rimraf(that.options.baseDir, function (error) {
+                        if (error) {
+                            fluid.log("ERROR: Unable to remove base directory...\n", error);
+                        }
+                        else {
+                            fluid.log("Removed temporary directory '", that.options.baseDir, "'...");
+                        }
+                        togo.resolve();
+                    });
+                }, that.options.youHaveNoChanceToSurviveMakeYourTime);
             }
             else {
                 togo.resolve();
@@ -249,6 +252,7 @@ fluid.defaults("gpii.pouch.express.base", {
     namespace: "pouch-express", // Namespace to allow other routers to put themselves in the chain before or after us.
     tmpDir:  os.tmpdir(),
     baseDir: "@expand:path.resolve({that}.options.tmpDir, {that}.id)",
+    youHaveNoChanceToSurviveMakeYourTime: 500, // Delay removing our directory to give stubborn code elsewhere time to clean itself up
     expressPouchConfigFilename: "config.json",
     expressPouchConfigPath:     "@expand:path.resolve({that}.options.baseDir, {that}.options.expressPouchConfigFilename)",
     expressPouchLogFilename:    "log.txt",
