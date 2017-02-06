@@ -164,11 +164,20 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
                 name: "Clean up at the end of the run...",
                 type: "test",
                 sequence: [
+                    // {
+                    //     task:        "{harness}.cleanup",
+                    //     resolve:     "jqUnit.assert",
+                    //     resolveArgs: ["The final cleanup should complete as expected"]
+                    // }
                     {
-                        task:        "{harness}.cleanup",
-                        resolve:     "jqUnit.assert",
-                        resolveArgs: ["The final cleanup should complete as expexted"]
+                        func: "{testEnvironment}.events.onCleanup.fire"
+                    },
+                    {
+                        event:     "{testEnvironment}.events.onCleanupComplete",
+                        listener:  "jqUnit.assert",
+                        args: ["The final cleanup should complete as expected"]
                     }
+
                 ]
             }
         ]
