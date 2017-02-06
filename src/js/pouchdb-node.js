@@ -12,6 +12,7 @@ var gpii   = fluid.registerNamespace("gpii");
 var fs     = require("fs");
 var os     = require("os");
 var path   = require("path");
+var rimraf = require("rimraf");
 
 require("../../");
 
@@ -57,12 +58,9 @@ gpii.pouch.node.makeSafePrefix = function (toResolve) {
  */
 gpii.pouch.node.cleanup = function (that) {
     if (that.baseDirBelongsToUs) {
-        try {
-            fs.rmdirSync(that.options.baseDir);
-        }
-        catch (error) {
+        rimraf(that.options.baseDir, function (error) {
             fluid.log("ERROR: Unable to remove base directory...\n", error);
-        }
+        });
     }
 
     that.events.onCleanupComplete.fire();
