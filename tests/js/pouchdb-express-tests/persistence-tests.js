@@ -215,6 +215,7 @@ fluid.defaults("gpii.tests.pouch.persistent.environment", {
         }
     },
     port:       6798,
+    hangWait:   15000,
     pouchConfig: {
         databases: {
             persistence: { data: ["%gpii-pouchdb/tests/data/persistence"]},
