@@ -251,7 +251,7 @@ fluid.defaults("gpii.tests.pouch.persistent.environment", {
         databases: {
             persistence: { data: ["%gpii-pouchdb/tests/data/persistence"]},
             _replicator: {},
-            _users: {},
+            // _users: {},
             pouch__all_dbs__: {}
         }
     },
