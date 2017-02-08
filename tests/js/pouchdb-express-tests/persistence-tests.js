@@ -28,11 +28,15 @@ fluid.defaults("gpii.tests.pouch.persistent.request.view", {
 
 fluid.registerNamespace("gpii.tests.pouch.persistent.caseHolder");
 gpii.tests.pouch.persistent.caseHolder.extraCleanup = function (harness) {
-    if (fs.existsSync(harness.options.baseDir)) {
-        rimraf(harness.options.baseDir, function (error) {
-            jqUnit.assertUndefined("We should be able to eventually clean up straggling windows files...", error);
-        });
-    }
+    var baseDir = harness.options.baseDir;
+    harness.events.afterDestroy.addListener(function () {
+        if (fs.existsSync(baseDir)) {
+            fluid.log("Cleaning up straggling filesystem content...");
+            rimraf(baseDir, function (error) {
+                jqUnit.assertUndefined("We should be able to eventually clean up straggling windows files...", error);
+            });
+        }
+    });
 };
 
 fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
