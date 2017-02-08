@@ -33,6 +33,7 @@ gpii.tests.pouch.persistent.caseHolder.extraCleanup = function (harness) {
         if (fs.existsSync(baseDir)) {
             fluid.log("Cleaning up straggling filesystem content in '", baseDir, "'...");
             rimraf(baseDir, function (error) {
+                fluid.log("removed...");
                 jqUnit.assertUndefined("We should be able to eventually clean up straggling windows files...", error);
             });
         }
