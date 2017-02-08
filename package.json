@@ -8,7 +8,8 @@
     "pretest": "node node_modules/rimraf/bin.js reports/*",
     "test": "npm run test:browser && npm run test:node",
     "test:browser": "node node_modules/testem/testem.js ci --skip safari,phantomjs",
-    "test:node": "node node_modules/istanbul/lib/cli.js cover tests/js/all-tests.js --print summary"
+    "test:node": "node node_modules/istanbul/lib/cli.js cover tests/js/all-tests.js --print summary",
+    "posttest": "node tests/js/pouchdb-express-tests/final-cleanup.js"
   },
   "dependencies": {
     "express": "4.14.0",
