@@ -31,7 +31,7 @@ gpii.tests.pouch.persistent.caseHolder.extraCleanup = function (harness) {
     var baseDir = harness.options.baseDir;
     harness.events.afterDestroy.addListener(function () {
         if (fs.existsSync(baseDir)) {
-            fluid.log("Cleaning up straggling filesystem content...");
+            fluid.log("Cleaning up straggling filesystem content in '", baseDir, "'...");
             rimraf(baseDir, function (error) {
                 jqUnit.assertUndefined("We should be able to eventually clean up straggling windows files...", error);
             });
