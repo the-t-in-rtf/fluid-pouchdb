@@ -8,6 +8,10 @@
 var fluid  = require("infusion");
 var gpii   = fluid.registerNamespace("gpii");
 
+var rimraf = require("rimraf");
+var jqUnit = require("node-jqunit");
+var fs     = require("fs");
+
 require("../../../");
 gpii.pouch.loadTestingSupport();
 
@@ -22,6 +26,14 @@ fluid.defaults("gpii.tests.pouch.persistent.request.view", {
     path: "/persistence/_design/persistence/_view/byId?startKey=%22new%22"
 });
 
+fluid.registerNamespace("gpii.tests.pouch.persistent.caseHolder");
+gpii.tests.pouch.persistent.caseHolder.extraCleanup = function (harness) {
+    if (fs.existsSync(harness.options.baseDir)) {
+        rimraf(harness.options.baseDir, function (error) {
+            jqUnit.assertUndefined("We should be able to eventually clean up straggling windows files...", error);
+        });
+    }
+};
 
 fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
     gradeNames: ["gpii.test.pouch.caseHolder.base"],
@@ -173,11 +185,16 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
                         func: "{testEnvironment}.events.onCleanup.fire"
                     },
                     {
-                        event:     "{testEnvironment}.events.onCleanupComplete",
-                        listener:  "jqUnit.assert",
-                        args: ["The final cleanup should complete as expected"]
+                        event:    "{testEnvironment}.events.onCleanupComplete",
+                        listener: "jqUnit.assert",
+                        args:     ["The final cleanup should complete as expected"]
+                    },
+                    // An additional cleanup step required to pick up straggling _user lockfiles and logs in Windows.
+                    // See: https://github.com/GPII/gpii-pouchdb/pull/13#issuecomment-278364757
+                    {
+                        func: "gpii.tests.pouch.persistent.caseHolder.extraCleanup",
+                        args: ["{testEnvironment}.harness"]
                     }
-
                 ]
             }
         ]
