@@ -1164,9 +1164,9 @@ express-handlebars@1.2.2:
     promise "^6.0.0"
     semver "^3.0.1"
 
-"express-pouchdb@git://github.com/the-t-in-rtf/express-pouchdb.git#fa2778d1fdb6ac7c9d8adf7894b12df2e9e134f0":
+"express-pouchdb@git://github.com/the-t-in-rtf/express-pouchdb.git#e3a0a4c1c9ed094353a1afb745f17c41b2dd042c":
   version "2.1.0"
-  resolved "git://github.com/the-t-in-rtf/express-pouchdb.git#fa2778d1fdb6ac7c9d8adf7894b12df2e9e134f0"
+  resolved "git://github.com/the-t-in-rtf/express-pouchdb.git#e3a0a4c1c9ed094353a1afb745f17c41b2dd042c"
   dependencies:
     basic-auth "1.0.4"
     bluebird "3.4.1"
@@ -1179,7 +1179,7 @@ express-handlebars@1.2.2:
     multiparty "3.3.2"
     node-uuid "1.4.7"
     on-finished "2.3.0"
-    pouchdb-all-dbs "https://github.com/the-t-in-rtf/pouchdb-all-dbs.git#fdafd6b1f5f94914f1fea3641c62377dd70a43fc"
+    pouchdb-all-dbs "git://github.com/the-t-in-rtf/pouchdb-all-dbs.git#fdafd6b1f5f94914f1fea3641c62377dd70a43fc"
     pouchdb-auth "2.1.1"
     pouchdb-find "0.10.3"
     pouchdb-list "1.1.0"
@@ -2899,9 +2899,9 @@ pluralize@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-1.2.1.tgz#d1a21483fd22bb41e58a12fa3421823140897c45"
 
-"pouchdb-all-dbs@https://github.com/the-t-in-rtf/pouchdb-all-dbs.git#fdafd6b1f5f94914f1fea3641c62377dd70a43fc":
+"pouchdb-all-dbs@git://github.com/the-t-in-rtf/pouchdb-all-dbs.git#fdafd6b1f5f94914f1fea3641c62377dd70a43fc":
   version "1.0.2"
-  resolved "https://github.com/the-t-in-rtf/pouchdb-all-dbs.git#fdafd6b1f5f94914f1fea3641c62377dd70a43fc"
+  resolved "git://github.com/the-t-in-rtf/pouchdb-all-dbs.git#fdafd6b1f5f94914f1fea3641c62377dd70a43fc"
   dependencies:
     argsarray "0.0.1"
     es3ify "^0.1.3"

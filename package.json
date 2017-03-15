@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "express": "4.14.0",
-    "express-pouchdb": "git://github.com/the-t-in-rtf/express-pouchdb.git#fa2778d1fdb6ac7c9d8adf7894b12df2e9e134f0",
+    "express-pouchdb": "git://github.com/the-t-in-rtf/express-pouchdb.git#e3a0a4c1c9ed094353a1afb745f17c41b2dd042c",
     "gpii-express": "1.0.5",
     "infusion": "3.0.0-dev.20170131T153243Z.6aab53a",
     "istanbul": "0.4.5",
