@@ -1013,7 +1013,7 @@ eslint-config-fluid@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/eslint-config-fluid/-/eslint-config-fluid-1.1.0.tgz#82b8bff6d208ff2492938cbe1a011d4ca2362a97"
 
-eslint@^3.17.1:
+eslint@3.17.1:
   version "3.17.1"
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-3.17.1.tgz#b80ae12d9c406d858406fccda627afce33ea10ea"
   dependencies:
@@ -1631,7 +1631,7 @@ gpii-express@1.0.2-dev.20170303T152835Z.fda504c:
     express-session "1.15.0"
     infusion "3.0.0-dev.20170127T130413Z.103de6e"
 
-gpii-express@^1.0.5:
+gpii-express@1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/gpii-express/-/gpii-express-1.0.5.tgz#10160153800224dddecb6c104e4aa5115562f2b6"
   dependencies:
@@ -1654,7 +1654,7 @@ gpii-handlebars@1.0.0:
     pagedown "1.1.0"
     underscore-node "0.1.2"
 
-gpii-testem@^1.0.0-dev.20170308T132406Z.afcf388:
+gpii-testem@1.0.0-dev.20170308T132406Z.afcf388:
   version "1.0.0-dev.20170308T132406Z.afcf388"
   resolved "https://registry.yarnpkg.com/gpii-testem/-/gpii-testem-1.0.0-dev.20170308T132406Z.afcf388.tgz#8c132cad5f24b60b86c1a59a90892b9072c2e6e9"
   dependencies:
@@ -3416,7 +3416,7 @@ request@2, request@2.79.0:
     tunnel-agent "~0.4.1"
     uuid "^3.0.0"
 
-request@^2.81.0:
+request@2.81.0:
   version "2.81.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.81.0.tgz#c6928946a0e06c5f8d6f8a9333469ffda46298a0"
   dependencies:
