@@ -744,13 +744,13 @@ debug@2.3.3:
   dependencies:
     ms "0.7.2"
 
-debug@2.6.0, debug@^2.1.1:
+debug@2.6.0, debug@^2.1.0, debug@^2.1.1:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.0.tgz#bc596bcabe7617f11d9fa15361eded5608b8499b"
   dependencies:
     ms "0.7.2"
 
-debug@2.6.1, debug@^2.1.0, debug@^2.2.0:
+debug@2.6.1, debug@^2.2.0:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.1.tgz#79855090ba2c4e3115cc7d8769491d58f0491351"
   dependencies:
@@ -1621,16 +1621,6 @@ gpii-express@1.0.2:
     express-session "1.15.0"
     infusion "3.0.0-dev.20170127T130413Z.103de6e"
 
-gpii-express@1.0.2-dev.20170303T152835Z.fda504c:
-  version "1.0.2-dev.20170303T152835Z.fda504c"
-  resolved "https://registry.yarnpkg.com/gpii-express/-/gpii-express-1.0.2-dev.20170303T152835Z.fda504c.tgz#fcef66ea05def21087da4e439838fe37eb614300"
-  dependencies:
-    body-parser "1.16.0"
-    cookie-parser "1.4.3"
-    express "4.14.0"
-    express-session "1.15.0"
-    infusion "3.0.0-dev.20170127T130413Z.103de6e"
-
 gpii-express@1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/gpii-express/-/gpii-express-1.0.5.tgz#10160153800224dddecb6c104e4aa5115562f2b6"
@@ -1654,17 +1644,17 @@ gpii-handlebars@1.0.0:
     pagedown "1.1.0"
     underscore-node "0.1.2"
 
-gpii-testem@1.0.0-dev.20170308T132406Z.afcf388:
-  version "1.0.0-dev.20170308T132406Z.afcf388"
-  resolved "https://registry.yarnpkg.com/gpii-testem/-/gpii-testem-1.0.0-dev.20170308T132406Z.afcf388.tgz#8c132cad5f24b60b86c1a59a90892b9072c2e6e9"
+gpii-testem@1.0.0-dev.20170315T110635Z.8ed42c2:
+  version "1.0.0-dev.20170315T110635Z.8ed42c2"
+  resolved "https://registry.yarnpkg.com/gpii-testem/-/gpii-testem-1.0.0-dev.20170315T110635Z.8ed42c2.tgz#cba80f0862bcbe99bc27511cb7d81855247b6178"
   dependencies:
-    gpii-express "1.0.2-dev.20170303T152835Z.fda504c"
+    gpii-express "1.0.5"
     gpii-handlebars "1.0.0"
     infusion "git://github.com/amb26/infusion.git#3ee14d99e2169e9870dffcbd1119aa109a3277c8"
     istanbul "0.4.5"
     node-jqunit "1.1.4"
     qunitjs "2.1.1"
-    rimraf "2.6.0"
+    rimraf "2.6.1"
     testem "1.15.0"
 
 graceful-fs@^3.0.2:
@@ -3303,9 +3293,18 @@ read-pkg@^1.0.0:
     normalize-package-data "^2.3.2"
     path-type "^1.0.0"
 
-readable-stream@1.0.33, "readable-stream@>=1.0.33-1 <1.1.0-0", readable-stream@^1.0.33:
+readable-stream@1.0.33, "readable-stream@>=1.0.33-1 <1.1.0-0":
   version "1.0.33"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-1.0.33.tgz#3a360dd66c1b1d7fd4705389860eda1d0f61126c"
+  dependencies:
+    core-util-is "~1.0.0"
+    inherits "~2.0.1"
+    isarray "0.0.1"
+    string_decoder "~0.10.x"
+
+readable-stream@^1.0.33, readable-stream@~1.1.8, readable-stream@~1.1.9:
+  version "1.1.14"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-1.1.14.tgz#7cf4c54ef648e3813084c636dd2079e166c081d9"
   dependencies:
     core-util-is "~1.0.0"
     inherits "~2.0.1"
@@ -3326,15 +3325,6 @@ readable-stream@^2, readable-stream@^2.0.0, "readable-stream@^2.0.0 || ^1.1.13",
 readable-stream@~0.0.2:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-0.0.4.tgz#f32d76e3fb863344a548d79923007173665b3b8d"
-
-readable-stream@~1.1.8, readable-stream@~1.1.9:
-  version "1.1.14"
-  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-1.1.14.tgz#7cf4c54ef648e3813084c636dd2079e166c081d9"
-  dependencies:
-    core-util-is "~1.0.0"
-    inherits "~2.0.1"
-    isarray "0.0.1"
-    string_decoder "~0.10.x"
 
 readline2@^1.0.1:
   version "1.0.1"
@@ -3482,12 +3472,6 @@ right-align@^0.1.1:
 rimraf@2, rimraf@2.6.1, rimraf@^2.2.8, rimraf@^2.4.4:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.6.1.tgz#c2338ec643df7a1b7fe5c54fa86f57428a55f33d"
-  dependencies:
-    glob "^7.0.5"
-
-rimraf@2.6.0:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.6.0.tgz#89b8a0fe432b9ff9ec9a925a00b6cdb3a91bbada"
   dependencies:
     glob "^7.0.5"
 

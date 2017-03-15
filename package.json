@@ -30,7 +30,7 @@
     "eslint": "3.17.1",
     "eslint-config-fluid": "1.1.0",
     "fluid-grunt-eslint": "18.1.2",
-    "gpii-testem": "1.0.0-dev.20170308T132406Z.afcf388",
+    "gpii-testem": "1.0.0-dev.20170315T110635Z.8ed42c2",
     "grunt": "1.0.1",
     "grunt-jsonlint": "1.1.0",
     "kettle": "1.4.0",
