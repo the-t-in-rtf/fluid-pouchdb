@@ -66,6 +66,13 @@ ajv@^4.7.0:
     co "^4.6.0"
     json-stable-stringify "^1.0.1"
 
+ajv@^4.9.1:
+  version "4.11.5"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-4.11.5.tgz#b6ee74657b993a01dce44b7944d56f485828d5bd"
+  dependencies:
+    co "^4.6.0"
+    json-stable-stringify "^1.0.1"
+
 align-text@^0.1.1, align-text@^0.1.3:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/align-text/-/align-text-0.1.4.tgz#0cd90a561093f35d0a99256c22b7069433fad117"
@@ -151,6 +158,10 @@ arraybuffer.slice@0.0.6:
 arrify@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
+
+asap@~1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/asap/-/asap-1.0.0.tgz#b2a45da5fdfa20b0496fc3768cc27c12fa916a7d"
 
 asn1@~0.2.3:
   version "0.2.3"
@@ -422,6 +433,10 @@ camelcase@^2.0.0:
 caseless@~0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.11.0.tgz#715b96ea9841593cc33067923f5ec60ebda4f7d7"
+
+caseless@~0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
 
 center-align@^0.1.1:
   version "0.1.3"
@@ -717,7 +732,7 @@ dateformat@~1.0.12:
     get-stdin "^4.0.1"
     meow "^3.3.0"
 
-debug@2.2.0, debug@^2.1.0, debug@^2.1.1, debug@~2.2.0:
+debug@2.2.0, debug@~2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.2.0.tgz#f87057e995b1a1f6ae6a4960664137bc56f039da"
   dependencies:
@@ -729,7 +744,7 @@ debug@2.3.3:
   dependencies:
     ms "0.7.2"
 
-debug@2.6.0:
+debug@2.6.0, debug@^2.1.0, debug@^2.1.1:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.0.tgz#bc596bcabe7617f11d9fa15361eded5608b8499b"
   dependencies:
@@ -998,9 +1013,9 @@ eslint-config-fluid@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/eslint-config-fluid/-/eslint-config-fluid-1.1.0.tgz#82b8bff6d208ff2492938cbe1a011d4ca2362a97"
 
-eslint@3.16.1:
-  version "3.16.1"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-3.16.1.tgz#9bc31fc7341692cf772e80607508f67d711c5609"
+eslint@^3.17.1:
+  version "3.17.1"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-3.17.1.tgz#b80ae12d9c406d858406fccda627afce33ea10ea"
   dependencies:
     babel-code-frame "^6.16.0"
     chalk "^1.1.3"
@@ -1138,6 +1153,16 @@ exit@~0.1.1:
 expand-template@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/expand-template/-/expand-template-1.0.3.tgz#6c303323177a62b1b22c070279f7861287b69b1a"
+
+express-handlebars@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/express-handlebars/-/express-handlebars-1.2.2.tgz#945530aea626f0b87130dc8dbea2b6cea9c43460"
+  dependencies:
+    glob "^5.0.0"
+    graceful-fs "^3.0.2"
+    handlebars "^2.0.0"
+    promise "^6.0.0"
+    semver "^3.0.1"
 
 "express-pouchdb@https://github.com/the-t-in-rtf/express-pouchdb.git#fa2778d1fdb6ac7c9d8adf7894b12df2e9e134f0":
   version "2.1.0"
@@ -1544,7 +1569,7 @@ github-from-package@0.0.0:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^5.0.15, glob@~5.0.0:
+glob@^5.0.0, glob@^5.0.15, glob@~5.0.0:
   version "5.0.15"
   resolved "https://registry.yarnpkg.com/glob/-/glob-5.0.15.tgz#1bc936b9e02f4a603fcc222ecf7633d30b8b93b1"
   dependencies:
@@ -1580,6 +1605,12 @@ globby@^5.0.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
+gpii-binder@1.0.0-dev.20170127T144054Z.54a5ef2:
+  version "1.0.0-dev.20170127T144054Z.54a5ef2"
+  resolved "https://registry.yarnpkg.com/gpii-binder/-/gpii-binder-1.0.0-dev.20170127T144054Z.54a5ef2.tgz#a56985dcfdbf0a52970a9b42fe3f39d375a50d63"
+  dependencies:
+    infusion "3.0.0-dev.20170127T130413Z.103de6e"
+
 gpii-express@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/gpii-express/-/gpii-express-1.0.2.tgz#be71f0d453c536b66de1b86af0056831ed738105"
@@ -1590,17 +1621,57 @@ gpii-express@1.0.2:
     express-session "1.15.0"
     infusion "3.0.0-dev.20170127T130413Z.103de6e"
 
-gpii-testem@1.0.0-dev.20170301T121642Z.8e9b44d:
-  version "1.0.0-dev.20170301T121642Z.8e9b44d"
-  resolved "https://registry.yarnpkg.com/gpii-testem/-/gpii-testem-1.0.0-dev.20170301T121642Z.8e9b44d.tgz#938de993a7b3d592a56b98963c660ae1ab794979"
+gpii-express@1.0.2-dev.20170303T152835Z.fda504c:
+  version "1.0.2-dev.20170303T152835Z.fda504c"
+  resolved "https://registry.yarnpkg.com/gpii-express/-/gpii-express-1.0.2-dev.20170303T152835Z.fda504c.tgz#fcef66ea05def21087da4e439838fe37eb614300"
   dependencies:
-    gpii-express "1.0.2"
+    body-parser "1.16.0"
+    cookie-parser "1.4.3"
+    express "4.14.0"
+    express-session "1.15.0"
     infusion "3.0.0-dev.20170127T130413Z.103de6e"
+
+gpii-express@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/gpii-express/-/gpii-express-1.0.5.tgz#10160153800224dddecb6c104e4aa5115562f2b6"
+  dependencies:
+    body-parser "1.16.0"
+    cookie-parser "1.4.3"
+    express "4.14.0"
+    express-session "1.15.0"
+    infusion "3.0.0-dev.20170127T130413Z.103de6e"
+
+gpii-handlebars@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/gpii-handlebars/-/gpii-handlebars-1.0.0.tgz#68c1b15e3774aa8c26e838fff470381eb311fec9"
+  dependencies:
+    express-handlebars "1.2.2"
+    gpii-binder "1.0.0-dev.20170127T144054Z.54a5ef2"
+    gpii-express "1.0.2"
+    handlebars "4.0.6"
+    infusion "3.0.0-dev.20170127T130413Z.103de6e"
+    marked "0.3.6"
+    pagedown "1.1.0"
+    underscore-node "0.1.2"
+
+gpii-testem@^1.0.0-dev.20170308T132406Z.afcf388:
+  version "1.0.0-dev.20170308T132406Z.afcf388"
+  resolved "https://registry.yarnpkg.com/gpii-testem/-/gpii-testem-1.0.0-dev.20170308T132406Z.afcf388.tgz#8c132cad5f24b60b86c1a59a90892b9072c2e6e9"
+  dependencies:
+    gpii-express "1.0.2-dev.20170303T152835Z.fda504c"
+    gpii-handlebars "1.0.0"
+    infusion "git://github.com/amb26/infusion.git#3ee14d99e2169e9870dffcbd1119aa109a3277c8"
     istanbul "0.4.5"
     node-jqunit "1.1.4"
     qunitjs "2.1.1"
     rimraf "2.6.0"
     testem "1.15.0"
+
+graceful-fs@^3.0.2:
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-3.0.11.tgz#7613c778a1afea62f25c630a086d7f3acbbdd818"
+  dependencies:
+    natives "^1.1.0"
 
 graceful-fs@^4.1.2:
   version "4.1.10"
@@ -1684,7 +1755,7 @@ grunt@1.0.1:
     path-is-absolute "~1.0.0"
     rimraf "~2.2.8"
 
-handlebars@^4.0.1:
+handlebars@4.0.6, handlebars@^4.0.1:
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.0.6.tgz#2ce4484850537f9c97a8026d5399b935c4ed4ed7"
   dependencies:
@@ -1694,6 +1765,18 @@ handlebars@^4.0.1:
   optionalDependencies:
     uglify-js "^2.6"
 
+handlebars@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-2.0.0.tgz#6e9d7f8514a3467fa5e9f82cc158ecfc1d5ac76f"
+  dependencies:
+    optimist "~0.3"
+  optionalDependencies:
+    uglify-js "~2.3"
+
+har-schema@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/har-schema/-/har-schema-1.0.5.tgz#d263135f43307c02c602afc8fe95970c0151369e"
+
 har-validator@~2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/har-validator/-/har-validator-2.0.6.tgz#cdcbc08188265ad119b6a5a7c8ab70eecfb5d27d"
@@ -1702,6 +1785,13 @@ har-validator@~2.0.6:
     commander "^2.9.0"
     is-my-json-valid "^2.12.4"
     pinkie-promise "^2.0.0"
+
+har-validator@~4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/har-validator/-/har-validator-4.2.1.tgz#33481d0f1bbff600dd203d75812a6a5fba002e2a"
+  dependencies:
+    ajv "^4.9.1"
+    har-schema "^1.0.5"
 
 has-ansi@^2.0.0:
   version "2.0.0"
@@ -1878,6 +1968,12 @@ infusion@3.0.0-dev.20170131T153243Z.6aab53a:
 infusion@3.0.0-dev.20170214T161720Z.6126724:
   version "3.0.0-dev.20170214T161720Z.6126724"
   resolved "https://registry.yarnpkg.com/infusion/-/infusion-3.0.0-dev.20170214T161720Z.6126724.tgz#02af003f7f50a22edf5a9b0f4a7d604bc49f6d85"
+  dependencies:
+    fluid-resolve "1.2.0"
+
+"infusion@git://github.com/amb26/infusion.git#3ee14d99e2169e9870dffcbd1119aa109a3277c8":
+  version "3.0.0"
+  resolved "git://github.com/amb26/infusion.git#3ee14d99e2169e9870dffcbd1119aa109a3277c8"
   dependencies:
     fluid-resolve "1.2.0"
 
@@ -2387,6 +2483,10 @@ map-obj@^1.0.0, map-obj@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
 
+marked@0.3.6:
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.6.tgz#b2c6c618fccece4ef86c4fc6cb8a7cbf5aeda8d7"
+
 media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
@@ -2497,6 +2597,10 @@ mute-stream@0.0.5:
 nan@~2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.4.0.tgz#fb3c59d45fe4effe215f0b890f8adf6eb32d2232"
+
+natives@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/natives/-/natives-1.1.0.tgz#e9ff841418a6b2ec7a495e939984f78f163e6e31"
 
 natural-compare@^1.4.0:
   version "1.4.0"
@@ -2667,6 +2771,12 @@ optimist@^0.6.1:
     minimist "~0.0.1"
     wordwrap "~0.0.2"
 
+optimist@~0.3, optimist@~0.3.5:
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/optimist/-/optimist-0.3.7.tgz#c90941ad59e4273328923074d2cf2e7cbc6ec0d9"
+  dependencies:
+    wordwrap "~0.0.2"
+
 optionator@^0.8.1, optionator@^0.8.2:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/optionator/-/optionator-0.8.2.tgz#364c5e409d3f4d6301d6c0b4c05bba50180aeb64"
@@ -2696,6 +2806,10 @@ osenv@0:
   dependencies:
     os-homedir "^1.0.0"
     os-tmpdir "^1.0.0"
+
+pagedown@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/pagedown/-/pagedown-1.1.0.tgz#2b46c119d5d5b583cc3c9210a000b3d40e4e6f80"
 
 parse-json@^2.2.0:
   version "2.2.0"
@@ -2762,6 +2876,10 @@ path-type@^1.0.0:
     graceful-fs "^4.1.2"
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
+
+performance-now@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-0.2.0.tgz#33ef30c5c77d4ea21c5a53869d91b56d8f2555e5"
 
 pify@^2.0.0:
   version "2.3.0"
@@ -3073,6 +3191,12 @@ promise-nodify@^1.0.0, promise-nodify@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/promise-nodify/-/promise-nodify-1.0.2.tgz#0d0fb143c33400b0061b47e581257557047d4c5a"
 
+promise@^6.0.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/promise/-/promise-6.1.0.tgz#2ce729f6b94b45c26891ad0602c5c90e04c6eef6"
+  dependencies:
+    asap "~1.0.0"
+
 proxy-addr@~1.1.2, proxy-addr@~1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/proxy-addr/-/proxy-addr-1.1.3.tgz#dc97502f5722e888467b3fa2297a7b1ff47df074"
@@ -3118,6 +3242,10 @@ qs@6.2.1:
 qs@~6.3.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.3.0.tgz#f403b264f23bc01228c74131b407f18d5ea5d442"
+
+qs@~6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.4.0.tgz#13e26d28ad6b0ffaa91312cd3bf708ed351e7233"
 
 qunitjs@2.1.1:
   version "2.1.1"
@@ -3288,6 +3416,33 @@ request@2, request@2.79.0:
     tunnel-agent "~0.4.1"
     uuid "^3.0.0"
 
+request@^2.81.0:
+  version "2.81.0"
+  resolved "https://registry.yarnpkg.com/request/-/request-2.81.0.tgz#c6928946a0e06c5f8d6f8a9333469ffda46298a0"
+  dependencies:
+    aws-sign2 "~0.6.0"
+    aws4 "^1.2.1"
+    caseless "~0.12.0"
+    combined-stream "~1.0.5"
+    extend "~3.0.0"
+    forever-agent "~0.6.1"
+    form-data "~2.1.1"
+    har-validator "~4.2.1"
+    hawk "~3.1.3"
+    http-signature "~1.1.0"
+    is-typedarray "~1.0.0"
+    isstream "~0.1.2"
+    json-stringify-safe "~5.0.1"
+    mime-types "~2.1.7"
+    oauth-sign "~0.8.1"
+    performance-now "^0.2.0"
+    qs "~6.4.0"
+    safe-buffer "^5.0.1"
+    stringstream "~0.0.4"
+    tough-cookie "~2.3.0"
+    tunnel-agent "^0.6.0"
+    uuid "^3.0.0"
+
 require-uncached@^1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/require-uncached/-/require-uncached-1.0.3.tgz#4e0d56d6c9662fd31e43011c4b95aa49955421d3"
@@ -3350,6 +3505,10 @@ rx-lite@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/rx-lite/-/rx-lite-3.1.2.tgz#19ce502ca572665f3b647b10939f97fd1615f102"
 
+safe-buffer@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.0.1.tgz#d263ca54696cd8a306b5ca6551e92de57918fbe7"
+
 scope-eval@0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/scope-eval/-/scope-eval-0.0.3.tgz#166f2ccd1f3754429dec511805501f9d6923b5ec"
@@ -3361,6 +3520,10 @@ secure-random@^1.1.1:
 "semver@2 || 3 || 4 || 5", "semver@2.x || 3.x || 4 || 5", semver@^5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
+
+semver@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-3.0.1.tgz#720ac012515a252f91fb0dd2e99a56a70d6cf078"
 
 semver@~5.1.0:
   version "5.1.1"
@@ -3515,7 +3678,7 @@ socket.io@1.6.0:
     socket.io-client "1.6.0"
     socket.io-parser "2.3.1"
 
-source-map@0.1.31:
+source-map@0.1.31, source-map@~0.1.7:
   version "0.1.31"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.1.31.tgz#9f704d0d69d9e138a81badf6ebb4fde33d151c61"
   dependencies:
@@ -3789,6 +3952,12 @@ tryit@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/tryit/-/tryit-1.0.3.tgz#393be730a9446fd1ead6da59a014308f36c289cb"
 
+tunnel-agent@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/tunnel-agent/-/tunnel-agent-0.6.0.tgz#27a5dea06b36b04a0a9966774b290868f0fc40fd"
+  dependencies:
+    safe-buffer "^5.0.1"
+
 tunnel-agent@~0.4.1:
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/tunnel-agent/-/tunnel-agent-0.4.3.tgz#6373db76909fe570e08d73583365ed828a74eeeb"
@@ -3822,6 +3991,14 @@ uglify-js@^2.6:
     source-map "~0.5.1"
     uglify-to-browserify "~1.0.0"
     yargs "~3.10.0"
+
+uglify-js@~2.3:
+  version "2.3.6"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.3.6.tgz#fa0984770b428b7a9b2a8058f46355d14fef211a"
+  dependencies:
+    async "~0.2.6"
+    optimist "~0.3.5"
+    source-map "~0.1.7"
 
 uglify-to-browserify@~1.0.0:
   version "1.0.2"
