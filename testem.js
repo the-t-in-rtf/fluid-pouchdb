@@ -10,6 +10,7 @@ fluid.defaults("gpii.pouchdb.testem", {
     testPages:  "tests/js/pouchdb-component-tests/html/index.html",
     sourceDirs: ["src"],
     coverageDir: "%gpii-pouchdb/coverage",
+    reportsDir: "reports",
     serveDirs:  ["src", "node_modules"],
     testemOptions: {
         "framework":   "qunit",
