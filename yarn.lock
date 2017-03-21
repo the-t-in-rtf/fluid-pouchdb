@@ -1737,9 +1737,9 @@ gpii-handlebars@1.0.0:
     pagedown "1.1.0"
     underscore-node "0.1.2"
 
-gpii-testem@1.0.0-dev.20170316T103625Z.51966b6:
-  version "1.0.0-dev.20170316T103625Z.51966b6"
-  resolved "https://registry.yarnpkg.com/gpii-testem/-/gpii-testem-1.0.0-dev.20170316T103625Z.51966b6.tgz#010d781c9ce8707a188c06d5f321749642b920a4"
+gpii-testem@1.0.0-dev.20170320T122659Z.9282cb7:
+  version "1.0.0-dev.20170320T122659Z.9282cb7"
+  resolved "https://registry.yarnpkg.com/gpii-testem/-/gpii-testem-1.0.0-dev.20170320T122659Z.9282cb7.tgz#6ee41f4a1136aefc0509f5d5eeb4b22f3473cc95"
   dependencies:
     gpii-express "1.0.5"
     gpii-handlebars "1.0.0"
