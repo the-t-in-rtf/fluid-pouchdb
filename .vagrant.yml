@@ -3,37 +3,38 @@
 
 env:
   vms:
-#    windows7:
-#      cpu: 2                   # number of cpus
-#      memory: 2048             # amount of RAM memory
-#      clone: true              # use the linked_clone Vagrant feature
-#      autostart: true
-#      box: inclusivedesign/windows7-eval-x64
     windows10:
       cpu: 2                   # number of cpus
       memory: 2048             # amount of RAM memory
       clone: true              # use the linked_clone Vagrant feature
       autostart: true
-      box: inclusivedesign/windows10-eval
+      box: inclusivedesign/windows10-eval-x64-Apps
 
 stages:                # Stages to perform when 'ci test' command is invoked
   - setup              # Install our system-level dependencies, etc.
+  - vdrive             # Connect to our V: Network drive
   - test               # Run the actual tests
 
 setup_job:
   stage: setup
   script:
-    - choco upgrade firefox -y
-    - choco install python2 -y # Required to build leveldown
+#    - choco upgrade firefox -y
+    # Required to build leveldown
+    - choco install python2 -y
     - choco install nodejs.install --version 6.9.1 --forcex86 -y
-    - do.ps1 -c "npm install -g rimraf node-inspector"
-    # rimraf is required for our cleanup steps
-    # node-inspector is provided for convenience in manual debugging.
-    - do.ps1 -c "npm config set bin-links false"
+    # We must ensure that our global installs can create their bin links.
+    - "npm config set bin-links true --global"
+    # rimraf is required for our cleanup steps, node-inspector is provided for convenience in manual debugging.
+    - do.ps1 -c "npm install -g rimraf node-inspector prebuild prebuild-install"
+    - choco install vcbuildtools -y
+    - "npm config set msvs_version 2015 --global"
+vdrive_job:
+  stage: vdrive
+  script:
+    - "net use v: \\\\vboxsrv\\vagrant  /yes"
+    - "do.ps1 -c 'net use v: \\\\VBOXSVR\\vagrant /yes'"
 
 test_job:
   stage: test          # name of the stage
   script:              # One line per command to execute
-    - rimraf node_modules/*
-    - do.ps1 -c "npm install"
-    - do.ps1 -c "npm test"
+    - "do.ps1 -c 'v: && npm install && npm test'"
