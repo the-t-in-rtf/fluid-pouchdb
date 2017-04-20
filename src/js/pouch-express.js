@@ -26,7 +26,6 @@ fluid.registerNamespace("gpii.pouch.express");
 
 var os             = require("os");
 var fs             = require("fs");
-var rimraf         = require("rimraf");
 var memdown        = require("memdown");
 
 var expressPouchdb = require("express-pouchdb");
@@ -207,29 +206,18 @@ gpii.pouch.express.cleanup = function (that) {
             cleanupPromises.push(function () { return databaseInstance.destroyPouch(); });
         });
 
-        var optionsFileCleanupPromise = fluid.promise();
-
-        fs.unlink(that.options.expressPouchConfigPath, function (error) {
-            if (error) {
-                optionsFileCleanupPromise.reject(error);
-            }
-            else {
-                optionsFileCleanupPromise.resolve();
-            }
-        });
-
+        var optionsFileCleanupPromise = gpii.pouchdb.timelyRimraf(that.options.expressPouchConfigPath, {}, that.options.rimrafTimeout);
         cleanupPromises.push(optionsFileCleanupPromise);
 
         var cleanupSequence = fluid.promise.sequence(cleanupPromises);
         cleanupSequence.then(function () {
             if (that.baseDirBelongsToUs) {
-                rimraf(that.options.baseDir, function (error) {
-                    if (error) {
-                        fluid.log("ERROR: Unable to remove express-pouchdb base directory...\n", error);
-                    }
-                    else {
-                        fluid.log("Removed temporary directory '", that.options.baseDir, "'...");
-                    }
+                var removePromise = gpii.pouchdb.timelyRimraf(that.options.baseDir, {}, that.options.rimrafTimeout);
+                removePromise.then(function () {
+                    fluid.log("Removed temporary directory '", that.options.baseDir, "'...");
+                    togo.resolve();
+                }, function (error) {
+                    console.log("Error removing temporary directory:", error);
                     togo.resolve();
                 });
             }
@@ -309,6 +297,7 @@ fluid.defaults("gpii.pouch.express.base", {
 fluid.defaults("gpii.pouch.express", {
     gradeNames: ["gpii.pouch.express.base"],
     pouchGradeNames: ["gpii.pouch.node"],
+    rimrafTimeout: 1000,
     dbOptions: {
         prefix: "@expand:gpii.pouch.node.makeSafePrefix({that}.options.baseDir)"
     },

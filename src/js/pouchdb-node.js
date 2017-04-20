@@ -12,7 +12,6 @@ var gpii   = fluid.registerNamespace("gpii");
 var fs     = require("fs");
 var os     = require("os");
 var path   = require("path");
-var rimraf = require("rimraf");
 
 require("../../");
 
@@ -61,10 +60,9 @@ gpii.pouch.node.cleanup = function (that) {
     togo.then(that.events.onCleanupComplete.fire);
 
     if (that.baseDirBelongsToUs) {
-        rimraf(that.options.baseDir, function (error) {
-            if (error) {
-                fluid.log("ERROR: Unable to remove pouch base directory...\n", error);
-            }
+        var cleanupPromise = gpii.pouchdb.timelyRimraf(that.options.baseDir, {}, that.options.rimrafTimeout);
+        cleanupPromise.then(togo.resolve, function (error) {
+            fluid.log("Error cleaning up basedir:", error);
             togo.resolve();
         });
     }
@@ -157,6 +155,7 @@ fluid.defaults("gpii.pouch.node.base", {
     tmpDir:     os.tmpdir(),
     baseDir:    "@expand:path.resolve({that}.options.tmpDir, {that}.id)",
     removeDirOnCleanup: true,
+    rimrafTimeout: 1000,
     // Options to use when creating individual databases.
     members: {
         baseDirBelongsToUs: false
