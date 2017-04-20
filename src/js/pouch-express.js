@@ -224,7 +224,10 @@ gpii.pouch.express.cleanup = function (that) {
             else {
                 togo.resolve();
             }
-        }, togo.reject);
+        }, function (error) {
+            fluid.log("Cleanup error:", error);
+            togo.resolve();
+        });
     });
 
     return togo;
