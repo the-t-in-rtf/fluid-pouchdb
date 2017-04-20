@@ -32,7 +32,7 @@ gpii.pouchdb.timelyRimraf = function (pathToRemove, rimrafOptions, timeoutMs) {
     if (timeoutMs) {
         setTimeout(function () {
             if (!promise.disposition) {
-                promise.reject("Rimraf failed to complete within " + timeoutMs + "...");
+                promise.reject("Rimraf failed to complete within " + timeoutMs + " milliseconds...");
             }
         }, timeoutMs);
     }
