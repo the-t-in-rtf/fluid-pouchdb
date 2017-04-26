@@ -1660,9 +1660,9 @@ gpii-express@1.0.7:
     express-session "1.15.2"
     infusion "3.0.0-dev.20170322T234120Z.278de35"
 
-gpii-testem@1.0.0-dev.20170421T144625Z.05a2708:
-  version "1.0.0-dev.20170421T144625Z.05a2708"
-  resolved "https://registry.yarnpkg.com/gpii-testem/-/gpii-testem-1.0.0-dev.20170421T144625Z.05a2708.tgz#03480ce7a9ac867409e1f033da195170abda27e0"
+gpii-testem@1.0.0-dev.20170426T161352Z.8a06597:
+  version "1.0.0-dev.20170426T161352Z.8a06597"
+  resolved "https://registry.yarnpkg.com/gpii-testem/-/gpii-testem-1.0.0-dev.20170426T161352Z.8a06597.tgz#b71c39ab5ca388cdee1f92852779d3f6e0f05741"
   dependencies:
     gpii-express "1.0.7"
     infusion "3.0.0-dev.20170322T234120Z.278de35"
