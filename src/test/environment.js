@@ -7,8 +7,8 @@ require("../js/harness");
 
 fluid.registerNamespace("gpii.test.pouch.environment");
 
-gpii.test.pouch.environment.startCleanups = function (that) {
-    that.harness.express.expressPouch.events.onCleanup.fire();
+gpii.test.pouch.environment.stopFixtures = function (that) {
+    that.harness.events.stopFixtures.fire();
 };
 
 fluid.defaults("gpii.test.pouch.environment", {
@@ -38,13 +38,12 @@ fluid.defaults("gpii.test.pouch.environment", {
                 onHarnessReady: "onHarnessReady"
             }
         },
-        onCleanup:         null,
-        onCleanupComplete: null
-    },
-    listeners: {
-        "onCleanup.cleanup": {
-            funcName: "gpii.test.pouch.environment.startCleanups",
-            args:     ["{that}"]
+        stopFixtures: null,
+        onHarnessStopped: null,
+        onFixturesStopped: {
+            events: {
+                onHarnessStopped: "onHarnessStopped"
+            }
         }
     },
     components: {
@@ -54,26 +53,16 @@ fluid.defaults("gpii.test.pouch.environment", {
             options: {
                 port:       "{testEnvironment}.options.port",
                 listeners: {
-                    onReady: "{testEnvironment}.events.onHarnessReady.fire"
-                },
-                components: {
-                    express: {
-                        options: {
-                            components: {
-                                expressPouch: {
-                                    options: {
-                                        listeners: {
-                                            onCleanupComplete: {
-                                                func: "{testEnvironment}.events.onCleanupComplete.fire"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    onReady: "{testEnvironment}.events.onHarnessReady.fire",
+                    onFixturesStopped: "{testEnvironment}.events.onHarnessStopped.fire"
                 }
             }
+        }
+    },
+    listeners: {
+        "stopFixtures.stopHarness": {
+            funcName: "gpii.test.pouch.environment.stopFixtures",
+            args:     ["{that}"]
         }
     }
 });

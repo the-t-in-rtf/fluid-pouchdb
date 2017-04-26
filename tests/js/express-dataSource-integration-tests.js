@@ -40,6 +40,7 @@ gpii.tests.pouch.dataSource.compareResults = function (message, expected, actual
 
 fluid.defaults("gpii.tests.pouch.dataSource.caseHolder", {
     gradeNames: ["gpii.test.express.caseHolder"],
+    sequenceEnd: gpii.test.pouch.caseHolder.cleanupSequence,
     rawModules: [{
         name: "Integration tests for gpii-pouch and the 'url encoding' express dataSource grade...",
         tests: [

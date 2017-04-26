@@ -155,7 +155,7 @@ fluid.defaults("gpii.pouch.node.base", {
     tmpDir:     os.tmpdir(),
     baseDir:    "@expand:path.resolve({that}.options.tmpDir, {that}.id)",
     removeDirOnCleanup: true,
-    rimrafTimeout: 1000,
+    rimrafTimeout: 60000,
     // Options to use when creating individual databases.
     members: {
         baseDirBelongsToUs: false

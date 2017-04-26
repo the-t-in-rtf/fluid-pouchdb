@@ -20,13 +20,13 @@ fluid.registerNamespace("gpii.test.pouch.caseHolder");
 // test's "body".
 gpii.test.pouch.caseHolder.cleanupSequence = [
     {
-        func: "{testEnvironment}.events.onCleanup.fire",
+        func: "{testEnvironment}.events.stopFixtures.fire",
         args: []
     },
     {
-        event:    "{testEnvironment}.events.onCleanupComplete",
+        event:    "{testEnvironment}.events.onFixturesStopped",
         listener: "fluid.log",
-        args:     ["Database cleanup complete..."]
+        args:     ["Fixtures stopped and cleanup complete..."]
     }
 ];
 

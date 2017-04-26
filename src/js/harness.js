@@ -26,6 +26,15 @@ fluid.defaults("gpii.pouch.harness", {
                 expressStarted: "expressStarted",
                 pouchStarted:   "pouchStarted"
             }
+        },
+        stopFixtures: null,
+        onExpressStopped: null,
+        onPouchCleanupComplete: null,
+        onFixturesStopped: {
+            events: {
+                onExpressStopped: "onExpressStopped",
+                onPouchCleanupComplete: "onPouchCleanupComplete"
+            }
         }
     },
     components: {
@@ -34,7 +43,13 @@ fluid.defaults("gpii.pouch.harness", {
             options: {
                 "port" : "{harness}.options.port",
                 listeners: {
-                    onStarted: "{harness}.events.expressStarted.fire"
+                    onStarted: "{harness}.events.expressStarted.fire",
+                    "onDestroy.stopServer": {
+                        funcName: "fluid.identity"
+                    },
+                    "onStopped.notifyParent": {
+                        funcName: "{harness}.events.onExpressStopped.fire"
+                    }
                 },
                 components: {
                     expressPouch: {
@@ -42,12 +57,21 @@ fluid.defaults("gpii.pouch.harness", {
                         options: {
                             path: "/",
                             listeners: {
-                                onStarted: "{harness}.events.pouchStarted.fire"
+                                onStarted: "{harness}.events.pouchStarted.fire",
+                                onCleanupComplete: {
+                                    func: "{harness}.events.onPouchCleanupComplete.fire"
+                                }
                             }
                         }
                     }
                 }
             }
+        }
+    },
+    listeners: {
+        "stopFixtures.stopExpress": {
+            funcName: "gpii.express.stopServer",
+            args:     ["{express}"]
         }
     }
 });

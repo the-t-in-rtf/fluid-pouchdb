@@ -300,7 +300,7 @@ fluid.defaults("gpii.pouch.express.base", {
 fluid.defaults("gpii.pouch.express", {
     gradeNames: ["gpii.pouch.express.base"],
     pouchGradeNames: ["gpii.pouch.node"],
-    rimrafTimeout: 1000,
+    rimrafTimeout: 60000,
     dbOptions: {
         prefix: "@expand:gpii.pouch.node.makeSafePrefix({that}.options.baseDir)"
     },
