@@ -32,7 +32,7 @@ var expressPouchdb = require("express-pouchdb");
 
 var PouchDB        = require("pouchdb");
 
-fluid.require("path", require, "path");
+var path = fluid.require("path", require, "path");
 
 // The cleanup cycle used by express-pouchdb leaves a shedload of listeners around.  To avoid these, we disable the
 // event listener warnings, but only for PouchDB itself.
@@ -208,6 +208,9 @@ gpii.pouch.express.cleanup = function (that) {
 
         var optionsFileCleanupPromise = gpii.pouchdb.timelyRimraf(that.options.expressPouchConfigPath, {}, that.options.rimrafTimeout);
         cleanupPromises.push(optionsFileCleanupPromise);
+
+        var logCleanupPromise = gpii.pouchdb.timelyRimraf(path.resolve(that.options.tmpDir, that.options.expressPouchLogFilename), {}, that.options.rimrafTimeout);
+        cleanupPromises.push(logCleanupPromise);
 
         var cleanupSequence = fluid.promise.sequence(cleanupPromises);
         cleanupSequence.then(function () {
