@@ -11,6 +11,17 @@ require("./pouchdb-component-common-tests");
 
 fluid.defaults("gpii.tests.pouchdb.component.node.caseHolder", {
     gradeNames: ["gpii.tests.pouchdb.component.common.caseHolder.base"],
+    // Destroy the database after each test.
+    sequenceEnd:   [
+        {
+            func: "{testEnvironment}.pouchDb.destroyPouch"
+        },
+        {
+            event:    "{testEnvironment}.pouchDb.events.onCleanupComplete",
+            listener: "jqUnit.assert",
+            args:     ["The database should be destroyed and cleaned up on test completion..."]
+        }
+    ],
     rawModules: [{
         name: "Data-loading tests for the `gpii.pouch.node` component...",
         type: "test",

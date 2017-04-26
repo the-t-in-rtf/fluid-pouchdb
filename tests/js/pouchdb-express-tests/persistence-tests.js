@@ -22,7 +22,6 @@ fluid.defaults("gpii.tests.pouch.persistent.request.view", {
     path: "/persistence/_design/persistence/_view/byId?startKey=%22new%22"
 });
 
-
 fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
     gradeNames: ["gpii.test.pouch.caseHolder.base"],
     persistenceRecord: { _id: "new", foo: "bar"},
@@ -140,7 +139,6 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
                         args:     ["There should no longer be a record.", 404, "{getAfterResetRequest}.nativeResponse.statusCode"]
                     }
                 ]
-
             },
             {
                 name: "Confirm that we have no indexed records after a reset...",
@@ -158,6 +156,20 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
                     {
                         func: "jqUnit.assertEquals",
                         args:     ["The status code should be as expected...", 200, "{getViewAfterResetRequest}.nativeResponse.statusCode"]
+                    }
+                ]
+            },
+            {
+                name: "Clean up at the end of the run...",
+                type: "test",
+                sequence: [
+                    {
+                        func: "{testEnvironment}.events.onCleanup.fire"
+                    },
+                    {
+                        event:    "{testEnvironment}.events.onCleanupComplete",
+                        listener: "jqUnit.assert",
+                        args:     ["The final cleanup should complete as expected"]
                     }
                 ]
             }
@@ -205,9 +217,24 @@ fluid.defaults("gpii.tests.pouch.persistent.environment", {
         }
     },
     port:       6798,
+    hangWait:   15000,
     pouchConfig: {
-        databases: { persistence:  { data: ["%gpii-pouchdb/tests/data/persistence"]} }
-    }
+        databases: {
+            persistence: { data: ["%gpii-pouchdb/tests/data/persistence"]},
+            _replicator: {},
+            // _users: {},
+            pouch__all_dbs__: {}
+        }
+    },
+    // We cannot use the normal logic to determine whether to delete the test directory, as we intentionally persist it
+    // between runs.  Manually setting the following option will ensure that when we do eventually call cleanup, it will
+    // be aggressive enough.
+    distributeOptions: [
+        {
+            record: true,
+            target: "{that gpii.pouch.express.base}.options.members.baseDirBelongsToUs"
+        }
+    ]
 });
 
 fluid.test.runTests("gpii.tests.pouch.persistent.environment");

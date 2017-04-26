@@ -9,10 +9,9 @@
 var fluid  = require("infusion");
 var gpii   = fluid.registerNamespace("gpii");
 
+var fs     = require("fs");
 var os     = require("os");
 var path   = require("path");
-
-var mkdirp = require("mkdirp");
 
 require("../../");
 
@@ -28,16 +27,52 @@ fluid.registerNamespace("gpii.pouch.node");
 gpii.pouch.node.initDir = function (that) {
     var fullPath = path.resolve(that.options.baseDir, that.options.dbOptions.name);
 
-    // fluid.log("pouch component '" , that.id, "' saving data to '", fullPath, "'...");
+    if (!fs.existsSync(that.options.baseDir)) {
+        fs.mkdirSync(that.options.baseDir);
+        that.baseDirBelongsToUs = true;
+    }
 
-    // Right now we have to keep this synchronous so that the ordered group of "onCreate" listeners is executed correctly.
-    // TODO: Update this to use whatever we end up calling "chained" promises.
-    mkdirp.sync(fullPath);
+    if (!fs.existsSync(fullPath)) {
+        fs.mkdirSync(fullPath);
+    }
 };
 
+/**
+ *
+ * Create a "safe" prefix (i. e. db and directory name) for our content.
+ *
+ * @param toResolve An IoC reference to resolve.
+ * @returns {String} The resolved path followed by the path separator.
+ *
+ */
 gpii.pouch.node.makeSafePrefix = function (toResolve) {
     return fluid.module.resolvePath(toResolve) + path.sep;
 };
+
+/**
+ *
+ * If we created our enclosing base directory, clean it up.
+ *
+ * @param that - The component itself.
+ */
+gpii.pouch.node.cleanup = function (that) {
+    var togo = fluid.promise();
+    togo.then(that.events.onCleanupComplete.fire);
+
+    if (that.baseDirBelongsToUs) {
+        var cleanupPromise = gpii.pouchdb.timelyRimraf(that.options.baseDir, {}, that.options.rimrafTimeout);
+        cleanupPromise.then(togo.resolve, function (error) {
+            fluid.log("Error cleaning up basedir:", error);
+            togo.resolve();
+        });
+    }
+    else {
+        togo.resolve();
+    }
+
+    return togo;
+};
+
 
 /**
  *
@@ -94,12 +129,37 @@ gpii.pouch.node.loadDataIfNeeded = function (that) {
     });
 };
 
+/**
+ *
+ * Our pouch destruction needs to account for the directory removal before resolving its promise.
+ *
+ * @param that
+ * @param fnArgs
+ * @returns {*}
+ */
+gpii.pouch.node.destroyPouch = function (that, fnArgs) {
+    var togo = fluid.promise();
+
+    var dbDestroyPromise = gpii.pouch.callPouchFunction(that, "destroy", fnArgs, "onPouchDestroyComplete");
+
+    dbDestroyPromise.then(function () {
+        var dirCleanupPromise = gpii.pouch.node.cleanup(that);
+        dirCleanupPromise.then(togo.resolve, togo.reject);
+    }, togo.reject);
+
+    return togo;
+};
+
 fluid.defaults("gpii.pouch.node.base", {
     gradeNames: ["gpii.pouch"],
     tmpDir:     os.tmpdir(),
     baseDir:    "@expand:path.resolve({that}.options.tmpDir, {that}.id)",
     removeDirOnCleanup: true,
+    rimrafTimeout: 1000,
     // Options to use when creating individual databases.
+    members: {
+        baseDirBelongsToUs: false
+    },
     dbOptions: {
         auto_compaction: true,
         skip_setup: false,
@@ -111,6 +171,10 @@ fluid.defaults("gpii.pouch.node.base", {
         onReady:     null
     },
     invokers: {
+        destroyPouch: {
+            funcName: "gpii.pouch.node.destroyPouch",
+            args:     ["{that}", "{arguments}"] // fnName, fnArgs, eventName
+        },
         loadData: {
             funcName: "gpii.pouch.node.loadDataFromPath",
             args:     ["{that}", "{arguments}.0"]

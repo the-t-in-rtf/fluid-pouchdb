@@ -1,5 +1,0 @@
-{
-    "test_page": "tests/js/pouchdb-component-tests/html/index.html",
-    "framework":   "qunit",
-    "parallel":    1
-}
