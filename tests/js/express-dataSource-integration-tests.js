@@ -40,6 +40,7 @@ gpii.tests.pouch.dataSource.compareResults = function (message, expected, actual
 
 fluid.defaults("gpii.tests.pouch.dataSource.caseHolder", {
     gradeNames: ["gpii.test.express.caseHolder"],
+    sequenceEnd: gpii.test.pouch.caseHolder.cleanupSequence,
     rawModules: [{
         name: "Integration tests for gpii-pouch and the 'url encoding' express dataSource grade...",
         tests: [
@@ -138,7 +139,10 @@ fluid.defaults("gpii.tests.pouch.dataSource.environment", {
     },
     pouchConfig: {
         databases: {
-            rgb:  { data: [ "%gpii-pouchdb/tests/data/rgb.json"] }
+            _users:           { data: "%gpii-pouchdb/tests/data/users.json"},
+            _replicator:      {},
+            rgb:  { data: [   "%gpii-pouchdb/tests/data/rgb.json"] },
+            pouch__all_dbs__: {}
         }
     },
     components: {
