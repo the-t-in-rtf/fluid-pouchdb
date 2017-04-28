@@ -238,8 +238,6 @@ fluid.defaults("gpii.pouch.express.base", {
     namespace: "pouch-express", // Namespace to allow other routers to put themselves in the chain before or after us.
     tmpDir:  os.tmpdir(),
     baseDir: "@expand:path.resolve({that}.options.tmpDir, {that}.id)",
-    // expressPouchConfigFilename: "config.json",
-    // expressPouchConfigPath:     "@expand:path.resolve({that}.options.baseDir, {that}.options.expressPouchConfigFilename)",
     expressPouchLogFilename:    "@expand:gpii.pouch.express.generateUniqueLogPath({that})",
     expressPouchLogPath:        "@expand:path.resolve({that}.options.baseDir, {that}.options.expressPouchLogFilename)",
     expressPouchConfig: {

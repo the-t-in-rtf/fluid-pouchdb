@@ -165,6 +165,9 @@ Check the [PouchDB `viewCleanup` docs](https://pouchdb.com/api.html#view_cleanup
 | -------------------- | ----------- | ----------- |
 | `baseDir`            | `{String}`  | The path in which our database content will live.  Will be used to populate  `options.dbOptions.prefix` (see below).  Defaults to a subdirectory based on the component's id in `os.tmpDir()`. |
 | `dbOptions.prefix`   | `{String}`  | `baseDir`, and `dbOptions.name` (see above), combined into a final path, with a trailing separator. |
+| `removeDirOnCleanup` | `{Boolean}` | Whether to remove `options.baseDir` during our "cleanup" phase.  Defaults to `true`. |
+| `rimrafTimeout`      | `{Number}`  | When cleaning up filesystem content, the number of milliseconds to wait before forcing a timeout.  Defaults to `1000` (one second). |
+
 
 ## Component Invokers
 

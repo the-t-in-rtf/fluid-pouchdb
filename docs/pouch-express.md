@@ -10,12 +10,15 @@ that is meant to be wired into the root of [a `gpii.express` instance](https://g
 In addition to the options supported by the `gpii.express.router` component, this component has the following unique
 options.
 
-| Option                   | Type       | Description |
-| ------------------------ | ---------- | ----------- |
-| `databases` (required)   | `{Object}` | An object that describes one or more databases to create.  See below for full details. |
-| `dbOptions`              | `{Object}` | Options that will be used when constructing each individual database. See [the PouchDB docs](https://pouchdb.com/api.html#create_database) for supported options. ]
-| `expressPouchConfig`     | `{Object}` | Options that will be used when constructing the express-pouchdb instance. See [the express-pouchdb docs](https://github.com/pouchdb/express-pouchdb#api) for supported options.|
-| `expressPouchConfigPath` | `{String}` | The path to the temporary file where the settings in `expressPouchConfig` will be stored and read by express-pouchdb.  The settings in `expressPouchConfig` will be saved to a file named `pouchdb.conf` in this directory.  Defaults to `os.tmpdir() + "/pouch.conf"`.|
+| Option                    | Type       | Description |
+| ------------------------- | ---------- | ----------- |
+| `baseDir`                 | `String`   | The path to the "base directory" that will contain our logs and database content.  Defaults to a subdirectory under `os.tmpdir()` that matches the component ID. |
+| `databases` (required)    | `{Object}` | An object that describes one or more databases to create.  See below for full details. |
+| `dbOptions`               | `{Object}` | Options that will be used when constructing each individual database. See [the PouchDB docs](https://pouchdb.com/api.html#create_database) for supported options. ]
+| `expressPouchConfig`      | `{Object}` | Options that will be used when constructing the express-pouchdb instance. See [the express-pouchdb docs](https://github.com/pouchdb/express-pouchdb#api) for supported options. |
+| `expressPouchLogFilename` | `{String}` | The log file name to create in `expressPouchLogPath` (see below).  Defaults to `express-pouchdb-log-{component_id}.txt`. |
+| `expressPouchLogPath`     | `{String}` | The full path to the log file.  By default, the file is stored in `options.baseDir` under the name defined in `options.expressPouchLogFilename` (see above). |
+| `rimrafTimeout`           | `{Number}` | When cleaning up filesystem content, the number of milliseconds to wait before forcing a timeout.  Defaults to `1000` (one second). |
 
 ### The `databases` option
 
