@@ -32,7 +32,7 @@ var expressPouchdb = require("express-pouchdb");
 
 var PouchDB        = require("pouchdb");
 
-fluid.require("path", require, "path");
+var path = fluid.require("path", require, "path");
 
 // The cleanup cycle used by express-pouchdb leaves a shedload of listeners around.  To avoid these, we disable the
 // event listener warnings, but only for PouchDB itself.
@@ -85,14 +85,8 @@ gpii.pouch.express.initExpressPouchdb = function (that) {
         that.baseDirBelongsToUs = true;
     }
 
-    // There are unfortunately options that can only be configured via a configuration file.
-    //
-    // To allow ourselves (and users configuring and extending this grade) to control these options, we create the file
-    // with the contents of options.pouchConfig before configuring and starting express-pouchdb.
-    fs.writeFileSync(that.options.expressPouchConfigPath, JSON.stringify(that.options.expressPouchConfig, null, 2));
-
     that.PouchDB = PouchDB.defaults(that.options.dbOptions);
-    that.expressPouchdb = expressPouchdb(that.PouchDB, { configPath: that.options.expressPouchConfigPath });
+    that.expressPouchdb = expressPouchdb(that.PouchDB, that.options.expressPouchConfig);
 
     return that.expressPouchdb;
 };
@@ -206,8 +200,8 @@ gpii.pouch.express.cleanup = function (that) {
             cleanupPromises.push(function () { return databaseInstance.destroyPouch(); });
         });
 
-        var optionsFileCleanupPromise = gpii.pouchdb.timelyRimraf(that.options.expressPouchConfigPath, {}, that.options.rimrafTimeout);
-        cleanupPromises.push(optionsFileCleanupPromise);
+        var logCleanupPromise = gpii.pouchdb.timelyRimraf(path.resolve(that.options.expressPouchLogPath), {}, that.options.rimrafTimeout);
+        cleanupPromises.push(logCleanupPromise);
 
         var cleanupSequence = fluid.promise.sequence(cleanupPromises);
         cleanupSequence.then(function () {
@@ -233,6 +227,10 @@ gpii.pouch.express.cleanup = function (that) {
     return togo;
 };
 
+gpii.pouch.express.generateUniqueLogPath = function (that) {
+    return path.resolve(that.options.baseDir, "express-pouchcdb-log-" + that.id + ".txt");
+};
+
 fluid.defaults("gpii.pouch.express.base", {
     gradeNames: ["fluid.component", "gpii.express.middleware"],
     method: "use", // We have to support all HTTP methods, as does our underlying router.
@@ -240,19 +238,18 @@ fluid.defaults("gpii.pouch.express.base", {
     namespace: "pouch-express", // Namespace to allow other routers to put themselves in the chain before or after us.
     tmpDir:  os.tmpdir(),
     baseDir: "@expand:path.resolve({that}.options.tmpDir, {that}.id)",
-    expressPouchConfigFilename: "config.json",
-    expressPouchConfigPath:     "@expand:path.resolve({that}.options.baseDir, {that}.options.expressPouchConfigFilename)",
-    expressPouchLogFilename:    "log.txt",
+    expressPouchLogFilename:    "@expand:gpii.pouch.express.generateUniqueLogPath({that})",
+    expressPouchLogPath:        "@expand:path.resolve({that}.options.baseDir, {that}.options.expressPouchLogFilename)",
     expressPouchConfig: {
+        inMemoryConfig: true,
         mode: "minimumForPouchDB",
         overrideMode: {
             exclude: [
-                "routes/changes", // Disable the unused changes API to avoid a leaked listener.
-                "routes/security" // Disable the unused security API to avoid holding the user db open.
+                "routes/changes" // Disable the unused changes API to avoid a leaked listener.
             ]
         },
         log: {
-            file: "@expand:path.resolve({that}.options.tmpDir, {that}.options.expressPouchLogFilename)"
+            file: "{that}.options.expressPouchLogPath"
         }
     },
     events: {

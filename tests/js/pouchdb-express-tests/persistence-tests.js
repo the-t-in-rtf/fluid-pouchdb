@@ -206,11 +206,14 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
     }
 });
 
+fluid.registerNamespace("gpii.tests.pouch.persistent.environment");
+
 fluid.defaults("gpii.tests.pouch.persistent.environment", {
     gradeNames: ["gpii.test.pouch.environment"],
     components: {
         harness: {
             type: "gpii.pouch.harness.persistent"
+
         },
         caseHolder: {
             type: "gpii.tests.pouch.persistent.caseHolder"

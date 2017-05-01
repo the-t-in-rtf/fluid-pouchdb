@@ -34,7 +34,7 @@ A Fluid component that wraps a PouchDB instance and exposes select methods from 
 
 # Component Invokers
 
-#`{that}.allDocs([options])`
+# `{that}.allDocs([options])`
 * `options {Object}`: The options to control which records are returned.
 * Returns: A `Promise` that will be resolved once the database has been initialized.
 
@@ -43,7 +43,7 @@ Return the full list of documents in the database, optionally filtered using `op
 Check the [Pouchdb `allDocs` documentation](https://pouchdb.com/api.html#batch_fetch) for more details.
 
 
-##`{that}.bulkDocs(docs, [options])`
+## `{that}.bulkDocs(docs, [options])`
 
 Create or update multiple documents at once.  You will need to have valid `_id` and `_rev` values for each existing
 document you wish to update.
@@ -51,7 +51,7 @@ document you wish to update.
 Check the [PouchDB `bulkDocs` docs](https://pouchdb.com/api.html#batch_create) for more details.
 
 
-##`{that}.bulkGet(options)`
+## `{that}.bulkGet(options)`
 
 Retrieve a set of full documents based on `options` like the following:
 
@@ -63,35 +63,35 @@ Retrieve a set of full documents based on `options` like the following:
 
 Check the [PouchDB `bulkGet` docs](https://pouchdb.com/api.html#bulk_get) for more details.
 
-##`{that}.close([options])`
+## `{that}.close([options])`
 
 Close the database.  Returns a promise that will be completed when the database is closed.  Also fires the
 `onCloseComplete` event when the database is closed.
 
 Check the [PouchDB `close` docs](https://pouchdb.com/api.html#close_database) for more details.
 
-##`{that}.destroyPouch()`
+## `{that}.destroyPouch()`
 
 Destroy the database, including all records.  This is called `destroyPouch` to avoid overriding the implicit `destroy`
 invoker that is part of [the Fluid component lifecycle](http://docs.fluidproject.org/infusion/development/ComponentLifecycle.html).
 
 Check the [PouchDB `destroy` docs](https://pouchdb.com/api.html#destroy) for more details.
 
-##`{that}.compact([options])`
+## `{that}.compact([options])`
 
 Compact the database, removing deleted data and older revisions.  This method is not tested and is used at your own
 risk.
 
 Check the [PouchDB `compact` docs](https://pouchdb.com/api.html#compaction) for more details.
 
-##`{that}.get(docId, [options])`
+## `{that}.get(docId, [options])`
 
 Retrieve the document whose ID matches `docId`.
 
 Check the [PouchDB `get` docs](https://pouchdb.com/api.html#fetch_document) for more details.
 
 
-##`{that}.getAttachment(docId, attachmentId, [options])`
+## `{that}.getAttachment(docId, attachmentId, [options])`
 
 Retrieve an attachment from `docId` whose id matches `attachmentId`.  This method is not tested and is used at your own
 risk.
@@ -99,28 +99,28 @@ risk.
 Check the [PouchDB `getAttachment` docs](https://pouchdb.com/api.html#get_attachment) for more details.
 
 
-##`{that}.info()`
+## `{that}.info()`
 
 Get information about the current database, including the number of records.
 
 Check the [PouchDB `info` docs](https://pouchdb.com/api.html#database_information) for more details.
 
 
-##`{that}.post(doc, [options])`
+## `{that}.post(doc, [options])`
 
 POST a new document `doc`. This may (but does not have to) contain an `_id` variable.
 
 Check the [PouchDB `post` docs](https://pouchdb.com/api.html#create_document) for more details.
 
 
-##`{that}.put(doc, [docId], [docRev], [options])`
+## `{that}.put(doc, [docId], [docRev], [options])`
 
 PUT a new document or an update to an existing document.
 
 Check the [PouchDB `put` docs](https://pouchdb.com/api.html#create_document) for more details.
 
 
-##`{that}.putAttachment(docId, attachmentId, [rev], attachment, type)`
+## `{that}.putAttachment(docId, attachmentId, [rev], attachment, type)`
 
 Create or update an attachment.
 
@@ -128,21 +128,21 @@ Check the [PouchDB `putAttachment` docs](https://pouchdb.com/api.html#save_attac
 not tested and is used at your own risk.
 
 
-##`{that}.query(fun, [options])`
+## `{that}.query(fun, [options])`
 
 Execute the supplied `fun` function and return the results.  Intended to be used with a map/reduce function.
 
 Check the [PouchDB `query` docs](https://pouchdb.com/api.html#query_database) for more details.
 
 
-##`{that}.remove(doc, [options])`
+## `{that}.remove(doc, [options])`
 
 Remove the document `doc` from the database.  `doc` must contain a valid `_id` and `_rev`.
 
 Check the [PouchDB `remove` docs](https://pouchdb.com/api.html#delete_document) for more details.
 
 
-##`{that}.removeAttachment(docId, attachmentId, rev)`
+## `{that}.removeAttachment(docId, attachmentId, rev)`
 
 Remove an existing attachment.
 
@@ -150,7 +150,7 @@ Check the [PouchDB `removeAttachment` docs](https://pouchdb.com/api.html#delete_
 method is not tested and is used at your own risk.
 
 
-##`{that}.viewCleanup()`
+## `{that}.viewCleanup()`
 
 Clean up any stale map/reduce indexes.  This method is not tested and is used at your own risk.
 
@@ -165,10 +165,13 @@ Check the [PouchDB `viewCleanup` docs](https://pouchdb.com/api.html#view_cleanup
 | -------------------- | ----------- | ----------- |
 | `baseDir`            | `{String}`  | The path in which our database content will live.  Will be used to populate  `options.dbOptions.prefix` (see below).  Defaults to a subdirectory based on the component's id in `os.tmpDir()`. |
 | `dbOptions.prefix`   | `{String}`  | `baseDir`, and `dbOptions.name` (see above), combined into a final path, with a trailing separator. |
+| `removeDirOnCleanup` | `{Boolean}` | Whether to remove `options.baseDir` during our "cleanup" phase.  Defaults to `true`. |
+| `rimrafTimeout`      | `{Number}`  | When cleaning up filesystem content, the number of milliseconds to wait before forcing a timeout.  Defaults to `1000` (one second). |
+
 
 ## Component Invokers
 
-###`{that}.loadData(dbPaths)`
+### `{that}.loadData(dbPaths)`
 * `dbPaths {String|Array}`: One or more package-relative paths to a JSON file to be loaded.
 * Returns: A `Promise` that will be resolved once the data has been loaded.
 
