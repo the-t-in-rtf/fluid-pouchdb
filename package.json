@@ -25,7 +25,7 @@
     "memdown": "1.2.4",
     "pouchdb": "6.1.1",
     "rimraf": "2.6.1",
-    "testem": "1.13.0",
+    "testem": "1.16.1",
     "underscore-node": "0.1.2"
   },
   "devDependencies": {
