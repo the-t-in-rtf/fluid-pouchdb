@@ -14,8 +14,8 @@
     "posttest": "npm run posttest:cleanup && npm run posttest:report"
   },
   "dependencies": {
-    "body-parser": "1.17.1",
-    "express": "4.15.2",
+    "body-parser": "1.17.2",
+    "express": "4.15.3",
     "express-pouchdb": "git://github.com/the-t-in-rtf/express-pouchdb.git#50abe944bf902d44a531e3bb09c0420c321ce5e5",
     "gpii-express": "1.0.7",
     "graceful-fs": "4.1.11",
