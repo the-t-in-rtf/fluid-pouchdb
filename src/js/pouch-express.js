@@ -228,7 +228,7 @@ gpii.pouch.express.cleanup = function (that) {
 };
 
 gpii.pouch.express.generateUniqueLogPath = function (that) {
-    return path.resolve(that.options.baseDir, "express-pouchcdb-log-" + that.id + ".txt");
+    return path.resolve(that.options.baseDir, "express-pouchdb-log-" + that.id + ".txt");
 };
 
 fluid.defaults("gpii.pouch.express.base", {
