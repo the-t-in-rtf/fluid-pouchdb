@@ -200,7 +200,7 @@ gpii.pouch.express.cleanup = function (that) {
             cleanupPromises.push(function () { return databaseInstance.destroyPouch(); });
         });
 
-        var logCleanupPromise = gpii.pouchdb.timelyRimraf(path.resolve(that.options.expressPouchLogPath), {}, that.options.rimrafTimeout);
+        var logCleanupPromise = gpii.pouchdb.timelyRimraf(that.options.expressPouchLogPath, {}, that.options.rimrafTimeout);
         cleanupPromises.push(logCleanupPromise);
 
         var cleanupSequence = fluid.promise.sequence(cleanupPromises);
@@ -248,9 +248,7 @@ fluid.defaults("gpii.pouch.express.base", {
                 "routes/changes" // Disable the unused changes API to avoid a leaked listener.
             ]
         },
-        log: {
-            file: "{that}.options.expressPouchLogPath"
-        }
+        logPath: "{that}.options.expressPouchLogPath"
     },
     events: {
         initDbs:           null,
