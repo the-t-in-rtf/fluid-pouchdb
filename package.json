@@ -11,7 +11,9 @@
     "test:node": "node node_modules/istanbul/lib/cli.js cover tests/js/all-tests.js --report none --print none",
     "posttest:cleanup": "node tests/js/pouchdb-express-tests/final-cleanup.js",
     "posttest:report": "node node_modules/istanbul/lib/cli.js report --root coverage --dir reports text-summary html",
-    "posttest": "npm run posttest:cleanup && npm run posttest:report"
+    "posttest": "npm run posttest:cleanup && npm run posttest:report",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "body-parser": "1.17.1",
@@ -26,7 +28,8 @@
     "pouchdb": "6.1.1",
     "rimraf": "2.6.1",
     "testem": "1.16.1",
-    "underscore-node": "0.1.2"
+    "underscore-node": "0.1.2",
+    "snyk": "^1.34.3"
   },
   "devDependencies": {
     "eslint": "3.19.0",
@@ -42,5 +45,6 @@
     "prebuild": "6.1.0",
     "request": "2.81.0",
     "tough-cookie": "2.3.2"
-  }
+  },
+  "snyk": true
 }
