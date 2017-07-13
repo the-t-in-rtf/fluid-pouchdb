@@ -14,33 +14,33 @@
     "posttest": "npm run posttest:cleanup && npm run posttest:report"
   },
   "dependencies": {
-    "body-parser": "1.17.1",
-    "express": "4.15.2",
+    "body-parser": "1.17.2",
+    "express": "4.15.3",
     "express-pouchdb": "git://github.com/the-t-in-rtf/express-pouchdb.git#50abe944bf902d44a531e3bb09c0420c321ce5e5",
     "gpii-express": "1.0.7",
     "graceful-fs": "4.1.11",
     "infusion": "3.0.0-dev.20170322T234120Z.278de35",
-    "istanbul": "0.4.5",
     "lie": "3.1.1",
     "memdown": "1.2.4",
-    "pouchdb": "6.1.1",
-    "rimraf": "2.6.1",
-    "testem": "1.16.1",
+    "pouchdb": "6.1.2",
     "underscore-node": "0.1.2"
   },
   "devDependencies": {
-    "eslint": "3.19.0",
+    "eslint": "4.2.0",
     "eslint-config-fluid": "1.1.0",
     "fluid-grunt-eslint": "18.1.2",
-    "gpii-testem": "1.0.0",
+    "gpii-testem": "1.0.1",
     "grunt": "1.0.1",
     "grunt-jsonlint": "1.1.0",
-    "kettle": "1.5.0",
+    "istanbul": "0.4.5",
+    "kettle": "1.6.0",
     "leveldown": "1.6.0",
     "mock-fs": "4.2.0",
     "node-jqunit": "1.1.4",
-    "prebuild": "6.1.0",
+    "prebuild": "6.2.1",
     "request": "2.81.0",
+    "rimraf": "2.6.1",
+    "testem": "1.18.0",
     "tough-cookie": "2.3.2"
   }
 }
