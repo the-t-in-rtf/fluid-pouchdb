@@ -12,13 +12,11 @@ env:
 
 stages:                # Stages to perform when 'ci test' command is invoked
   - setup              # Install our system-level dependencies, etc.
-  - vdrive             # Connect to our V: Network drive
   - test               # Run the actual tests
 
 setup_job:
   stage: setup
   script:
-#    - choco upgrade firefox -y
     # Required to build leveldown
     - choco install python2 -y
     - choco install nodejs.install --version 6.9.1 --forcex86 -y
@@ -28,11 +26,6 @@ setup_job:
     - do.ps1 -c "npm install -g rimraf node-inspector prebuild prebuild-install"
     - choco install vcbuildtools -y
     - "npm config set msvs_version 2015 --global"
-vdrive_job:
-  stage: vdrive
-  script:
-    - "net use v: \\\\vboxsrv\\vagrant  /yes"
-    - "do.ps1 -c 'net use v: \\\\VBOXSVR\\vagrant /yes'"
 
 test_job:
   stage: test          # name of the stage
