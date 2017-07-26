@@ -1,6 +1,6 @@
 {
   "name": "gpii-pouchdb",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "private": false,
   "repository": "https://github.com/GPII/gpii-pouchdb",
   "license": "BSD-3-Clause",
@@ -33,14 +33,14 @@
     "grunt": "1.0.1",
     "grunt-jsonlint": "1.1.0",
     "istanbul": "0.4.5",
-    "kettle": "1.6.3",
+    "kettle": "1.6.4",
     "leveldown": "1.6.0",
     "mock-fs": "4.4.1",
     "node-jqunit": "1.1.6",
     "prebuild": "6.2.1",
     "request": "2.81.0",
     "rimraf": "2.6.1",
-    "testem": "1.18.0",
+    "testem": "1.18.1",
     "tough-cookie": "2.3.2"
   }
 }

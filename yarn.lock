@@ -863,7 +863,7 @@ debug@2.6.7:
   dependencies:
     ms "2.0.0"
 
-debug@^2.1.0, debug@^2.1.1, debug@^2.2.0, debug@^2.6.8:
+debug@2.6.8, debug@^2.1.0, debug@^2.1.1, debug@^2.2.0, debug@^2.6.8:
   version "2.6.8"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
@@ -1150,14 +1150,15 @@ eslint-scope@^3.7.1:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint@4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.2.0.tgz#a2b3184111b198e02e9c7f3cca625a5e01c56b3d"
+eslint@4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.3.0.tgz#fcd7c96376bbf34c85ee67ed0012a299642b108f"
   dependencies:
     ajv "^5.2.0"
     babel-code-frame "^6.22.0"
     chalk "^1.1.3"
     concat-stream "^1.6.0"
+    cross-spawn "^5.1.0"
     debug "^2.6.8"
     doctrine "^2.0.0"
     eslint-scope "^3.7.1"
@@ -1166,6 +1167,7 @@ eslint@4.2.0:
     estraverse "^4.2.0"
     esutils "^2.0.2"
     file-entry-cache "^2.0.0"
+    functional-red-black-tree "^1.0.1"
     glob "^7.1.2"
     globals "^9.17.0"
     ignore "^3.3.3"
@@ -1184,6 +1186,7 @@ eslint@4.2.0:
     pluralize "^4.0.0"
     progress "^2.0.0"
     require-uncached "^1.0.3"
+    semver "^5.3.0"
     strip-json-comments "~2.0.1"
     table "^4.0.1"
     text-table "~0.2.0"
@@ -1362,14 +1365,14 @@ express-session@1.15.2:
     uid-safe "~2.1.4"
     utils-merge "1.0.0"
 
-express-session@1.15.3:
-  version "1.15.3"
-  resolved "https://registry.yarnpkg.com/express-session/-/express-session-1.15.3.tgz#db545f0435a7b1b228ae02da8197f65141735c67"
+express-session@1.15.4:
+  version "1.15.4"
+  resolved "https://registry.yarnpkg.com/express-session/-/express-session-1.15.4.tgz#5e2cdcf6defe3c1eda4e980f13b986cc58cfb954"
   dependencies:
     cookie "0.3.1"
     cookie-signature "1.0.6"
     crc "3.4.4"
-    debug "2.6.7"
+    debug "2.6.8"
     depd "~1.1.0"
     on-headers "~1.0.1"
     parseurl "~1.3.1"
@@ -1627,9 +1630,9 @@ fluid-grunt-eslint@18.1.2:
     chalk "^1.0.0"
     fluid-eslint "^2.0.0"
 
-fluid-resolve@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/fluid-resolve/-/fluid-resolve-1.2.0.tgz#9bf0f3e47a84d591d4ccc5fcda4909dfaea23590"
+fluid-resolve@1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/fluid-resolve/-/fluid-resolve-1.3.0.tgz#383029eb1a61969802bd85684c8e286e6d2c0dfd"
 
 for-in@^1.0.1:
   version "1.0.2"
@@ -1869,15 +1872,15 @@ gpii-express@1.0.7:
     express-session "1.15.2"
     infusion "3.0.0-dev.20170322T234120Z.278de35"
 
-gpii-express@1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/gpii-express/-/gpii-express-1.0.8.tgz#899212f77f3bb7eeeb5104138244314c8a85136c"
+gpii-express@1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/gpii-express/-/gpii-express-1.0.9.tgz#b8dbbe6e236385191868af270a14ae710e0f31fa"
   dependencies:
     body-parser "1.17.2"
     cookie-parser "1.4.3"
     express "4.15.3"
-    express-session "1.15.3"
-    infusion "3.0.0-dev.20170713T172705Z.330ed53"
+    express-session "1.15.4"
+    infusion "3.0.0-dev.20170724T165035Z.eee50c1"
 
 gpii-testem@1.0.1:
   version "1.0.1"
@@ -2179,11 +2182,11 @@ infusion@3.0.0-dev.20170322T234120Z.278de35:
   dependencies:
     resolve "1.3.2"
 
-infusion@3.0.0-dev.20170713T172705Z.330ed53:
-  version "3.0.0-dev.20170713T172705Z.330ed53"
-  resolved "https://registry.yarnpkg.com/infusion/-/infusion-3.0.0-dev.20170713T172705Z.330ed53.tgz#737aa08f6404f93083bc27d03f38a79b1848ca70"
+infusion@3.0.0-dev.20170724T165035Z.eee50c1:
+  version "3.0.0-dev.20170724T165035Z.eee50c1"
+  resolved "https://registry.yarnpkg.com/infusion/-/infusion-3.0.0-dev.20170724T165035Z.eee50c1.tgz#b45e519732cf505ff1504ed01f52427b5722b447"
   dependencies:
-    fluid-resolve "1.2.0"
+    fluid-resolve "1.3.0"
 
 inherits@2, inherits@2.0.3, inherits@^2.0.1, inherits@^2.0.3, inherits@~2.0.0, inherits@~2.0.1, inherits@~2.0.3:
   version "2.0.3"
@@ -2557,16 +2560,16 @@ jstransform@~3.0.0:
     esprima-fb "~3001.1.0-dev-harmony-fb"
     source-map "0.1.31"
 
-kettle@1.6.2:
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/kettle/-/kettle-1.6.2.tgz#65892c8b97f0ab1504330956716d2e135c4a689d"
+kettle@1.6.4:
+  version "1.6.4"
+  resolved "https://registry.yarnpkg.com/kettle/-/kettle-1.6.4.tgz#f179c741cc9ac3680a788d61c2fa2f60ac239756"
   dependencies:
     body-parser "1.17.2"
     cookie-parser "1.4.3"
     express "4.15.3"
-    express-session "1.15.3"
-    fluid-resolve "1.2.0"
-    infusion "3.0.0-dev.20170713T172705Z.330ed53"
+    express-session "1.15.4"
+    fluid-resolve "1.3.0"
+    infusion "3.0.0-dev.20170724T165035Z.eee50c1"
     json5 "0.5.1"
     jsonlint "1.6.2"
     path-to-regexp "1.7.0"
@@ -3007,11 +3010,11 @@ node-jqunit@1.1.4:
   dependencies:
     infusion "2.0.0-dev.20151130T180545Z.18ee3f8"
 
-node-jqunit@1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/node-jqunit/-/node-jqunit-1.1.5.tgz#314c8d93583fd15ebb9bc68ee6860555d15d3250"
+node-jqunit@1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/node-jqunit/-/node-jqunit-1.1.6.tgz#1da63fd2830006f85882813424289a1da3ce6b2f"
   dependencies:
-    infusion "3.0.0-dev.20170713T172705Z.330ed53"
+    infusion "3.0.0-dev.20170724T165035Z.eee50c1"
 
 node-ninja@^1.0.1:
   version "1.0.2"
@@ -4494,9 +4497,9 @@ testem@1.16.2:
     tap-parser "^5.1.0"
     xmldom "^0.1.19"
 
-testem@1.18.0:
-  version "1.18.0"
-  resolved "https://registry.yarnpkg.com/testem/-/testem-1.18.0.tgz#4a9f798509d260dca928823aaae5dbc6a9c977ee"
+testem@1.18.1:
+  version "1.18.1"
+  resolved "https://registry.yarnpkg.com/testem/-/testem-1.18.1.tgz#08c2a27c64c0039cd8b64877b7fbc491b22be145"
   dependencies:
     backbone "^1.1.2"
     bluebird "^3.4.6"
