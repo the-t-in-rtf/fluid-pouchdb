@@ -11,19 +11,22 @@
     "test:node": "node node_modules/istanbul/lib/cli.js cover tests/js/all-tests.js --report none --print none",
     "posttest:cleanup": "node tests/js/pouchdb-express-tests/final-cleanup.js",
     "posttest:report": "node node_modules/istanbul/lib/cli.js report --root coverage --dir reports text-summary html",
-    "posttest": "npm run posttest:cleanup && npm run posttest:report"
+    "posttest": "npm run posttest:cleanup && npm run posttest:report",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
-    "body-parser": "1.17.2",
-    "express": "4.15.3",
+    "body-parser": "1.18.2",
+    "express": "4.16.0",
     "express-pouchdb": "git://github.com/the-t-in-rtf/express-pouchdb.git#df8e81f52bec90c36984bb6f148530f4e6c64bf7",
-    "gpii-express": "1.0.9",
+    "gpii-express": "1.0.10",
     "graceful-fs": "4.1.11",
     "infusion": "3.0.0-dev.20170727T125648Z.47055ca",
     "lie": "3.1.1",
     "memdown": "1.2.4",
-    "pouchdb": "6.1.2",
-    "underscore-node": "0.1.2"
+    "pouchdb": "6.3.0",
+    "underscore-node": "0.1.2",
+    "snyk": "^1.41.1"
   },
   "devDependencies": {
     "eslint": "4.3.0",
@@ -42,5 +45,6 @@
     "rimraf": "2.6.1",
     "testem": "1.18.1",
     "tough-cookie": "2.3.2"
-  }
+  },
+  "snyk": true
 }
