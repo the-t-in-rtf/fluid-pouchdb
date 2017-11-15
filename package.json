@@ -22,7 +22,7 @@
     "infusion": "3.0.0-dev.20171102T191539Z.c0636b395",
     "lie": "3.1.1",
     "memdown": "1.2.4",
-    "pouchdb": "6.3.4",
+    "pouchdb": "6.1.2",
     "underscore-node": "0.1.2"
   },
   "devDependencies": {
