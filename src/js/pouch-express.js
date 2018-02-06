@@ -48,7 +48,7 @@ PouchDB.setMaxListeners(250);
  *   5. dbName: {} // No data, no custom options.
  *
  * @param dbDef - The definition of a single database in any of the above formats.
- * @returns {Object} - An expanded record in Object form.
+ * @return {Object} - An expanded record in Object form.
  *
  */
 gpii.pouch.express.expandDbDef = function (dbDef) {
@@ -69,7 +69,7 @@ gpii.pouch.express.expandDbDef = function (dbDef) {
  * Initialize our instance of express-pouchdb.
  *
  * @param that
- * @returns {Object} - The expressPouchDB middleware.
+ * @return {Object} - The expressPouchDB middleware.
  *
  */
 gpii.pouch.express.initExpressPouchdb = function (that) {
@@ -96,7 +96,7 @@ gpii.pouch.express.initExpressPouchdb = function (that) {
  * Initialize all of the configured databases in `that.options.database`.
  *
  * @param that
- * @returns {Promise} - A `fluid.promise.sequence` that will be resolved when all databases are initialized.
+ * @return {Promise} - A `fluid.promise.sequence` that will be resolved when all databases are initialized.
  *
  */
 gpii.pouch.express.initDbs = function (that) {
@@ -129,7 +129,7 @@ gpii.pouch.express.initDbs = function (that) {
  * @param that - The component itself
  * @param dbKey {String} - The database name.
  * @param dbDef {Object} - Our convention for representing multiple databases.  See the docs for examples.
- * @returns {Promise} A promise that will be resolved with the database is initialized.
+ * @return {Promise} A promise that will be resolved with the database is initialized.
  */
 gpii.pouch.express.initDb = function (that, dbKey, dbDef) {
     var expandedDef = gpii.pouch.express.expandDbDef(dbDef);
@@ -184,7 +184,7 @@ gpii.pouch.express.middleware = function (that, req, res, next) {
  * express-pouchdb, complete remove all data in `options.baseDir`.
  *
  * @param that - The component itself.
- * @returns {Promise} - A promise that will be resolved when cleanup is complete.
+ * @return {Promise} - A promise that will be resolved when cleanup is complete.
  *
  */
 gpii.pouch.express.cleanup = function (that) {

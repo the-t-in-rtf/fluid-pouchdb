@@ -42,7 +42,7 @@ gpii.pouch.node.initDir = function (that) {
  * Create a "safe" prefix (i. e. db and directory name) for our content.
  *
  * @param toResolve An IoC reference to resolve.
- * @returns {String} The resolved path followed by the path separator.
+ * @return {String} The resolved path followed by the path separator.
  *
  */
 gpii.pouch.node.makeSafePrefix = function (toResolve) {
@@ -80,7 +80,7 @@ gpii.pouch.node.cleanup = function (that) {
  *
  * @param that - The component itself.
  * @param dbPaths - A string or array representing data to be loaded.
- * @returns {Promise} - A promise which will be resolved when all data has been loaded.
+ * @return {Promise} - A promise which will be resolved when all data has been loaded.
  *
  */
 gpii.pouch.node.loadDataFromPath = function (that, dbPaths) {
@@ -135,7 +135,7 @@ gpii.pouch.node.loadDataIfNeeded = function (that) {
  *
  * @param that
  * @param fnArgs
- * @returns {*}
+ * @return {*}
  */
 gpii.pouch.node.destroyPouch = function (that, fnArgs) {
     var togo = fluid.promise();
