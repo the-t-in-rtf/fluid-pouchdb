@@ -20,12 +20,13 @@ setup_job:
     # Required to build leveldown
     - choco install python2 -y
     - choco install nodejs-lts -y
+    - choco install vcbuildtools -y
+    # apparently required to pick up npm in our path for the next step.
+    - refreshenv
     # We must ensure that our global installs can create their bin links.
     - "npm config set bin-links true --global"
-    # rimraf is required for our cleanup steps, node-inspector is provided for convenience in manual debugging.
-    - do.ps1 -c "npm install -g rimraf node-inspector prebuild prebuild-install"
-    - choco install vcbuildtools -y
     - "npm config set msvs_version 2015 --global"
+    - do.ps1 -c "npm install -g rimraf prebuild prebuild-install"
 
 test_job:
   stage: test          # name of the stage
