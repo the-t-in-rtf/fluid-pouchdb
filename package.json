@@ -16,7 +16,7 @@
     "dependencies": {
         "body-parser": "1.18.3",
         "express": "4.16.3",
-        "express-pouchdb": "git://github.com/the-t-in-rtf/express-pouchdb.git#299582cd5bbe33e4057135413c34b72c2c8a7167",
+        "express-pouchdb": "git://github.com/the-t-in-rtf/express-pouchdb.git#aa1ebf4d7b93353d901c3b4f2c706db4967a9db9",
         "gpii-express": "1.0.13",
         "graceful-fs": "4.1.11",
         "infusion": "3.0.0-dev.20180222T160835Z.6e1311a",
