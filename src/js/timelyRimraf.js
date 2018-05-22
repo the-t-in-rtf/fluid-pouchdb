@@ -22,9 +22,10 @@ fluid.registerNamespace("gpii.pouchdb");
  * A function that binds a call to rimraf(path, options, callback) to a fluid.promise, and which ensures that
  * it completes in a more timely fashion than rimraf itself can manage.
  *
- * @param pathToRemove {String} - The path (package-relative, relative, or full) to a file or directory to be removed.
- * @param rimrafOptions {Object} - An optional set of options to pass to rimraf.  See https://github.com/isaacs/rimraf#options
- * @param timeoutMs {Number} - If set, the number of milliseconds to wait for the asynchronous remove to complete before rejecting it.
+ * @param {String} pathToRemove - The path (package-relative, relative, or full) to a file or directory to be removed.
+ * @param {Object} rimrafOptions - An optional set of options to pass to rimraf.  See https://github.com/isaacs/rimraf#options
+ * @param {Number} timeoutMs - If set, the number of milliseconds to wait for the asynchronous remove to complete before rejecting it.
+ * @return {Promise} A promise that will be resolved when content has been removed or rejected if an error occurs.
  *
  */
 gpii.pouchdb.timelyRimraf = function (pathToRemove, rimrafOptions, timeoutMs) {

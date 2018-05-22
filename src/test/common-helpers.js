@@ -18,9 +18,9 @@ fluid.registerNamespace("gpii.test.pouchdb");
  * content in the way we need.  Used to confirm that everything but the CouchDB/PouchDB material (ids, etc.) is as
  * expected.
  *
- * @param message {String} The message that will be used with the tests (it will have sub-messages appended to it).
- * @param expected {Array} An array of expected results.
- * @param actual {Array} An array of actual output to compare to the expected results.
+ * @param {String} message - The message that will be used with the tests (it will have sub-messages appended to it).
+ * @param {Array} expected - An array of expected results.
+ * @param {Array} actual - An array of actual output to compare to the expected results.
  *
  */
 gpii.test.pouchdb.recordsAreEquivalent = function (message, expected, actual) {
