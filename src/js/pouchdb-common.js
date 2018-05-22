@@ -23,10 +23,11 @@ gpii.pouch.init = function (that) {
  *
  * Call an underlying PouchDb function and fire the named function on completion.
  *
- * @param that - The component itself.
- * @param fnName {String} - The name of the PouchDB function to call.
- * @param fnArgs {Array} - The arguments (minus the final callback) to pass to the function.
- * @param eventName {String} - The event to fire on completion.
+ * @param {Object} that - The component itself.
+ * @param {String} fnName - The name of the PouchDB function to call.
+ * @param {Array} fnArgs - The arguments (minus the final callback) to pass to the function.
+ * @param {String} eventName - The event to fire on completion.
+ * @return {Promise} - A promise that will be resolved with the succesful result of executing the function or rejected if an error occurs.
  *
  */
 gpii.pouch.callPouchFunction = function (that, fnName, fnArgs, eventName) {

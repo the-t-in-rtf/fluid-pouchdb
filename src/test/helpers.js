@@ -15,10 +15,10 @@ fluid.registerNamespace("gpii.test.pouch");
  *
  * A static function that can be used to inspect an HTTP response and confirm whether its status and body are as expected.
  *
- * @param response {Object} The response object, used to check the statusCode.
- * @param body {Anything} The body of the response returned by the server.
- * @param expectedStatus {Number} The expected HTTP status code associated with the response.
- * @param expectedBody {Anything} The expected body.
+ * @param {Object} response - The response object, used to check the statusCode.
+ * @param {Anything} body - The body of the response returned by the server.
+ * @param {Number} expectedStatus - The expected HTTP status code associated with the response.
+ * @param {Anything} expectedBody - The expected body.
  *
  */
 gpii.test.pouch.checkResponse = function (response, body, expectedStatus, expectedBody) {
@@ -39,8 +39,9 @@ gpii.test.pouch.checkResponse = function (response, body, expectedStatus, expect
  *
  * A static function to confirm that the correct number of records were returned.
  *
- * @param response {Object} The response object.
- * @param body {String} A string version of a JSON server response.  Will be parsed using `JSON.parse`.
+ * @param {Object} response - The response object.
+ * @param {String} body - A string version of a JSON server response.  Will be parsed using `JSON.parse`.
+ * @param {Number} expectedRecordCount - The number of records to expect.
  *
  */
 gpii.test.pouch.checkRecordCount = function (response, body, expectedRecordCount) {

@@ -47,7 +47,7 @@ PouchDB.setMaxListeners(250);
  *   4. dbName: { dbOptions: { db: memdown} } // Long notation, no data, but with custom database options.
  *   5. dbName: {} // No data, no custom options.
  *
- * @param dbDef - The definition of a single database in any of the above formats.
+ * @param {Object} dbDef - The definition of a single database in any of the above formats.
  * @return {Object} - An expanded record in Object form.
  *
  */
@@ -68,7 +68,7 @@ gpii.pouch.express.expandDbDef = function (dbDef) {
  *
  * Initialize our instance of express-pouchdb.
  *
- * @param that
+ * @param {Object} that - The component itself.
  * @return {Object} - The expressPouchDB middleware.
  *
  */
@@ -95,7 +95,7 @@ gpii.pouch.express.initExpressPouchdb = function (that) {
  *
  * Initialize all of the configured databases in `that.options.database`.
  *
- * @param that
+ * @param {Object} that - The component itself.
  * @return {Promise} - A `fluid.promise.sequence` that will be resolved when all databases are initialized.
  *
  */
@@ -126,9 +126,9 @@ gpii.pouch.express.initDbs = function (that) {
  *
  * Initialize a single database instance.
  *
- * @param that - The component itself
- * @param dbKey {String} - The database name.
- * @param dbDef {Object} - Our convention for representing multiple databases.  See the docs for examples.
+ * @param {Object} that - The component itself
+ * @param {String} dbKey - The database name.
+ * @param {Object} dbDef - Our convention for representing multiple databases.  See the docs for examples.
  * @return {Promise} A promise that will be resolved with the database is initialized.
  */
 gpii.pouch.express.initDb = function (that, dbKey, dbDef) {
@@ -167,10 +167,10 @@ gpii.pouch.express.initDb = function (that, dbKey, dbDef) {
  *
  * Pass along any requests to our instance of express-pouchdb.
  *
- * @param that - The component itself.
- * @param req {Object} - The Express request object.
- * @param res {Object} - The Express response object.
- * @param next {Function} - The next piece of middleware in the chain.
+ * @param {Object} that - The component itself.
+ * @param {Object} req - The Express request object.
+ * @param {Object} res - The Express response object.
+ * @param {Function} next - The next piece of middleware in the chain.
  *
  */
 gpii.pouch.express.middleware = function (that, req, res, next) {
@@ -183,7 +183,7 @@ gpii.pouch.express.middleware = function (that, req, res, next) {
  * Clean up any instance of `gpii.pouchdb` that we're aware of.  Then, to get rid of databases created by
  * express-pouchdb, complete remove all data in `options.baseDir`.
  *
- * @param that - The component itself.
+ * @param {Object} that - The component itself.
  * @return {Promise} - A promise that will be resolved when cleanup is complete.
  *
  */
