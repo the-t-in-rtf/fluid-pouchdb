@@ -28,7 +28,7 @@ var os             = require("os");
 var fs             = require("fs");
 var memdown        = require("memdown");
 
-var expressPouchdb = require("express-pouchdb");
+var expressPouchdb = require("@the-t-in-rtf/express-pouchdb");
 
 var PouchDB        = require("pouchdb");
 
