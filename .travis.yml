@@ -1,5 +1,19 @@
 language: node_js
 node_js: "6"
-before_install:
-  # Required to install prebuilt leveldown
+addons:
+  firefox: stable
+  chrome: stable
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
+    - gcc-4.8
+    - xvfb
+install:
   - "npm install -g prebuild prebuild-install"
+  - export DISPLAY=':99.0'
+  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+  - npm install
+script:
+  - npm test

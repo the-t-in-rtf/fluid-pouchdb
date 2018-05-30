@@ -21,7 +21,7 @@ fluid.registerNamespace("gpii.pouch.node");
  *
  * Create our working directory if it doesn't already exist.
  *
- * @param that - The component itself.
+ * @param {Object} that - The component itself.
  *
  */
 gpii.pouch.node.initDir = function (that) {
@@ -41,8 +41,8 @@ gpii.pouch.node.initDir = function (that) {
  *
  * Create a "safe" prefix (i. e. db and directory name) for our content.
  *
- * @param toResolve An IoC reference to resolve.
- * @returns {String} The resolved path followed by the path separator.
+ * @param {String} toResolve - An IoC reference to resolve.
+ * @return {String} The resolved path followed by the path separator.
  *
  */
 gpii.pouch.node.makeSafePrefix = function (toResolve) {
@@ -53,7 +53,9 @@ gpii.pouch.node.makeSafePrefix = function (toResolve) {
  *
  * If we created our enclosing base directory, clean it up.
  *
- * @param that - The component itself.
+ * @param {Object} that - The component itself.
+ * @return {Promise} A promise that will be resolved when cleanup is complete or rejected if an error occurs.
+ *
  */
 gpii.pouch.node.cleanup = function (that) {
     var togo = fluid.promise();
@@ -78,9 +80,9 @@ gpii.pouch.node.cleanup = function (that) {
  *
  * Load data from one or more package-relative paths..
  *
- * @param that - The component itself.
- * @param dbPaths - A string or array representing data to be loaded.
- * @returns {Promise} - A promise which will be resolved when all data has been loaded.
+ * @param {Object} that - The component itself.
+ * @param {String|Array} dbPaths - A string or array representing data to be loaded.
+ * @return {Promise} - A promise which will be resolved when all data has been loaded.
  *
  */
 gpii.pouch.node.loadDataFromPath = function (that, dbPaths) {
@@ -108,7 +110,7 @@ gpii.pouch.node.loadDataFromPath = function (that, dbPaths) {
  *
  * Only load data on startup if the database doesn't already have data.
  *
- * @param that - The component itself.
+ * @param {Object} that - The component itself.
  *
  */
 gpii.pouch.node.loadDataIfNeeded = function (that) {
@@ -133,9 +135,9 @@ gpii.pouch.node.loadDataIfNeeded = function (that) {
  *
  * Our pouch destruction needs to account for the directory removal before resolving its promise.
  *
- * @param that
- * @param fnArgs
- * @returns {*}
+ * @param {Object} that - The component itself.
+ * @param {Array} fnArgs - Arguments to pass to the pouch `destroy` function.
+ * @return {Promise} A promise that will be resolved when pouch has been destroyed or rejected if an error occurs.
  */
 gpii.pouch.node.destroyPouch = function (that, fnArgs) {
     var togo = fluid.promise();
