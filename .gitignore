@@ -30,3 +30,6 @@ log.txt
 .vagrant
 reports
 instrumented
+
+# npm package lock file.
+package-lock.json
