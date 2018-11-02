@@ -7,6 +7,8 @@ var gpii  = fluid.registerNamespace("gpii");
 var jqUnit = require("node-jqunit");
 
 require("../../");
+require("./lib/caseHolder");
+
 gpii.pouch.loadTestingSupport();
 
 // Our local test dataSource grade that is aware of our starting URL (loopback)
@@ -39,8 +41,7 @@ gpii.tests.pouch.dataSource.compareResults = function (message, expected, actual
 };
 
 fluid.defaults("gpii.tests.pouch.dataSource.caseHolder", {
-    gradeNames: ["gpii.test.express.caseHolder"],
-    sequenceEnd: gpii.test.pouch.caseHolder.cleanupSequence,
+    gradeNames: ["gpii.test.pouchdb.caseHolder"],
     rawModules: [{
         name: "Integration tests for gpii-pouch and the 'url encoding' express dataSource grade...",
         tests: [
@@ -114,14 +115,14 @@ fluid.defaults("gpii.tests.pouch.dataSource.environment", {
     expected: {
         singleKey: {
             total_rows: 3,
-            offset: 0,
+            offset: 2,
             rows: [
                 { "id": "strawberry", "key": "red" }
             ]
         },
         multipleKeys: {
             total_rows: 3,
-            offset: 0,
+            offset: 1,
             rows: [
                 { "id": "strawberry", "key": "red" },
                 { "id": "mango", "key": "green"}
@@ -139,10 +140,8 @@ fluid.defaults("gpii.tests.pouch.dataSource.environment", {
     },
     pouchConfig: {
         databases: {
-            _users:           { data: "%gpii-pouchdb/tests/data/users.json"},
-            _replicator:      {},
-            rgb:  { data: [   "%gpii-pouchdb/tests/data/rgb.json"] },
-            pouch__all_dbs__: {}
+            users: { data: "%gpii-pouchdb/tests/data/users.json" },
+            rgb:   { data: ["%gpii-pouchdb/tests/data/rgb.json"] }
         }
     },
     components: {

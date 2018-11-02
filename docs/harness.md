@@ -1,26 +1,62 @@
 # `gpii.pouch.harness`
 
-An instance of `gpii.express` which has an instance of `gpii.pouch.express` wired into it.  Provides a working HTTP REST
-API equivalent to CouchDB.  Although you will generally use this in combination with the test enviroment above, it can
-also be used on its own. As an example, the file `tests/js/launch-test-test-harness.js` included with this package can
-be used to launch a standalone test instance of this package for manual QA.
+A component which spins up a CouchDB docker container and populates it with data.  Although you will generally use this
+in combination with the test environment provided by this package, it can also be used on its own. As an example, the
+file `tests/js/launch-test-test-harness.js` included with this package can be used to launch a standalone test instance
+of this package for manual QA.
 
 ## Component Options
 
 | Option            | Type       | Description |
 | ----------------- | ---------- | ----------- |
 | `port` (required) | `{Number}` | The port on which the test harness will run. |
+| `databases`       | `{Array}`  | A map of databases and data files to provision them with.  See below. |
 
+### The `databases` Option
 
-# `gpii.pouch.harness.persistent`
+The harness is provisioned with databases and content based on the contents of `options.databases`
 
-An instance of the harness which is designed to persist its data between runs.
+```javascript
+var fluid = require("infusion");
+var my = fluid.registerNamespace("my");
 
-## Component Options
+require("my-package");
+require("my-other-package");
 
-In addition to the options for `gpii.pouch.harness`, this grade has the following unique option:
+fluid.defaults("my.harness", {
+    gradeNames: ["gpii.pouch.harness"],
+    databases: {
+        singleFile: {
+            data: "%my-package/tests/data/onePayload.json"
+        },
+        lotsOfFiles: {
+            data: [
+                "%my-package/tests/data/onePayload.json",
+                "%my-other-package/tests/data/otherPayload.json"
+            ]
+        },
+        empty: {}
+    }
+});
+```
 
-| Option               | Type       | Description |
-| -------------------- | ---------- | ----------- |
-| `baseDir` (required) | `{String}` | A full or package-relative path to the base directory in which all database content, configuration files, and logs will be stored. |
+Each file is expected to be a valid payload that can be used with the [CouchDB bulk document
+API](http://docs.couchdb.org/en/2.2.0/api/database/bulk-api.html#db-bulk-docs), something like:
 
+```json
+{
+    "docs": [
+        {
+            "_id": "id1",
+            "key": "value"
+        },
+        {
+            "_id": "id2",
+            "other-key": "other value"
+        }
+    ]
+}
+```
+
+Even though the harness no longer uses express-pouchdb, you can also use the legacy `options.pouchConfig.databases`
+option, although it's recommended that you updated your code, as this option may not be supported in a future release.

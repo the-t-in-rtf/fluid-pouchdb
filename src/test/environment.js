@@ -1,15 +1,10 @@
 /* eslint-env node */
 "use strict";
 var fluid = require("infusion");
-var gpii  = fluid.registerNamespace("gpii");
 
 require("../js/harness");
 
 fluid.registerNamespace("gpii.test.pouch.environment");
-
-gpii.test.pouch.environment.startCleanups = function (that) {
-    that.harness.express.expressPouch.events.onCleanup.fire();
-};
 
 fluid.defaults("gpii.test.pouch.environment", {
     gradeNames: ["fluid.test.testEnvironment"],
@@ -23,7 +18,7 @@ fluid.defaults("gpii.test.pouch.environment", {
     distributeOptions: [
         {
             source: "{that}.options.pouchConfig",
-            target: "{that gpii.pouch.express.base}.options"
+            target: "{that gpii.pouch.harness}.options"
         },
         {
             source: "{that}.options.harnessGrades",
@@ -31,47 +26,15 @@ fluid.defaults("gpii.test.pouch.environment", {
         }
     ],
     events: {
-        constructFixtures: null,
-        onHarnessReady: null,
-        onFixturesConstructed: {
-            events: {
-                onHarnessReady: "onHarnessReady"
-            }
-        },
-        onCleanup:         null,
-        onCleanupComplete: null
-    },
-    listeners: {
-        "onCleanup.cleanup": {
-            funcName: "gpii.test.pouch.environment.startCleanups",
-            args:     ["{that}"]
-        }
+        onHarnessReady: null
     },
     components: {
         harness: {
             type: "gpii.pouch.harness",
-            createOnEvent: "constructFixtures",
             options: {
-                port:       "{testEnvironment}.options.port",
+                port: "{testEnvironment}.options.port",
                 listeners: {
-                    onReady: "{testEnvironment}.events.onHarnessReady.fire"
-                },
-                components: {
-                    express: {
-                        options: {
-                            components: {
-                                expressPouch: {
-                                    options: {
-                                        listeners: {
-                                            onCleanupComplete: {
-                                                func: "{testEnvironment}.events.onCleanupComplete.fire"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    "onReady.notifyParent": "{testEnvironment}.events.onHarnessReady.fire"
                 }
             }
         }

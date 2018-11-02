@@ -14,24 +14,38 @@ require("gpii-express");
 gpii.express.loadTestingSupport();
 
 require("../pouch-config");
+require("../lib/caseHolder");
+
+fluid.registerNamespace("gpii.tests.pouch.basic");
+
+
+gpii.tests.pouch.basic.checkRecordAndStartDelete = function (response, body, expectedStatus, expectedBody, deleteRequest) {
+    var record = JSON.parse(body);
+    gpii.test.pouch.checkResponse(response, body, expectedStatus, expectedBody);
+
+    // DELETE requests must reference a specific revision, as in:
+    // DELETE /recipes/FishStew?rev=1-9c65296036141e575d32ba9c034dd3ee
+    deleteRequest.send({}, { termMap: { rev: record._rev } });
+};
 
 fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
-    gradeNames: ["gpii.test.pouch.caseHolder"],
+    gradeNames: ["gpii.test.pouchdb.caseHolder"],
     expected: {
-        root:             { "express-pouchdb": "Welcome!" },
+        root:             { couchdb:"Welcome","vendor":{ "name":"The Apache Software Foundation" } },
         massive:          { total_rows: 150 },
         noData:           { total_rows: 0 },
         read:             { foo: "bar" },
         supplementalRead: { has: "data" },
-        "delete":         {},
+        afterDelete:      {},
+        beforeDelete:     { _id: "todelete"},
         insert:           { id: "toinsert", foo: "bar"}
     },
     rawModules: [
         {
-            name: "Testing gpii-pouchdb (filesystem)...",
+            name: "Testing docker test harness...",
             tests: [
                 {
-                    name: "Testing loading pouch root...",
+                    name: "Testing loading CouchDB root...",
                     type: "test",
                     sequence: [
                         {
@@ -113,21 +127,19 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                         {
                             func: "{preDeleteRequest}.send"
                         },
+                        // confirm that the record exists now and delete the latest revision.
                         {
-                            listener: "gpii.test.pouch.checkResponse",
+                            listener: "gpii.tests.pouch.basic.checkRecordAndStartDelete",
                             event:    "{preDeleteRequest}.events.onComplete",
                             //        (response, body, expectedStatus, expectedBody)
-                            args:     ["{preDeleteRequest}.nativeResponse", "{arguments}.0", 200]
+                            args:     ["{preDeleteRequest}.nativeResponse", "{arguments}.0", 200, "{that}.options.expected.beforeDelete", "{deleteRequest}"]
                         },
-                        // The delete should be successful.
-                        {
-                            func: "{deleteRequest}.send"
-                        },
+                        // The delete request should be successful.
                         {
                             listener: "gpii.test.pouch.checkResponse",
                             event:    "{deleteRequest}.events.onComplete",
                             //        (response, body, expectedStatus, expectedBody)
-                            args:     ["{deleteRequest}.nativeResponse", "{arguments}.0", 200, "{testCaseHolder}.options.expected.delete"]
+                            args:     ["{deleteRequest}.nativeResponse", "{arguments}.0", 200, "{testCaseHolder}.options.expected.afterDelete"]
                         },
                         // The record should no longer exist after we delete it.
                         {
@@ -221,8 +233,9 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
         deleteRequest: {
             type: "gpii.test.pouch.request",
             options: {
-                path:   "/sample/todelete",
-                method: "DELETE"
+                path:   "/sample/todelete?rev=%rev",
+                method: "DELETE",
+                termMap: { "rev": "%rev"}
             }
         },
         verifyDeleteRequest: {

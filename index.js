@@ -8,7 +8,6 @@ fluid.module.register("gpii-pouchdb", __dirname, require);
 require("./src/js/timelyRimraf");
 require("./src/js/pouchdb-common");
 require("./src/js/pouchdb-node");
-require("./src/js/pouch-express");
 require("./src/js/harness");
 
 fluid.registerNamespace("gpii.pouch");

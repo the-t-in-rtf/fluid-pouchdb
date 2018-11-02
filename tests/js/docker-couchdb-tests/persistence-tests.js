@@ -9,6 +9,8 @@ var fluid  = require("infusion");
 var gpii   = fluid.registerNamespace("gpii");
 
 require("../../../");
+require("../lib/caseHolder");
+
 gpii.pouch.loadTestingSupport();
 
 fluid.defaults("gpii.tests.pouch.persistent.request", {
@@ -23,7 +25,7 @@ fluid.defaults("gpii.tests.pouch.persistent.request.view", {
 });
 
 fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
-    gradeNames: ["gpii.test.pouch.caseHolder.base"],
+    gradeNames: ["gpii.test.pouchdb.caseHolder"],
     persistenceRecord: { _id: "new", foo: "bar"},
     rawModules: [{
         name: "Testing persistence within a single restart...",
@@ -91,47 +93,16 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
                 ]
             },
             {
-                name: "Confirm that the record is still there after a restart...",
+                name: "Confirm that the record is no longer there after running the cleanup...",
                 type: "test",
                 sequence: [
                     {
-                        func: "{getAfterRestartRequest}.send",
-                        args:     []
+                        func: "{harness}.cleanup"
                     },
                     {
-                        event:    "{getAfterRestartRequest}.events.onComplete",
-                        listener: "jqUnit.assertLeftHand",
-                        args:     ["The record should still be found.", "{that}.options.persistenceRecord", "@expand:JSON.parse({arguments}.0)"]
-                    }
-                ]
-            },
-            {
-                name: "Confirm that we have indexed records after a restart...",
-                type: "test",
-                sequence: [
-                    {
-                        func: "{getViewAfterRestartRequest}.send",
+                        event: "{harness}.events.onReady",
+                        listener: "{getAfterResetRequest}.send",
                         args: []
-                    },
-                    {
-                        event:    "{getViewAfterRestartRequest}.events.onComplete",
-                        listener: "jqUnit.assertLeftHand",
-                        args:     ["The status code should be as expected...", { total_rows: 1 }, "@expand:JSON.parse({arguments}.0)"]
-                    },
-                    {
-                        func: "jqUnit.assertEquals",
-                        args:     ["The status code should be as expected...", 200, "{getViewAfterRestartRequest}.nativeResponse.statusCode"]
-                    }
-                ]
-            },
-            {
-                name: "Confirm that the record is no longer there after cleaning up the data and recreating express-pouchdb...",
-                type: "test",
-                sequence: [
-                    {
-                        task:        "{harness}.cleanup",
-                        resolve:     "{getAfterResetRequest}.send",
-                        resolveArgs: []
                     },
                     {
                         event:    "{getAfterResetRequest}.events.onComplete",
@@ -156,20 +127,6 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
                     {
                         func: "jqUnit.assertEquals",
                         args:     ["The status code should be as expected...", 200, "{getViewAfterResetRequest}.nativeResponse.statusCode"]
-                    }
-                ]
-            },
-            {
-                name: "Clean up at the end of the run...",
-                type: "test",
-                sequence: [
-                    {
-                        func: "{testEnvironment}.events.onCleanup.fire"
-                    },
-                    {
-                        event:    "{testEnvironment}.events.onCleanupComplete",
-                        listener: "jqUnit.assert",
-                        args:     ["The final cleanup should complete as expected"]
                     }
                 ]
             }
@@ -211,10 +168,6 @@ fluid.registerNamespace("gpii.tests.pouch.persistent.environment");
 fluid.defaults("gpii.tests.pouch.persistent.environment", {
     gradeNames: ["gpii.test.pouch.environment"],
     components: {
-        harness: {
-            type: "gpii.pouch.harness.persistent"
-
-        },
         caseHolder: {
             type: "gpii.tests.pouch.persistent.caseHolder"
         }
@@ -223,21 +176,9 @@ fluid.defaults("gpii.tests.pouch.persistent.environment", {
     hangWait:   15000,
     pouchConfig: {
         databases: {
-            persistence: { data: ["%gpii-pouchdb/tests/data/persistence"]},
-            _replicator: {},
-            // _users: {},
-            pouch__all_dbs__: {}
+            persistence: { data: ["%gpii-pouchdb/tests/data/persistence"]}
         }
-    },
-    // We cannot use the normal logic to determine whether to delete the test directory, as we intentionally persist it
-    // between runs.  Manually setting the following option will ensure that when we do eventually call cleanup, it will
-    // be aggressive enough.
-    distributeOptions: [
-        {
-            record: true,
-            target: "{that gpii.pouch.express.base}.options.members.baseDirBelongsToUs"
-        }
-    ]
+    }
 });
 
 fluid.test.runTests("gpii.tests.pouch.persistent.environment");

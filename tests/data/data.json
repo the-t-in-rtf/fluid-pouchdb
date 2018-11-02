@@ -1,3 +1,15 @@
 {
-  "docs": [ { "_id": "foo", "foo": "bar" }, {"baz": "qux"}, { "_id": "todelete", "foo": "bar"} ]
+    "docs": [
+        {
+            "_id": "foo",
+            "foo": "bar"
+        },
+        {
+            "baz": "qux"
+        },
+        {
+            "_id": "todelete",
+            "foo": "bar"
+        }
+    ]
 }

@@ -7,5 +7,5 @@ fluid.setLogging(false);
 require("./express-dataSource-integration-tests");
 require("./timelyRimraf-tests");
 
-require("./pouchdb-express-tests/");
+require("./docker-couchdb-tests/");
 require("./pouchdb-component-tests/");

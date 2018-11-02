@@ -20,7 +20,7 @@ fluid.registerNamespace("gpii.test.pouch.caseHolder");
 // test's "body".
 gpii.test.pouch.caseHolder.cleanupSequence = [
     {
-        func: "{testEnvironment}.events.onCleanup.fire",
+        func: "{testEnvironment}.harness.events.onCleanup.fire",
         args: []
     },
     {

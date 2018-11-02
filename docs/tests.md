@@ -1,11 +1,12 @@
 # Using this Package in Fluid IoC Tests
 
-This package provides components that can be used when writing [Fluid IoC Tests](http://docs.fluidproject.org/infusion/development/IoCTestingFramework.html).
+This package provides components that can be used when writing [Fluid IoC
+Tests](http://docs.fluidproject.org/infusion/development/IoCTestingFramework.html).
 
 To load these components, in addition to requiring the package itself, you will also need to load the testing support,
 as in the following example:
 
-```
+```javascript
 var fluid = require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
 require("gpii-pouchdb");
@@ -17,16 +18,19 @@ gpii.pouch.loadTestingSupport();
 
 Once you have done this, you have access to the components outlined below.
 
-# `gpii.test.pouch.environment`
+## `gpii.test.pouch.environment`
 
 This is an extension of `fluid.test.testEnvironment` that is intended for use with a `caseHolder` like
 `gpii.tests.express.caseHolder`, or one that follows the same conventions, namely:
 
-1. Before each test, a `constructFixtures` event is fired on the `testEnvironment`, which constructs a `gpii.test.pouch.harness` instance.
-2. The tests will not run until the `testEnvironment` fires its `onFixturesConstructed` event.  All test fixtures boil up their own events that must all complete before `onFixturesConstructed` can fire.
+1. Before each test, a `constructFixtures` event is fired on the `testEnvironment`, which constructs a
+   `gpii.test.pouch.harness` instance.
+2. The tests will not run until the `testEnvironment` fires its `onFixturesConstructed` event.  All test fixtures boil
+   up their own events that must all complete before `onFixturesConstructed` can fire.
 
 If you are extending the `gpii.tests.express.caseHolder` grade, remember to write your tests under  `options.rawModules`
-instead of `options.modules`.  See [the `gpii-express` documentation](https://github.com/the-t-in-rtf/gpii-express/) for details.
+instead of `options.modules`.  See [the `gpii-express` documentation](https://github.com/the-t-in-rtf/gpii-express/) for
+details.
 
 ## Component Options
 
@@ -39,7 +43,7 @@ instead of `options.modules`.  See [the `gpii-express` documentation](https://gi
 The `harnessGrades` option is intended to help you avoid having to pass in deep configuration to the harness instance
 used by the test environment.  Here is an example of how you might use this functionality:
 
-```
+```javascript
 fluid.defaults("my.mixin.grade", {
     gradeNames: ["fluid.component"],
     databases: {

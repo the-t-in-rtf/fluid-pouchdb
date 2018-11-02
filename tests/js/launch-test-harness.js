@@ -2,6 +2,8 @@
 // A convenience script to start the test harness, used for manual QA.
 "use strict";
 var fluid = require("infusion");
+fluid.setLogging(true);
+
 var gpii  = fluid.registerNamespace("gpii");
 
 require("../../");
@@ -10,21 +12,12 @@ require("./pouch-config.js");
 
 fluid.setLogging(true);
 
-gpii.pouch.harness.persistent({
+gpii.pouch.harness({
     port: 6789,
-    pouchConfig: {
-        databases: gpii.tests.pouch.config.databases
-    },
-    distributeOptions: [
-        {
-            source: "{that}.options.pouchConfig",
-            target: "{that gpii.pouch.express}.options"
-        }
-    ],
+    databases: gpii.tests.pouch.config.databases,
     listeners: {
-        "onCreate.log": {
-            funcName: "fluid.log",
-            args: ["baseDir:", "{that}.express.expressPouch.options.baseDir"]
+        "onDestroy.cleanup": {
+            func: "{that}.events.onCleanup.fire"
         }
     }
 });
