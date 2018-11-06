@@ -9,7 +9,7 @@ var fluid  = require("infusion");
 var gpii   = fluid.registerNamespace("gpii");
 
 require("../../../");
-require("../lib/caseHolder");
+require("../lib/");
 
 gpii.pouch.loadTestingSupport();
 
@@ -34,14 +34,19 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
                 name: "Confirm that we have no indexed records in the view on startup...",
                 type: "test",
                 sequence: [
+                    // The persistent harness now has no way of knowing if it should provision itself on the first run unless we tell it.
                     {
-                        func: "{getViewBeforeInsertRequest}.send",
-                        args: []
+                        func: "{harness}.cleanup"
+                    },
+                    {
+                        event:    "{harness}.events.onCleanupComplete",
+                        listener: "{getViewBeforeInsertRequest}.send",
+                        args:     [{}, "@expand:gpii.test.pouch.wrapPort({harness}.couchPort)"]
                     },
                     {
                         event:    "{getViewBeforeInsertRequest}.events.onComplete",
                         listener: "jqUnit.assertLeftHand",
-                        args:     ["The status code should be as expected...", { total_rows: 0 }, "@expand:JSON.parse({arguments}.0)"]
+                        args:     ["The number of rows should be as expected...", { total_rows: 0 }, "@expand:JSON.parse({arguments}.0)"]
                     },
                     {
                         func: "jqUnit.assertEquals",
@@ -55,7 +60,7 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
                 sequence: [
                     {
                         func: "{insertRequest}.send",
-                        args: ["{that}.options.persistenceRecord"]
+                        args: ["{that}.options.persistenceRecord", "@expand:gpii.test.pouch.wrapPort({harness}.couchPort)"]
                     },
                     {
                         event:    "{insertRequest}.events.onComplete",
@@ -64,7 +69,7 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
                     },
                     {
                         func: "{getAfterInsertRequest}.send",
-                        args: []
+                        args: [{}, "@expand:gpii.test.pouch.wrapPort({harness}.couchPort)"]
                     },
                     {
                         event:    "{getAfterInsertRequest}.events.onComplete",
@@ -79,7 +84,7 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
                 sequence: [
                     {
                         func: "{getViewAfterInsertRequest}.send",
-                        args: []
+                        args: [{}, "@expand:gpii.test.pouch.wrapPort({harness}.couchPort)"]
                     },
                     {
                         event:    "{getViewAfterInsertRequest}.events.onComplete",
@@ -100,9 +105,9 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
                         func: "{harness}.cleanup"
                     },
                     {
-                        event: "{harness}.events.onReady",
+                        event: "{harness}.events.onCleanupComplete",
                         listener: "{getAfterResetRequest}.send",
-                        args: []
+                        args: [{}, "@expand:gpii.test.pouch.wrapPort({harness}.couchPort)"]
                     },
                     {
                         event:    "{getAfterResetRequest}.events.onComplete",
@@ -117,7 +122,7 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
                 sequence: [
                     {
                         func: "{getViewAfterResetRequest}.send",
-                        args: []
+                        args: [{}, "@expand:gpii.test.pouch.wrapPort({harness}.couchPort)"]
                     },
                     {
                         event:    "{getViewAfterResetRequest}.events.onComplete",
@@ -170,6 +175,9 @@ fluid.defaults("gpii.tests.pouch.persistent.environment", {
     components: {
         caseHolder: {
             type: "gpii.tests.pouch.persistent.caseHolder"
+        },
+        harness: {
+            type: "gpii.pouch.harness.persistent"
         }
     },
     port:       6798,

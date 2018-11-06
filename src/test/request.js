@@ -4,6 +4,5 @@ var fluid = require("infusion");
 
 fluid.defaults("gpii.test.pouch.request", {
     gradeNames: ["kettle.test.request.http"],
-    port:       "{testEnvironment}.options.port",
     method:     "GET"
 });

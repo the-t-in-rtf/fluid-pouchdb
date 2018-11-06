@@ -5,20 +5,60 @@ var fluid = require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
 
 var jqUnit = require("node-jqunit");
+var kettle = require("kettle");
 
 require("../../");
-require("./lib/caseHolder");
+require("./lib/");
 
 gpii.pouch.loadTestingSupport();
+
+fluid.registerNamespace("gpii.tests.pouch.dataSource");
+
+/**
+ *
+ * As we do not know our port ahead of time, we need a URL resolver that can both interpolate variables and append
+ * query data.  This should never ever be used outside of these tests.
+ *
+ * @param {Object} that - The component itself.
+ * @param {String} url - The URL (template) we will resolve.
+ * @param {Object} directModel - The model to use when resolving query (and non-query) variables.
+ * @return {String} - The resolved URL.
+ *
+ */
+gpii.tests.pouch.dataSource.resolveUrl = function (that, url, directModel) {
+    var modelMinusPort   = fluid.filterKeys(directModel, that.options.termsToStrip, true);
+    var urlWithQueryData = gpii.express.dataSource.urlEncodedJson.resolveUrl(that, url, modelMinusPort);
+    var urlWithTemplateVariablesResolved = kettle.dataSource.URL.resolveUrl(urlWithQueryData, that.options.termMap, directModel, true);
+    return urlWithTemplateVariablesResolved;
+};
+
+/**
+ *
+ * Smash together the query input with the dynamic port value we need.  Is unpacked by the `fluid.filterKeys` call in
+ * `gpii.tests.pouch.dataSource.resolveUrl`.
+ *
+ * @param {Object} inputModel - The original input model.
+ * @param {Integer} port - The port on which CouchDB is available.
+ * @return {Object} - The combined direct model that will be used in resolving the URL.
+ *
+ */
+gpii.tests.pouch.dataSource.expandCombinedDirectModel = function (inputModel, port) {
+    var combinedDirectModel = fluid.extend({}, inputModel, { port: port });
+    return combinedDirectModel;
+};
 
 // Our local test dataSource grade that is aware of our starting URL (loopback)
 fluid.defaults("gpii.tests.pouch.dataSource.testDataSource", {
     gradeNames: ["gpii.express.dataSource.urlEncodedJson"],
-    endpoint: "rgb/_design/rgb/_view/byColor",
-    url: {
-        expander: {
-            funcName: "fluid.stringTemplate",
-            args: ["%baseUrl%endpoint", { baseUrl: "{testEnvironment}.options.baseUrl", endpoint: "{that}.options.endpoint"}]
+    url: "http://localhost:%port/rgb/_design/rgb/_view/byColor",
+    termMap: {
+        "port": "%port"
+    },
+    termsToStrip: ["port"],
+    invokers: {
+        resolveUrl: {
+            funcName: "gpii.tests.pouch.dataSource.resolveUrl",
+            args:     ["{that}", "{arguments}.0", "{arguments}.2"] // url, termMap (not used), directModel
         }
     }
 });
@@ -51,7 +91,7 @@ fluid.defaults("gpii.tests.pouch.dataSource.caseHolder", {
                 sequence: [
                     {
                         func: "{singleKeyDataSource}.get",
-                        args: ["{testEnvironment}.options.input.singleKey"]
+                        args: ["@expand:gpii.tests.pouch.dataSource.expandCombinedDirectModel({testEnvironment}.options.input.singleKey, {harness}.couchPort)"]
                     },
                     {
                         listener: "gpii.tests.pouch.dataSource.compareResults",
@@ -66,7 +106,7 @@ fluid.defaults("gpii.tests.pouch.dataSource.caseHolder", {
                 sequence: [
                     {
                         func: "{multiKeyDataSource}.get",
-                        args: ["{testEnvironment}.options.input.multipleKeys"]
+                        args: ["@expand:gpii.tests.pouch.dataSource.expandCombinedDirectModel({testEnvironment}.options.input.multipleKeys, {harness}.couchPort)"]
                     },
                     {
                         listener: "gpii.tests.pouch.dataSource.compareResults",
@@ -81,7 +121,7 @@ fluid.defaults("gpii.tests.pouch.dataSource.caseHolder", {
                 sequence: [
                     {
                         func: "{noKeyDataSource}.get",
-                        args: [{}]
+                        args: ["@expand:gpii.tests.pouch.dataSource.expandCombinedDirectModel({testEnvironment}.options.input.noKeys, {harness}.couchPort)"]
                     },
                     {
                         listener: "gpii.tests.pouch.dataSource.compareResults",
@@ -107,10 +147,10 @@ fluid.defaults("gpii.tests.pouch.dataSource.caseHolder", {
 
 fluid.defaults("gpii.tests.pouch.dataSource.environment", {
     gradeNames: ["gpii.test.pouch.environment"],
-    port: 9595,
     input: {
         singleKey:    { key: "red"},
-        multipleKeys: { keys: ["red", "green"] }
+        multipleKeys: { keys: ["red", "green"] },
+        noKeys:       {}
     },
     expected: {
         singleKey: {

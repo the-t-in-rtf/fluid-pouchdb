@@ -2,6 +2,7 @@
 /* Tests for the "pouch" module */
 "use strict";
 var fluid = require("infusion");
+
 var gpii  = fluid.registerNamespace("gpii");
 
 fluid.require("%gpii-pouchdb");
@@ -14,18 +15,17 @@ require("gpii-express");
 gpii.express.loadTestingSupport();
 
 require("../pouch-config");
-require("../lib/caseHolder");
+require("../lib/");
 
 fluid.registerNamespace("gpii.tests.pouch.basic");
 
-
-gpii.tests.pouch.basic.checkRecordAndStartDelete = function (response, body, expectedStatus, expectedBody, deleteRequest) {
+gpii.tests.pouch.basic.checkRecordAndStartDelete = function (response, body, expectedStatus, expectedBody, deleteRequest, deletePort) {
     var record = JSON.parse(body);
     gpii.test.pouch.checkResponse(response, body, expectedStatus, expectedBody);
 
     // DELETE requests must reference a specific revision, as in:
     // DELETE /recipes/FishStew?rev=1-9c65296036141e575d32ba9c034dd3ee
-    deleteRequest.send({}, { termMap: { rev: record._rev } });
+    deleteRequest.send({}, { port: deletePort, termMap: { rev: record._rev } });
 };
 
 fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
@@ -49,7 +49,8 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                     type: "test",
                     sequence: [
                         {
-                            func: "{rootRequest}.send"
+                            func: "{rootRequest}.send",
+                            args: [{}, "@expand:gpii.test.pouch.wrapPort({harness}.couchPort)"]
                         },
                         {
                             listener: "gpii.test.pouch.checkResponse",
@@ -64,7 +65,8 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                     type: "test",
                     sequence: [
                         {
-                            func: "{massiveRequest}.send"
+                            func: "{massiveRequest}.send",
+                            args: [{}, "@expand:gpii.test.pouch.wrapPort({harness}.couchPort)"]
                         },
                         {
                             listener: "gpii.test.pouch.checkResponse",
@@ -79,7 +81,8 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                     type: "test",
                     sequence: [
                         {
-                            func: "{noDataRequest}.send"
+                            func: "{noDataRequest}.send",
+                            args: [{}, "@expand:gpii.test.pouch.wrapPort({harness}.couchPort)"]
                         },
                         {
                             listener: "gpii.test.pouch.checkResponse",
@@ -94,7 +97,8 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                     type: "test",
                     sequence: [
                         {
-                            func: "{readRequest}.send"
+                            func: "{readRequest}.send",
+                            args: [{}, "@expand:gpii.test.pouch.wrapPort({harness}.couchPort)"]
                         },
                         {
                             listener: "gpii.test.pouch.checkResponse",
@@ -109,7 +113,8 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                     type: "test",
                     sequence: [
                         {
-                            func: "{supplementalReadRequest}.send"
+                            func: "{supplementalReadRequest}.send",
+                            args: [{}, "@expand:gpii.test.pouch.wrapPort({harness}.couchPort)"]
                         },
                         {
                             listener: "gpii.test.pouch.checkResponse",
@@ -125,14 +130,15 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                     sequence: [
                         // The record should exist before we delete it.
                         {
-                            func: "{preDeleteRequest}.send"
+                            func: "{preDeleteRequest}.send",
+                            args: [{}, "@expand:gpii.test.pouch.wrapPort({harness}.couchPort)"]
                         },
                         // confirm that the record exists now and delete the latest revision.
                         {
                             listener: "gpii.tests.pouch.basic.checkRecordAndStartDelete",
                             event:    "{preDeleteRequest}.events.onComplete",
                             //        (response, body, expectedStatus, expectedBody)
-                            args:     ["{preDeleteRequest}.nativeResponse", "{arguments}.0", 200, "{that}.options.expected.beforeDelete", "{deleteRequest}"]
+                            args:     ["{preDeleteRequest}.nativeResponse", "{arguments}.0", 200, "{that}.options.expected.beforeDelete", "{deleteRequest}", "{harness}.couchPort"]
                         },
                         // The delete request should be successful.
                         {
@@ -143,7 +149,8 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                         },
                         // The record should no longer exist after we delete it.
                         {
-                            func: "{verifyDeleteRequest}.send"
+                            func: "{verifyDeleteRequest}.send",
+                            args: [{}, "@expand:gpii.test.pouch.wrapPort({harness}.couchPort)"]
                         },
                         {
                             listener: "gpii.test.pouch.checkResponse",
@@ -159,7 +166,8 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                     sequence: [
                         // The record should not exist before we create it.
                         {
-                            func: "{preInsertRequest}.send"
+                            func: "{preInsertRequest}.send",
+                            args: [{}, "@expand:gpii.test.pouch.wrapPort({harness}.couchPort)"]
                         },
                         {
                             listener: "gpii.test.pouch.checkResponse",
@@ -170,7 +178,7 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                         // The insert should be successful.
                         {
                             func: "{insertRequest}.send",
-                            args: "{that}.options.expected.insert"
+                            args: ["{that}.options.expected.insert", "@expand:gpii.test.pouch.wrapPort({harness}.couchPort)"]
                         },
                         {
                             listener: "gpii.test.pouch.checkResponse",
@@ -180,7 +188,8 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                         },
                         // The record should exist after we create it.
                         {
-                            func: "{verifyInsertRequest}.send"
+                            func: "{verifyInsertRequest}.send",
+                            args: [{}, "@expand:gpii.test.pouch.wrapPort({harness}.couchPort)"]
                         },
                         {
                             listener: "gpii.test.pouch.checkResponse",
@@ -269,7 +278,6 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
 
 fluid.defaults("gpii.tests.pouch.basic.environment", {
     gradeNames: ["gpii.test.pouch.environment"],
-    port:       6798,
     pouchConfig: {
         databases:  gpii.tests.pouch.config.databases
     },

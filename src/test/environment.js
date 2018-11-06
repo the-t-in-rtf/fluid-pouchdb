@@ -8,13 +8,6 @@ fluid.registerNamespace("gpii.test.pouch.environment");
 
 fluid.defaults("gpii.test.pouch.environment", {
     gradeNames: ["fluid.test.testEnvironment"],
-    port:       6792,
-    baseUrl:    {
-        expander: {
-            funcName: "fluid.stringTemplate",
-            args:     ["http://localhost:%port/", { port: "{that}.options.port" }]
-        }
-    },
     distributeOptions: [
         {
             source: "{that}.options.pouchConfig",
@@ -32,9 +25,8 @@ fluid.defaults("gpii.test.pouch.environment", {
         harness: {
             type: "gpii.pouch.harness",
             options: {
-                port: "{testEnvironment}.options.port",
                 listeners: {
-                    "onReady.notifyParent": "{testEnvironment}.events.onHarnessReady.fire"
+                    "onStartupComplete.notifyParent": "{testEnvironment}.events.onHarnessReady.fire"
                 }
             }
         }
