@@ -218,3 +218,8 @@ to block startup, so whether there is an error or a successful view retrieval, t
 The next step we've added in the chain will simply log the results.  Because `fluid.log` immediately returns, execution
 will immediately continue to the next link in the startup chain.  This illustrates how you can mix asynchronous and
 synchronous functions in a "chained promise event".
+
+Note that in our example we made use of the member variable `that.couchPort`.  We cannot change the port assignment of
+a running Docker container, so instead, we detect the port of the running container and save that in `that.couchPort`.
+You will need to use this when constructing URLs to retrieve content from the docker container's CouchDB instance, see
+the tests in this package for examples of handling this with `kettle.dataSource` and `kettle.request.URL` grades.
