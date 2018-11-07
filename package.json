@@ -13,14 +13,10 @@
         "posttest": "node node_modules/nyc/bin/nyc.js report --reporter=html --reporter=text-summary"
     },
     "dependencies": {
-        "body-parser": "1.18.3",
-        "express": "4.16.4",
         "gpii-express": "1.0.15",
         "graceful-fs": "4.1.15",
         "infusion": "3.0.0-dev.20181024T171748Z.1fa91bed9",
-        "lie": "3.3.0",
-        "pouchdb": "7.0.0",
-        "underscore-node": "0.1.2"
+        "pouchdb": "7.0.0"
     },
     "devDependencies": {
         "eslint": "5.7.0",
@@ -35,7 +31,6 @@
         "prebuild": "8.1.1",
         "request": "2.88.0",
         "rimraf": "2.6.2",
-        "testem": "2.12.0",
-        "tough-cookie": "2.4.3"
+        "testem": "2.12.0"
     }
 }
