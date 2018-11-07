@@ -14,43 +14,79 @@ fluid.require("%gpii-pouchdb");
 
 fluid.registerNamespace("gpii.pouch.harness");
 
+/*
+
+    Common defaults reused in both the component defaults and in the `gpii.pouch.harness.removeContainer` static
+    function.
+
+*/
+gpii.pouch.harness.defaults = {
+    cleanOnStartup: true,
+    commandTemplates: {
+        getCouchPort:    "docker port %containerId 5984",
+        healthCheck:     "docker ps -a --filter label=%containerLabel --format \"{{.Status}}\"",
+        listContainers:  "docker ps --filter label=%containerLabel -q",
+        removeContainer: "docker rm -f %containerId",
+        startContainer:  "docker run -d -l %containerLabel -P --name %containerName couchdb"
+    },
+    containerLabel: "gpii-pouchdb-test-harness",
+    containerMonitoringInterval: 1000,
+    couchDbsToPreserve: ["_global_changes", "_replicator", "_users"],
+    couchSetupCheckInterval: 250,
+    couchSetupTimeout: 5000
+};
+
 /**
  *
- * A static function that searches for and removes any container with our label (gpii-pouchdb-test-harness).
+ * List the containers labeled with "our" label.
  *
+ * @param {Object} options - The command templates and variables to use when running the container list command.
+ * @return {Promise} - A `fluid.promise` that will resolve with the list of container IDs or rejected if there's an error.
+ *
+ */
+gpii.pouch.harness.listContainers = function (options) {
+    return gpii.pouch.harness.runCommandAsPromise(
+        options.commandTemplates.listContainers,
+        options,
+        "Checking for existing docker containers."
+    );
+};
+
+/**
+ *
+ * A static function that searches for and removes any container with our label (`{that}.options.containerLabel`).
+ *
+ * @param {Object} options - Custom options to pass (for example, to search for a different label).
  * @return {Promise} - A `fluid.promise` that will resolve when the container is removed, or reject on error.
  *
  */
-gpii.pouch.harness.removeContainer = function () {
+gpii.pouch.harness.removeContainer = function (options) {
+    var mergedOptions = fluid.extend({}, gpii.pouch.harness.defaults, options);
     fluid.log("Removing container.");
     var containerRemovalPromise = fluid.promise();
-    gpii.pouch.harness.runCommand(
-        "docker ps --filter label=gpii-pouchdb-test-harness -q",
-        {},
-        function (error, stdout) {
-            if (error) {
-                containerRemovalPromise.reject(error);
+
+    var containerListPromise = gpii.pouch.harness.listContainers(mergedOptions);
+    containerListPromise.then(
+        function (stdout) {
+            var containerId = stdout.trim();
+            if (containerId.length) {
+                var innerContainerRemovalPromise = gpii.pouch.harness.runCommandAsPromise(mergedOptions.commandTemplates.removeContainer, { containerId: containerId });
+                innerContainerRemovalPromise.then(
+                    function () {
+                        fluid.log("Container removed.");
+                        containerRemovalPromise.resolve(stdout);
+                    },
+                    containerRemovalPromise.reject
+                );
             }
             else {
-                var containerId = stdout.trim();
-                if (containerId.length) {
-                    gpii.pouch.harness.runCommand("docker rm -f " + containerId, {}, function (error) {
-                        if (error) {
-                            containerRemovalPromise.reject(error);
-                        }
-                        else {
-                            fluid.log("Container removed.");
-                            containerRemovalPromise.resolve();
-                        }
-                    });
-                }
-                else {
-                    fluid.log("No container to remove.");
-                    containerRemovalPromise.resolve();
-                }
+                fluid.log("No container to remove.");
+                containerRemovalPromise.resolve(stdout);
             }
-        }
+        },
+        containerRemovalPromise.reject
     );
+
     return containerRemovalPromise;
 };
 
@@ -66,29 +102,29 @@ gpii.pouch.harness.removeContainer = function () {
  */
 gpii.pouch.harness.detectPort = function (that, containerId) {
     var portDetectionPromise = fluid.promise();
-    gpii.pouch.harness.runCommand("docker port %containerId 5984", { containerId: containerId }, function (error, stdout) {
-        if (error) {
-            portDetectionPromise.reject(error);
-        }
-        else {
+    var innerPortDetectionPromise = gpii.pouch.harness.runCommandAsPromise(fluid.get(that, "options.commandTemplates.getCouchPort"), { containerId: containerId });
+    innerPortDetectionPromise.then(
+        function (stdout) {
             // The output should be something like: 0.0.0.0:6789
             try {
                 var resultSegments = stdout.split(":");
                 that.couchPort = parseInt(resultSegments[resultSegments.length - 1].trim());
-                portDetectionPromise.resolve();
+                portDetectionPromise.resolve(stdout);
             }
             // If the output was unparseable, we can't continue, as we'd been unable to communicate with our db.
             catch (parseError) {
                 portDetectionPromise.reject(parseError);
             }
-        }
-    });
+        },
+        portDetectionPromise.reject
+    );
+
     return portDetectionPromise;
 };
 
 /**
  *
- * A function to get the list of databases from a running couch instance and DELETE any that are part of CouchDB's
+ * A function to get the list of databases from a running couch instance and DELETE any that are not part of CouchDB's
  * internal housekeeping.
  *
  * @param {Object} that - The component itself.
@@ -157,38 +193,33 @@ gpii.pouch.harness.cleanExistingData = function (that) {
 gpii.pouch.harness.startIfNeeded = function (that) {
     var containerCheckPromise = fluid.promise();
 
-    var containerCheckCallback = function (error, stdout) {
-        if (error) {
-            containerCheckPromise.reject(error);
-        }
-        else {
+    var initialContainerListPromise = gpii.pouch.harness.listContainers(that.options);
+
+    initialContainerListPromise.then(
+        function (stdout) {
             var containerResetPromises = [];
 
             // Start a new container if one isn't running.
             if (stdout.length === 0) {
                 containerResetPromises.push(function () {
                     return gpii.pouch.harness.runCommandAsPromise(
-                        "docker run -d -l gpii-pouchdb-test-harness -P --name %containerName couchdb",
+                        that.options.commandTemplates.startContainer,
                         that.options,
                         "Starting container."
                     );
                 });
 
+                // Once creation is finished, detect the port of the newly created container.
                 containerResetPromises.push(function () {
                     var portDetectionPromise = fluid.promise();
-                    // Once creation is finished, detect the port of the newly created container.
-                    gpii.pouch.harness.runCommand(
-                        "docker ps --filter label=gpii-pouchdb-test-harness -q",
-                        {},
-                        function (runCommandError, stdout) {
-                            if (runCommandError) {
-                                portDetectionPromise.reject(runCommandError);
-                            }
-                            else {
-                                var wrappedDetectionPromise = gpii.pouch.harness.detectPort(that, stdout.trim());
-                                wrappedDetectionPromise.then(portDetectionPromise.resolve, portDetectionPromise.reject);
-                            }
-                        });
+                    var postCreationContainerListPromise = gpii.pouch.harness.listContainers(that.options);
+                    postCreationContainerListPromise.then(
+                        function (stdout) {
+                            var wrappedDetectionPromise = gpii.pouch.harness.detectPort(that, stdout.trim());
+                            wrappedDetectionPromise.then(portDetectionPromise.resolve, portDetectionPromise.reject);
+                        },
+                        portDetectionPromise.reject
+                    );
                     return portDetectionPromise;
                 });
             }
@@ -216,14 +247,8 @@ gpii.pouch.harness.startIfNeeded = function (that) {
 
             var containerResetSequence = fluid.promise.sequence(containerResetPromises);
             containerResetSequence.then(containerCheckPromise.resolve, containerCheckPromise.reject);
-        }
-    };
-
-    gpii.pouch.harness.runCommand(
-        "docker ps --filter label=gpii-pouchdb-test-harness -q",
-        {},
-        containerCheckCallback,
-        "Checking for existing gpii-pouchdb-test-harness containers."
+        },
+        containerCheckPromise.reject
     );
 
     return containerCheckPromise;
@@ -231,11 +256,14 @@ gpii.pouch.harness.startIfNeeded = function (that) {
 
 /**
  *
- * Run a command and execute a callback.
+ * Unsupported, non-API function.
  *
- * @param {String} commandTemplate - A template representing the command to be run.  Along with `commandPayload`, will be passed to `fluid.stringTemplate`.
+ * Run a command and then execute a callback.  NOTE:  This function is only intended for intervals and other edge cases.
+ * You should use `gpii.pouch.harness.runCommandAsPromise` instead.
+ *
+ * @param {String} commandTemplate - A template representing the command to be run.  Along with `that.options`, will be passed to `fluid.stringTemplate`.
  * @param {Object} commandPayload - The data to use to resolve variables in the template.
- * @param {Function} callback - A callback that will be called when the command completes, with `error`, `stdout`, `stderr` arguments.
+ * @param {Function} callback - A callback with the signature (error, stdout, stderr) that will be called after the command executes.
  * @param {String} [message] - An optional message that will be logged if present.
  *
  */
@@ -264,14 +292,20 @@ gpii.pouch.harness.runCommand = function (commandTemplate, commandPayload, callb
 gpii.pouch.harness.runCommandAsPromise = function (commandTemplate, commandPayload, message) {
     var commandPromise = fluid.promise();
 
-    gpii.pouch.harness.runCommand(commandTemplate, commandPayload, function (error) {
-        if (error) {
-            commandPromise.reject(error);
-        }
-        else {
-            commandPromise.resolve();
-        }
-    }, message);
+    try {
+        gpii.pouch.harness.runCommand(commandTemplate, commandPayload, function (error, stdout) {
+            if (error) {
+                commandPromise.reject(error);
+            }
+            else {
+                commandPromise.resolve(stdout);
+            }
+        }, message);
+    }
+    // Low-level errors like an `undefined` command template.
+    catch (execError) {
+        commandPromise.reject(execError);
+    }
 
     return commandPromise;
 };
@@ -288,8 +322,8 @@ gpii.pouch.harness.startMonitoring = function (that) {
     that.monitorInterval = setInterval(
         gpii.pouch.harness.runCommand,
         that.options.containerMonitoringInterval,
-        "docker ps -a --filter label=gpii-pouchdb-test-harness --format \"{{.Status}}\"",
-        {},
+        that.options.commandTemplates.healthCheck,
+        that.options,
         function (error, stdout) {
             fluid.log(fluid.logLevel.TRACE, "health check.");
             // If we can't verify that our container is up, exit.
@@ -475,17 +509,20 @@ gpii.pouch.harness.clearInterval = function (that) {
 
 fluid.defaults("gpii.pouch.harness", {
     gradeNames: ["fluid.component"],
-    cleanOnStartup: true,
     containerName: {
         expander: {
             funcName: "fluid.stringTemplate",
             args:     ["gpii-pouch-docker-harness-%id", { id: "{that}.id" }]
         }
     },
-    containerMonitoringInterval: 1000,
-    couchDbsToPreserve: ["_global_changes", "_replicator", "_users"],
-    couchSetupCheckInterval: 250,
-    couchSetupTimeout: 5000,
+    // Options whose defaults are pulled from the static `gpii.pouch.harness.defaults` variable.
+    cleanOnStartup:              gpii.pouch.harness.defaults.cleanOnStartup,
+    commandTemplates:            gpii.pouch.harness.defaults.commandTemplates,
+    containerLabel:              gpii.pouch.harness.defaults.containerLabel,
+    containerMonitoringInterval: gpii.pouch.harness.defaults.containerMonitoringInterval,
+    couchDbsToPreserve:          gpii.pouch.harness.defaults.couchDbsToPreserve,
+    couchSetupCheckInterval:     gpii.pouch.harness.defaults.couchSetupCheckInterval,
+    couchSetupTimeout:           gpii.pouch.harness.defaults.couchSetupTimeout,
     events: {
         onCleanup:          null,
         onCleanupComplete:  null,

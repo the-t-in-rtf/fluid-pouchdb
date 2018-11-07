@@ -5,7 +5,8 @@ to assist in testing systems that store their data in and make requests against 
 documentation:
 
 * [`gpii.pouch`](./docs/pouchdb.md) - A wrapper around individual PouchDB instances.
-* [`gpii.pouch.harness`](./docs/harness.md) - A docker instance of CouchDB that can be wired into Fluid IoC Test environments.
+* [`gpii.pouch.harness`](./docs/harness.md) - A [Docker](https://www.docker.com) container running the
+  [Apache CouchDB image](https://github.com/apache/couchdb-docker), which can be wired into Fluid IoC Test environments.
 * [Test fixtures and functions provided by this package.](./docs/tests.md)
 
 ## Note:
