@@ -1,5 +1,5 @@
 {
-  "reporter": ["html", "text-summary"],
+  "reporter": ["none"],
   "report-dir": "reports",
   "temp-directory": "coverage",
   "exclude": ["./tests/**/*.js"]
