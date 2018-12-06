@@ -18,7 +18,7 @@
         "express": "4.16.3",
         "@the-t-in-rtf/express-pouchdb": "4.0.0-20180523-1217",
         "gpii-express": "1.0.13",
-        "graceful-fs": "4.1.11",
+        "graceful-fs": "4.1.15",
         "infusion": "3.0.0-dev.20180222T160835Z.6e1311a",
         "lie": "3.2.0",
         "memdown": "2.0.0",
