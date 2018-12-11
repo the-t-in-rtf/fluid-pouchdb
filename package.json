@@ -16,7 +16,7 @@
     "dependencies": {
         "body-parser": "1.18.3",
         "express": "4.16.4",
-        "@the-t-in-rtf/express-pouchdb": "4.0.0-dev.20181210T193931Z.19be373",
+        "@the-t-in-rtf/express-pouchdb": "4.0.0-dev.20181211T121918Z.4343927.GPII-3068",
         "gpii-express": "1.0.15",
         "graceful-fs": "4.1.15",
         "infusion": "3.0.0-dev.20180222T160835Z.6e1311a",
