@@ -7,6 +7,8 @@ var fs     = require("fs");
 var mock   = require("mock-fs");
 var jqUnit = require("node-jqunit");
 
+// TODO: These fail to complete and block other tests from running at the moment.
+
 fluid.require("%gpii-pouchdb");
 
 fluid.registerNamespace("gpii.tests.timelyRimraf");
@@ -27,10 +29,12 @@ jqUnit.test("Mocks should mock...", function () {
     gpii.tests.timelyRimraf.cleanup();
 });
 
-jqUnit.asyncTest("Successful calls should succeed...", function () {
+jqUnit.test("Successful calls should succeed...", function () {
     mock({
         targetFile: "All good things come to an end."
     });
+
+    jqUnit.stop();
 
     var promise = gpii.pouchdb.timelyRimraf("targetFile");
 
@@ -50,8 +54,10 @@ jqUnit.asyncTest("Successful calls should succeed...", function () {
     );
 });
 
-jqUnit.asyncTest("Failing calls should fail...", function () {
+jqUnit.test("Failing calls should fail...", function () {
     mock({ target: "must exist so that our custom unlink function is called..."});
+
+    jqUnit.stop();
 
     var promise = gpii.pouchdb.timelyRimraf("target", { unlink: function (file, cb) { cb("Fail!"); }});
 
@@ -70,8 +76,10 @@ jqUnit.asyncTest("Failing calls should fail...", function () {
     );
 });
 
-jqUnit.asyncTest("Long running calls should time out...", function () {
+jqUnit.test("Long running calls should time out...", function () {
     mock({ target: "must exist..."});
+
+    jqUnit.stop();
 
     var promise = gpii.pouchdb.timelyRimraf("target", { unlink: function (file, cb) { setTimeout(cb, 150); }}, 50);
 

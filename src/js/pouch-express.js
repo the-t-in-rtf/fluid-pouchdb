@@ -25,7 +25,7 @@ var gpii  = fluid.registerNamespace("gpii");
 fluid.registerNamespace("gpii.pouch.express");
 
 var os             = require("os");
-var fs             = require("fs");
+var fs             = require("graceful-fs");
 var memdown        = require("memdown");
 
 var expressPouchdb = require("@the-t-in-rtf/express-pouchdb");
@@ -206,14 +206,24 @@ gpii.pouch.express.cleanup = function (that) {
         var cleanupSequence = fluid.promise.sequence(cleanupPromises);
         cleanupSequence.then(function () {
             if (that.baseDirBelongsToUs) {
-                var removePromise = gpii.pouchdb.timelyRimraf(that.options.baseDir, {}, that.options.rimrafTimeout);
-                removePromise.then(function () {
-                    fluid.log("Removed temporary directory '", that.options.baseDir, "'...");
+                var newPath = that.options.baseDir + "-OLD-" + Date.now();
+
+                try {
+                    fs.renameSync(that.options.baseDir, newPath);
+
+                    var removePromise = gpii.pouchdb.timelyRimraf(newPath, {}, that.options.rimrafTimeout);
+                    removePromise.then(function () {
+                        fluid.log("Removed temporary directory '", that.options.baseDir, "'...");
+                        togo.resolve();
+                    }, function (error) {
+                        console.log("Error removing temporary directory:", error);
+                        togo.resolve();
+                    });
+                }
+                catch (error) {
+                    console.log("ERROR Renaming directory:", error);
                     togo.resolve();
-                }, function (error) {
-                    console.log("Error removing temporary directory:", error);
-                    togo.resolve();
-                });
+                }
             }
             else {
                 togo.resolve();

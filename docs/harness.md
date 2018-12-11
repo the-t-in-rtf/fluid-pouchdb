@@ -11,16 +11,14 @@ be used to launch a standalone test instance of this package for manual QA.
 | ----------------- | ---------- | ----------- |
 | `port` (required) | `{Number}` | The port on which the test harness will run. |
 
-
-# `gpii.pouch.harness.persistent`
+## `gpii.pouch.harness.persistent`
 
 An instance of the harness which is designed to persist its data between runs.
 
-## Component Options
+### Component Options
 
 In addition to the options for `gpii.pouch.harness`, this grade has the following unique option:
 
 | Option               | Type       | Description |
 | -------------------- | ---------- | ----------- |
 | `baseDir` (required) | `{String}` | A full or package-relative path to the base directory in which all database content, configuration files, and logs will be stored. |
-
