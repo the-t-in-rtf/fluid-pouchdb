@@ -178,6 +178,12 @@ gpii.pouch.express.middleware = function (that, req, res, next) {
     that.expressPouchdb(req, res, next);
 };
 
+gpii.pouch.express.destroyDbs = function (that) {
+    fluid.each(that.databaseInstances, function (oneDb) {
+        oneDb.destroy();
+    });
+};
+
 /**
  *
  * Clean up any instance of `gpii.pouchdb` that we're aware of.  Then, to get rid of databases created by
@@ -191,6 +197,7 @@ gpii.pouch.express.cleanup = function (that) {
     var tmpPouchDB = PouchDB.defaults({ db: memdown});
     var togo = fluid.promise();
     togo.then(that.events.onCleanupComplete.fire, that.events.onError.fire);
+    togo.then(that.destroyDbs, that.destroyDbs);
 
     that.expressPouchdb.setPouchDB(tmpPouchDB).then(function () {
         var cleanupPromises = [];
@@ -295,6 +302,7 @@ fluid.defaults("gpii.pouch.express.base", {
         }
     },
     invokers: {
+        destroyDbs: "gpii.pouch.express.destroyDbs({that})",
         middleware: {
             funcName: "gpii.pouch.express.middleware",
             args:     ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"] // request, response, next
