@@ -34,6 +34,9 @@ var PouchDB        = require("pouchdb");
 
 var path = fluid.require("path", require, "path");
 
+var kettle = require("kettle");
+kettle.loadTestingSupport();
+
 // The cleanup cycle used by express-pouchdb leaves a shedload of listeners around.  To avoid these, we disable the
 // event listener warnings, but only for PouchDB itself.
 PouchDB.setMaxListeners(250);
@@ -207,28 +210,19 @@ gpii.pouch.express.cleanup = function (that) {
             cleanupPromises.push(function () { return databaseInstance.destroyPouch(); });
         });
 
-        var logCleanupPromise = gpii.pouchdb.timelyRimraf(that.options.expressPouchLogPath, {}, that.options.rimrafTimeout);
-        cleanupPromises.push(logCleanupPromise);
+        cleanupPromises.push(function () {
+            kettle.test.deleteFolderRecursive(that.options.expressPouchLogPath);
+        });
 
         var cleanupSequence = fluid.promise.sequence(cleanupPromises);
         cleanupSequence.then(function () {
             if (that.baseDirBelongsToUs) {
-                var newPath = that.options.baseDir + "-OLD-" + Date.now();
-
                 try {
-                    fs.renameSync(that.options.baseDir, newPath);
-
-                    var removePromise = gpii.pouchdb.timelyRimraf(newPath, {}, that.options.rimrafTimeout);
-                    removePromise.then(function () {
-                        fluid.log("Removed temporary directory '", that.options.baseDir, "'...");
-                        togo.resolve();
-                    }, function (error) {
-                        console.log("Error removing temporary directory:", error);
-                        togo.resolve();
-                    });
+                    kettle.test.deleteFolderRecursive(that.options.baseDir);
+                    togo.resolve();
                 }
                 catch (error) {
-                    console.log("ERROR Renaming directory:", error);
+                    console.log("ERROR removing directory:", error);
                     togo.resolve();
                 }
             }

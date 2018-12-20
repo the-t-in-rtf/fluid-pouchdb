@@ -3,21 +3,32 @@
 /* eslint-env node */
 "use strict";
 var fluid  = require("infusion");
-var rimraf = require("rimraf");
 var fs     = require("fs");
+
+var jqUnit = require("node-jqunit");
+
+var kettle = require("kettle");
+kettle.loadTestingSupport();
 
 fluid.require("%gpii-pouchdb/src/js/harness.js");
 
-var harnessOptions = fluid.defaults("gpii.pouch.harness.persistent");
+jqUnit.module("Test cleaning up after the tests.");
 
-if (fs.existsSync(harnessOptions.baseDir)) {
-    fluid.log("Cleaning up straggling filesystem content in '", harnessOptions.baseDir, "'...");
-    rimraf(harnessOptions.baseDir, function (error) {
-        if (error) {
-            fluid.fail("Unable to remove directory '" + harnessOptions.baseDir + "'...");
+jqUnit.test("Clean up should happen if it's needed.", function () {
+    var harnessOptions = fluid.defaults("gpii.pouch.harness.persistent");
+
+    if (fs.existsSync(harnessOptions.baseDir)) {
+        fluid.log("Cleaning up straggling filesystem content in '", harnessOptions.baseDir, "'...");
+
+        try {
+            kettle.test.deleteFolderRecursive(harnessOptions.baseDir);
+            jqUnit.assert("Removed straggling base dir...");
         }
-        else {
-            fluid.log("removed...");
+        catch (error) {
+            jqUnit.fail("Unable to remove directory '" + harnessOptions.baseDir + "'...");
         }
-    });
-}
+    }
+    else {
+        jqUnit.assert("Nothing to remove, which is just fine.");
+    }
+});

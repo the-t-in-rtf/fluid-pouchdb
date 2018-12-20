@@ -15,6 +15,9 @@ var path   = require("path");
 
 require("../../");
 
+var kettle = require("kettle");
+kettle.loadTestingSupport();
+
 fluid.registerNamespace("gpii.pouch.node");
 
 /**
@@ -62,11 +65,9 @@ gpii.pouch.node.cleanup = function (that) {
     togo.then(that.events.onCleanupComplete.fire);
 
     if (that.baseDirBelongsToUs) {
-        var cleanupPromise = gpii.pouchdb.timelyRimraf(that.options.baseDir, {}, that.options.rimrafTimeout);
-        cleanupPromise.then(togo.resolve, function (error) {
-            fluid.log("Error cleaning up basedir:", error);
-            togo.resolve();
-        });
+
+        kettle.test.deleteFolderRecursive(that.options.baseDir);
+        togo.resolve();
     }
     else {
         togo.resolve();
