@@ -15,7 +15,7 @@ var PouchDB = PouchDB || require("pouchdb");
 fluid.registerNamespace("gpii.pouch");
 
 gpii.pouch.init = function (that) {
-    that.pouchDb = new PouchDB(that.options.dbOptions);
+    that.pouchDb = new PouchDB(fluid.copy(that.options.dbOptions));
     fluid.log(fluid.logLevel.TRACE, "Pouch instance `" + that.options.dbOptions.name + "` (" + that.id + ") initialized...");
 };
 
