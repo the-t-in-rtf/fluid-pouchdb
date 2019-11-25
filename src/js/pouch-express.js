@@ -53,8 +53,8 @@ PouchDB.setMaxListeners(250);
  */
 gpii.pouch.express.expandDbDef = function (dbDef) {
     var expandedDef = {};
-    if (typeof dbDef === "object" && dbDef !== null && dbDef !== undefined) {
-        expandedDef = dbDef;
+    if (typeof dbDef === "object" && dbDef !== null) {
+        expandedDef = fluid.copy(dbDef);
         if (expandedDef.data) {
             expandedDef.data = fluid.makeArray(expandedDef.data);
         }
@@ -85,8 +85,8 @@ gpii.pouch.express.initExpressPouchdb = function (that) {
         that.baseDirBelongsToUs = true;
     }
 
-    that.PouchDB = PouchDB.defaults(that.options.dbOptions);
-    that.expressPouchdb = expressPouchdb(that.PouchDB, that.options.expressPouchConfig);
+    that.PouchDB = PouchDB.defaults(fluid.copy(that.options.dbOptions));
+    that.expressPouchdb = expressPouchdb(that.PouchDB, fluid.copy(that.options.expressPouchConfig));
 
     return that.expressPouchdb;
 };
