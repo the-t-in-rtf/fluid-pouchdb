@@ -2,19 +2,18 @@
 
     Provide a component that wraps an individual PouchDB instance.
 
-    https://github.com/GPII/gpii-pouchdb/blob/master/docs/pouchdb.md
+    https://github.com/fluid-project/fluid-pouchdb/blob/master/docs/pouchdb.md
 
  */
 /* eslint-env node */
 "use strict";
 var fluid = fluid || require("infusion");
-var gpii  = fluid.registerNamespace("gpii");
 
 var PouchDB = PouchDB || require("pouchdb");
 
-fluid.registerNamespace("gpii.pouch");
+fluid.registerNamespace("fluid.pouch");
 
-gpii.pouch.init = function (that) {
+fluid.pouch.init = function (that) {
     that.pouchDb = new PouchDB(fluid.copy(that.options.dbOptions));
     fluid.log(fluid.logLevel.TRACE, "Pouch instance `" + that.options.dbOptions.name + "` (" + that.id + ") initialized...");
 };
@@ -30,7 +29,7 @@ gpii.pouch.init = function (that) {
  * @return {Promise} - A promise that will be resolved with the succesful result of executing the function or rejected if an error occurs.
  *
  */
-gpii.pouch.callPouchFunction = function (that, fnName, fnArgs, eventName) {
+fluid.pouch.callPouchFunction = function (that, fnName, fnArgs, eventName) {
     var promise = fluid.promise();
 
     var wrappedCallback = function (err, results) {
@@ -52,7 +51,7 @@ gpii.pouch.callPouchFunction = function (that, fnName, fnArgs, eventName) {
     return promise;
 };
 
-fluid.defaults("gpii.pouch", {
+fluid.defaults("fluid.pouch", {
     gradeNames: ["fluid.component"],
     dbOptions: {
         skip_setup: true
@@ -79,73 +78,73 @@ fluid.defaults("gpii.pouch", {
     },
     invokers: {
         allDocs: {
-            funcName: "gpii.pouch.callPouchFunction",
+            funcName: "fluid.pouch.callPouchFunction",
             args: ["{that}", "allDocs", "{arguments}", "onAllDocsComplete"] // fnName, fnArgs, eventName
         },
         bulkDocs: {
-            funcName: "gpii.pouch.callPouchFunction",
+            funcName: "fluid.pouch.callPouchFunction",
             args: ["{that}", "bulkDocs", "{arguments}", "onBulkDocsComplete"] // fnName, fnArgs, eventName
         },
         bulkGet: {
-            funcName: "gpii.pouch.callPouchFunction",
+            funcName: "fluid.pouch.callPouchFunction",
             args: ["{that}", "bulkGet", "{arguments}", "onBulkGetComplete"] // fnName, fnArgs, eventName
         },
         compact: {
-            funcName: "gpii.pouch.callPouchFunction",
+            funcName: "fluid.pouch.callPouchFunction",
             args: ["{that}", "compact", "{arguments}", "onCompactComplete"] // fnName, fnArgs, eventName
         },
         close: {
-            funcName: "gpii.pouch.callPouchFunction",
+            funcName: "fluid.pouch.callPouchFunction",
             args: ["{that}", "close", "{arguments}", "onCloseComplete"] // fnName, fnArgs, eventName
         },
         destroyPouch: {
-            funcName: "gpii.pouch.callPouchFunction",
+            funcName: "fluid.pouch.callPouchFunction",
             args: ["{that}", "destroy", "{arguments}", "onPouchDestroyComplete"] // fnName, fnArgs, eventName
         },
         get: {
-            funcName: "gpii.pouch.callPouchFunction",
+            funcName: "fluid.pouch.callPouchFunction",
             args: ["{that}", "get", "{arguments}", "onGetComplete"] // fnName, fnArgs, eventName
         },
         getAttachment: {
-            funcName: "gpii.pouch.callPouchFunction",
+            funcName: "fluid.pouch.callPouchFunction",
             args: ["getAttachment", "{arguments}", "onGetAttachmentComplete"] // fnName, fnArgs, eventName
         },
         info: {
-            funcName: "gpii.pouch.callPouchFunction",
+            funcName: "fluid.pouch.callPouchFunction",
             args: ["{that}", "info", "{arguments}", "onInfoComplete"] // fnName, fnArgs, eventName
         },
         post: {
-            funcName: "gpii.pouch.callPouchFunction",
+            funcName: "fluid.pouch.callPouchFunction",
             args: ["{that}", "post", "{arguments}", "onPostComplete"] // fnName, fnArgs, eventName
         },
         put: {
-            funcName: "gpii.pouch.callPouchFunction",
+            funcName: "fluid.pouch.callPouchFunction",
             args: ["{that}", "put", "{arguments}", "onPutComplete"] // fnName, fnArgs, eventName
         },
         putAttachment: {
-            funcName: "gpii.pouch.callPouchFunction",
+            funcName: "fluid.pouch.callPouchFunction",
             args: ["{that}", "putAttachment", "{arguments}", "onPutAttachmentComplete"] // fnName, fnArgs, eventName
         },
         query: {
-            funcName: "gpii.pouch.callPouchFunction",
+            funcName: "fluid.pouch.callPouchFunction",
             args: ["{that}", "query", "{arguments}", "onQueryComplete"] // fnName, fnArgs, eventName
         },
         remove: {
-            funcName: "gpii.pouch.callPouchFunction",
+            funcName: "fluid.pouch.callPouchFunction",
             args: ["{that}", "remove", "{arguments}", "onRemoveComplete"] // fnName, fnArgs, eventName
         },
         removeAttachment: {
-            funcName: "gpii.pouch.callPouchFunction",
+            funcName: "fluid.pouch.callPouchFunction",
             args: ["{that}", "removeAttachment", "{arguments}", "onRemoveAttachmentComplete"] // fnName, fnArgs, eventName
         },
         viewCleanup: {
-            funcName: "gpii.pouch.callPouchFunction",
+            funcName: "fluid.pouch.callPouchFunction",
             args: ["{that}", "viewCleanup", "{arguments}", "onViewCleanupComplete"] // fnName, fnArgs, eventName
         }
     },
     listeners: {
         "onCreate.initPouch": {
-            funcName: "gpii.pouch.init",
+            funcName: "fluid.pouch.init",
             args:     ["{that}"]
         }
     }

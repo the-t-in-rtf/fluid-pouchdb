@@ -2,16 +2,15 @@
 //  Testing the express "url encoded" dataSource with PouchDB
 "use strict";
 var fluid = require("infusion");
-var gpii  = fluid.registerNamespace("gpii");
 
 var jqUnit = require("node-jqunit");
 
 require("../../");
-gpii.pouch.loadTestingSupport();
+fluid.pouch.loadTestingSupport();
 
 // Our local test dataSource grade that is aware of our starting URL (loopback)
-fluid.defaults("gpii.tests.pouch.dataSource.testDataSource", {
-    gradeNames: ["gpii.express.dataSource.urlEncodedJson"],
+fluid.defaults("fluid.tests.pouch.dataSource.testDataSource", {
+    gradeNames: ["fluid.express.dataSource.urlEncodedJson"],
     endpoint: "rgb/_design/rgb/_view/byColor",
     url: {
         expander: {
@@ -21,7 +20,7 @@ fluid.defaults("gpii.tests.pouch.dataSource.testDataSource", {
     }
 });
 
-gpii.tests.pouch.dataSource.compareResults = function (message, expected, actual) {
+fluid.tests.pouch.dataSource.compareResults = function (message, expected, actual) {
     // Compare everything but "rows"
     jqUnit.assertLeftHand(message + " (everything but rows)", fluid.censorKeys(expected, ["rows"]), actual);
 
@@ -38,11 +37,11 @@ gpii.tests.pouch.dataSource.compareResults = function (message, expected, actual
     }
 };
 
-fluid.defaults("gpii.tests.pouch.dataSource.caseHolder", {
-    gradeNames: ["gpii.test.express.caseHolder"],
-    sequenceEnd: gpii.test.pouch.caseHolder.cleanupSequence,
+fluid.defaults("fluid.tests.pouch.dataSource.caseHolder", {
+    gradeNames: ["fluid.test.express.caseHolder"],
+    sequenceEnd: fluid.test.pouch.caseHolder.cleanupSequence,
     rawModules: [{
-        name: "Integration tests for gpii-pouch and the 'url encoding' express dataSource grade...",
+        name: "Integration tests for fluid-pouch and the 'url encoding' express dataSource grade...",
         tests: [
             {
                 name: "We should be able to retrieve a record using a single key...",
@@ -53,7 +52,7 @@ fluid.defaults("gpii.tests.pouch.dataSource.caseHolder", {
                         args: ["{testEnvironment}.options.input.singleKey"]
                     },
                     {
-                        listener: "gpii.tests.pouch.dataSource.compareResults",
+                        listener: "fluid.tests.pouch.dataSource.compareResults",
                         event:    "{singleKeyDataSource}.events.onRead",
                         args:     ["The correct record should be returned...", "{testEnvironment}.options.expected.singleKey", "{arguments}.0"]
                     }
@@ -68,7 +67,7 @@ fluid.defaults("gpii.tests.pouch.dataSource.caseHolder", {
                         args: ["{testEnvironment}.options.input.multipleKeys"]
                     },
                     {
-                        listener: "gpii.tests.pouch.dataSource.compareResults",
+                        listener: "fluid.tests.pouch.dataSource.compareResults",
                         event:    "{multiKeyDataSource}.events.onRead",
                         args:     ["The correct records should be returned...", "{testEnvironment}.options.expected.multipleKeys", "{arguments}.0"]
                     }
@@ -83,7 +82,7 @@ fluid.defaults("gpii.tests.pouch.dataSource.caseHolder", {
                         args: [{}]
                     },
                     {
-                        listener: "gpii.tests.pouch.dataSource.compareResults",
+                        listener: "fluid.tests.pouch.dataSource.compareResults",
                         event:    "{noKeyDataSource}.events.onRead",
                         args:     ["The whole list of records should be returned...", "{testEnvironment}.options.expected.emptyPayload", "{arguments}.0"]
                     }
@@ -93,19 +92,19 @@ fluid.defaults("gpii.tests.pouch.dataSource.caseHolder", {
     }],
     components: {
         singleKeyDataSource: {
-            type: "gpii.tests.pouch.dataSource.testDataSource"
+            type: "fluid.tests.pouch.dataSource.testDataSource"
         },
         multiKeyDataSource: {
-            type: "gpii.tests.pouch.dataSource.testDataSource"
+            type: "fluid.tests.pouch.dataSource.testDataSource"
         },
         noKeyDataSource: {
-            type: "gpii.tests.pouch.dataSource.testDataSource"
+            type: "fluid.tests.pouch.dataSource.testDataSource"
         }
     }
 });
 
-fluid.defaults("gpii.tests.pouch.dataSource.environment", {
-    gradeNames: ["gpii.test.pouch.environment"],
+fluid.defaults("fluid.tests.pouch.dataSource.environment", {
+    gradeNames: ["fluid.test.pouch.environment"],
     port: 9595,
     input: {
         singleKey:    { key: "red"},
@@ -139,17 +138,17 @@ fluid.defaults("gpii.tests.pouch.dataSource.environment", {
     },
     pouchConfig: {
         databases: {
-            _users:           { data: "%gpii-pouchdb/tests/data/users.json"},
+            _users:           { data: "%fluid-pouchdb/tests/data/users.json"},
             _replicator:      {},
-            rgb:  { data: [   "%gpii-pouchdb/tests/data/rgb.json"] },
+            rgb:  { data: [   "%fluid-pouchdb/tests/data/rgb.json"] },
             pouch__all_dbs__: {}
         }
     },
     components: {
         caseHolder: {
-            type: "gpii.tests.pouch.dataSource.caseHolder"
+            type: "fluid.tests.pouch.dataSource.caseHolder"
         }
     }
 });
 
-fluid.test.runTests("gpii.tests.pouch.dataSource.environment");
+fluid.test.runTests("fluid.tests.pouch.dataSource.environment");

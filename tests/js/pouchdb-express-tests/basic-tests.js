@@ -2,21 +2,20 @@
 /* Tests for the "pouch" module */
 "use strict";
 var fluid = require("infusion");
-var gpii  = fluid.registerNamespace("gpii");
 
-fluid.require("%gpii-pouchdb");
-gpii.pouch.loadTestingSupport();
+fluid.require("%fluid-pouchdb");
+fluid.pouch.loadTestingSupport();
 
 var kettle = require("kettle");
 kettle.loadTestingSupport();
 
-require("gpii-express");
-gpii.express.loadTestingSupport();
+require("fluid-express");
+fluid.express.loadTestingSupport();
 
 require("../pouch-config");
 
-fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
-    gradeNames: ["gpii.test.pouch.caseHolder"],
+fluid.defaults("fluid.tests.pouch.basic.caseHolder", {
+    gradeNames: ["fluid.test.pouch.caseHolder"],
     expected: {
         root:             { "express-pouchdb": "Welcome!" },
         massive:          { total_rows: 150 },
@@ -28,7 +27,7 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
     },
     rawModules: [
         {
-            name: "Testing gpii-pouchdb (filesystem)...",
+            name: "Testing fluid-pouchdb (filesystem)...",
             tests: [
                 {
                     name: "Testing loading pouch root...",
@@ -38,7 +37,7 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                             func: "{rootRequest}.send"
                         },
                         {
-                            listener: "gpii.test.pouch.checkResponse",
+                            listener: "fluid.test.pouch.checkResponse",
                             event:    "{rootRequest}.events.onComplete",
                             //        (response, body, expectedStatus, expectedBody)
                             args:     ["{rootRequest}.nativeResponse", "{arguments}.0", 200, "{testCaseHolder}.options.expected.root"]
@@ -53,7 +52,7 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                             func: "{massiveRequest}.send"
                         },
                         {
-                            listener: "gpii.test.pouch.checkResponse",
+                            listener: "fluid.test.pouch.checkResponse",
                             event:    "{massiveRequest}.events.onComplete",
                             //        (response, body, expectedStatus, expectedBody)
                             args:     ["{massiveRequest}.nativeResponse", "{arguments}.0", 200, "{testCaseHolder}.options.expected.massive"]
@@ -68,7 +67,7 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                             func: "{noDataRequest}.send"
                         },
                         {
-                            listener: "gpii.test.pouch.checkResponse",
+                            listener: "fluid.test.pouch.checkResponse",
                             event:    "{noDataRequest}.events.onComplete",
                             //        (response, body, expectedStatus, expectedBody)
                             args:     ["{noDataRequest}.nativeResponse", "{arguments}.0", 200, "{testCaseHolder}.options.expected.noData"]
@@ -83,7 +82,7 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                             func: "{readRequest}.send"
                         },
                         {
-                            listener: "gpii.test.pouch.checkResponse",
+                            listener: "fluid.test.pouch.checkResponse",
                             event:    "{readRequest}.events.onComplete",
                             //        (response, body, expectedStatus, expectedBody)
                             args:     ["{readRequest}.nativeResponse", "{arguments}.0", 200, "{testCaseHolder}.options.expected.read"]
@@ -98,7 +97,7 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                             func: "{supplementalReadRequest}.send"
                         },
                         {
-                            listener: "gpii.test.pouch.checkResponse",
+                            listener: "fluid.test.pouch.checkResponse",
                             event:    "{supplementalReadRequest}.events.onComplete",
                             //        (response, body, expectedStatus, expectedBody)
                             args:     ["{supplementalReadRequest}.nativeResponse", "{arguments}.0", 200, "{testCaseHolder}.options.expected.supplementalRead"]
@@ -114,7 +113,7 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                             func: "{preDeleteRequest}.send"
                         },
                         {
-                            listener: "gpii.test.pouch.checkResponse",
+                            listener: "fluid.test.pouch.checkResponse",
                             event:    "{preDeleteRequest}.events.onComplete",
                             //        (response, body, expectedStatus, expectedBody)
                             args:     ["{preDeleteRequest}.nativeResponse", "{arguments}.0", 200]
@@ -124,7 +123,7 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                             func: "{deleteRequest}.send"
                         },
                         {
-                            listener: "gpii.test.pouch.checkResponse",
+                            listener: "fluid.test.pouch.checkResponse",
                             event:    "{deleteRequest}.events.onComplete",
                             //        (response, body, expectedStatus, expectedBody)
                             args:     ["{deleteRequest}.nativeResponse", "{arguments}.0", 200, "{testCaseHolder}.options.expected.delete"]
@@ -134,7 +133,7 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                             func: "{verifyDeleteRequest}.send"
                         },
                         {
-                            listener: "gpii.test.pouch.checkResponse",
+                            listener: "fluid.test.pouch.checkResponse",
                             event:    "{verifyDeleteRequest}.events.onComplete",
                             //        (response, body, expectedStatus, expectedBody)
                             args:     ["{verifyDeleteRequest}.nativeResponse", "{arguments}.0", 404]
@@ -150,7 +149,7 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                             func: "{preInsertRequest}.send"
                         },
                         {
-                            listener: "gpii.test.pouch.checkResponse",
+                            listener: "fluid.test.pouch.checkResponse",
                             event:    "{preInsertRequest}.events.onComplete",
                             //        (response, body, expectedStatus, expectedBody)
                             args:     ["{preInsertRequest}.nativeResponse", "{arguments}.0", 404]
@@ -161,7 +160,7 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                             args: "{that}.options.expected.insert"
                         },
                         {
-                            listener: "gpii.test.pouch.checkResponse",
+                            listener: "fluid.test.pouch.checkResponse",
                             event:    "{insertRequest}.events.onComplete",
                             //        (response, body, expectedStatus, expectedBody)
                             args:     ["{insertRequest}.nativeResponse", "{arguments}.0", 201]
@@ -171,7 +170,7 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
                             func: "{verifyInsertRequest}.send"
                         },
                         {
-                            listener: "gpii.test.pouch.checkResponse",
+                            listener: "fluid.test.pouch.checkResponse",
                             event:    "{verifyInsertRequest}.events.onComplete",
                             //        (response, body, expectedStatus, expectedBody)
                             args:     ["{verifyInsertRequest}.nativeResponse", "{arguments}.0", 200, "{testCaseHolder}.options.expected.insert"]
@@ -183,69 +182,69 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
     ],
     components: {
         rootRequest: {
-            type: "gpii.test.pouch.request",
+            type: "fluid.test.pouch.request",
             options: {
                 path: "/"
             }
         },
         massiveRequest: {
-            type: "gpii.test.pouch.request",
+            type: "fluid.test.pouch.request",
             options: {
                 path: "/massive/_all_docs"
             }
         },
         noDataRequest: {
-            type: "gpii.test.pouch.request",
+            type: "fluid.test.pouch.request",
             options: {
                 path: "/nodata/_all_docs"
             }
         },
         readRequest: {
-            type: "gpii.test.pouch.request",
+            type: "fluid.test.pouch.request",
             options: {
                 path: "/sample/foo"
             }
         },
         supplementalReadRequest: {
-            type: "gpii.test.pouch.request",
+            type: "fluid.test.pouch.request",
             options: {
                 path: "/sample/supplemental"
             }
         },
         preDeleteRequest: {
-            type: "gpii.test.pouch.request",
+            type: "fluid.test.pouch.request",
             options: {
                 path: "/sample/todelete"
             }
         },
         deleteRequest: {
-            type: "gpii.test.pouch.request",
+            type: "fluid.test.pouch.request",
             options: {
                 path:   "/sample/todelete",
                 method: "DELETE"
             }
         },
         verifyDeleteRequest: {
-            type: "gpii.test.pouch.request",
+            type: "fluid.test.pouch.request",
             options: {
                 path: "/sample/todelete"
             }
         },
         preInsertRequest: {
-            type: "gpii.test.pouch.request",
+            type: "fluid.test.pouch.request",
             options: {
                 path:   "/sample/toinsert"
             }
         },
         insertRequest: {
-            type: "gpii.test.pouch.request",
+            type: "fluid.test.pouch.request",
             options: {
                 path:   "/sample/toinsert",
                 method: "PUT"
             }
         },
         verifyInsertRequest: {
-            type: "gpii.test.pouch.request",
+            type: "fluid.test.pouch.request",
             options: {
                 path:   "/sample/toinsert"
             }
@@ -254,17 +253,17 @@ fluid.defaults("gpii.tests.pouch.basic.caseHolder", {
     }
 });
 
-fluid.defaults("gpii.tests.pouch.basic.environment", {
-    gradeNames: ["gpii.test.pouch.environment"],
+fluid.defaults("fluid.tests.pouch.basic.environment", {
+    gradeNames: ["fluid.test.pouch.environment"],
     port:       6798,
     pouchConfig: {
-        databases:  gpii.tests.pouch.config.databases
+        databases:  fluid.tests.pouch.config.databases
     },
     components: {
         testCaseHolder: {
-            type: "gpii.tests.pouch.basic.caseHolder"
+            type: "fluid.tests.pouch.basic.caseHolder"
         }
     }
 });
 
-fluid.test.runTests("gpii.tests.pouch.basic.environment");
+fluid.test.runTests("fluid.tests.pouch.basic.environment");

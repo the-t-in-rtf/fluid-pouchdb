@@ -3,20 +3,20 @@
 // script in this directory.
 //
 // NOTE:  This grade uses an "in memory" database and explicitly clears out the data on every run.  If you need to
-// persist data between runs, you should use the `gpii.pouch.harness` grade instead.
+// persist data between runs, you should use the `fluid.pouch.harness` grade instead.
 //
 "use strict";
 var fluid = require("infusion");
 
-require("gpii-express");
-fluid.require("%gpii-pouchdb");
+require("fluid-express");
+fluid.require("%fluid-pouchdb");
 
 var path = require("path");
 var os   = require("os");
 
-var defaultDir = path.resolve(os.tmpdir(), "gpii-pouch-express-persistent");
+var defaultDir = path.resolve(os.tmpdir(), "fluid-pouch-express-persistent");
 
-fluid.defaults("gpii.pouch.harness", {
+fluid.defaults("fluid.pouch.harness", {
     gradeNames: ["fluid.component"],
     events: {
         expressStarted: null,
@@ -30,7 +30,7 @@ fluid.defaults("gpii.pouch.harness", {
     },
     components: {
         express: {
-            type: "gpii.express",
+            type: "fluid.express",
             options: {
                 "port" : "{harness}.options.port",
                 listeners: {
@@ -38,7 +38,7 @@ fluid.defaults("gpii.pouch.harness", {
                 },
                 components: {
                     expressPouch: {
-                        type: "gpii.pouch.express",
+                        type: "fluid.pouch.express",
                         options: {
                             path: "/",
                             listeners: {
@@ -52,13 +52,13 @@ fluid.defaults("gpii.pouch.harness", {
     }
 });
 
-fluid.defaults("gpii.pouch.harness.persistent", {
-    gradeNames: ["gpii.pouch.harness"],
+fluid.defaults("fluid.pouch.harness.persistent", {
+    gradeNames: ["fluid.pouch.harness"],
     baseDir:    defaultDir,
     distributeOptions: [
         {
             source: "{that}.options.baseDir",
-            target: "{that gpii.pouch.express}.options.baseDir"
+            target: "{that fluid.pouch.express}.options.baseDir"
         }
     ],
     invokers: {

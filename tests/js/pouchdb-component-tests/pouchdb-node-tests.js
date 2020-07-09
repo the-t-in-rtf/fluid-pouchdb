@@ -9,8 +9,8 @@ var fluid = require("infusion");
 
 require("./pouchdb-component-common-tests");
 
-fluid.defaults("gpii.tests.pouchdb.component.node.caseHolder", {
-    gradeNames: ["gpii.tests.pouchdb.component.common.caseHolder.base"],
+fluid.defaults("fluid.tests.pouchdb.component.node.caseHolder", {
+    gradeNames: ["fluid.tests.pouchdb.component.common.caseHolder.base"],
     // Destroy the database after each test.
     sequenceEnd:   [
         {
@@ -23,7 +23,7 @@ fluid.defaults("gpii.tests.pouchdb.component.node.caseHolder", {
         }
     ],
     rawModules: [{
-        name: "Data-loading tests for the `gpii.pouch.node` component...",
+        name: "Data-loading tests for the `fluid.pouch.node` component...",
         type: "test",
         tests: [
             {
@@ -45,7 +45,7 @@ fluid.defaults("gpii.tests.pouchdb.component.node.caseHolder", {
                 sequence: [
                     {
                         func: "{testEnvironment}.pouchDb.loadData",
-                        args: ["%gpii-pouchdb/tests/data/rgb.json"]
+                        args: ["%fluid-pouchdb/tests/data/rgb.json"]
                     },
                     {
                         event:    "{testEnvironment}.pouchDb.events.onDataLoaded",
@@ -64,7 +64,7 @@ fluid.defaults("gpii.tests.pouchdb.component.node.caseHolder", {
                 sequence: [
                     {
                         func: "{testEnvironment}.pouchDb.loadData",
-                        args: [["%gpii-pouchdb/tests/data/rgb.json", "%gpii-pouchdb/tests/data/supplemental.json"]]
+                        args: [["%fluid-pouchdb/tests/data/rgb.json", "%fluid-pouchdb/tests/data/supplemental.json"]]
                     },
                     {
                         event:    "{testEnvironment}.pouchDb.events.onDataLoaded",
@@ -82,10 +82,10 @@ fluid.defaults("gpii.tests.pouchdb.component.node.caseHolder", {
     }]
 });
 
-fluid.defaults("gpii.tests.pouchdb.component.node.loadDataOnStartup.caseHolder", {
-    gradeNames: ["gpii.tests.pouchdb.component.common.caseHolder.base"],
+fluid.defaults("fluid.tests.pouchdb.component.node.loadDataOnStartup.caseHolder", {
+    gradeNames: ["fluid.tests.pouchdb.component.common.caseHolder.base"],
     rawModules: [{
-        name: "Test data loading on startup for the `gpii.pouch.node` component...",
+        name: "Test data loading on startup for the `fluid.pouch.node` component...",
         type: "test",
         tests: [
             {
@@ -121,39 +121,39 @@ fluid.defaults("gpii.tests.pouchdb.component.node.loadDataOnStartup.caseHolder",
 });
 
 
-fluid.defaults("gpii.tests.pouchdb.component.node.common.environment", {
-    gradeNames: ["gpii.tests.pouchdb.component.common.environment"],
+fluid.defaults("fluid.tests.pouchdb.component.node.common.environment", {
+    gradeNames: ["fluid.tests.pouchdb.component.common.environment"],
     components: {
         pouchDb: {
-            type: "gpii.pouch.node.base"
+            type: "fluid.pouch.node.base"
         }
     }
 });
 
-fluid.defaults("gpii.tests.pouchdb.component.node.environment", {
-    gradeNames: ["gpii.tests.pouchdb.component.node.common.environment"],
+fluid.defaults("fluid.tests.pouchdb.component.node.environment", {
+    gradeNames: ["fluid.tests.pouchdb.component.node.common.environment"],
     components: {
         caseHolder: {
-            type: "gpii.tests.pouchdb.component.node.caseHolder"
+            type: "fluid.tests.pouchdb.component.node.caseHolder"
         }
     }
 });
 
-fluid.defaults("gpii.tests.pouchdb.component.node.loadDataOnStartup.environment", {
-    gradeNames: ["gpii.tests.pouchdb.component.node.common.environment"],
+fluid.defaults("fluid.tests.pouchdb.component.node.loadDataOnStartup.environment", {
+    gradeNames: ["fluid.tests.pouchdb.component.node.common.environment"],
     components: {
         pouchDb: {
-            type: "gpii.pouch.node",
+            type: "fluid.pouch.node",
             options: {
-                dbPaths: ["%gpii-pouchdb/tests/data/data.json"]
+                dbPaths: ["%fluid-pouchdb/tests/data/data.json"]
             }
         },
         caseHolder: {
-            type: "gpii.tests.pouchdb.component.node.loadDataOnStartup.caseHolder"
+            type: "fluid.tests.pouchdb.component.node.loadDataOnStartup.caseHolder"
         }
     }
 });
 
-fluid.test.runTests("gpii.tests.pouchdb.component.node.common.environment");
-fluid.test.runTests("gpii.tests.pouchdb.component.node.environment");
-fluid.test.runTests("gpii.tests.pouchdb.component.node.loadDataOnStartup.environment");
+fluid.test.runTests("fluid.tests.pouchdb.component.node.common.environment");
+fluid.test.runTests("fluid.tests.pouchdb.component.node.environment");
+fluid.test.runTests("fluid.tests.pouchdb.component.node.loadDataOnStartup.environment");

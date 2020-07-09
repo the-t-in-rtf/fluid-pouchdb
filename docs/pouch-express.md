@@ -1,13 +1,13 @@
-# `gpii.pouch.express.base`
+# `fluid.pouch.express.base`
 
 The base component is a wrapper for [express-pouchdb](https://github.com/pouchdb/express-pouchdb).  See below for
 variations (in-memory vs. filesystem data storage, persistent, etc.).  The component is also a
-[`gpii.express.middleware` instance](https://github.com/GPII/gpii-express/blob/master/docs/middleware.md)
-that is meant to be wired into the root of [a `gpii.express` instance](https://github.com/GPII/gpii-express).
+[`fluid.express.middleware` instance](https://github.com/fluid-project/fluid-express/blob/master/docs/middleware.md)
+that is meant to be wired into the root of [a `fluid.express` instance](https://github.com/fluid-project/fluid-express).
 
 ## Component Options
 
-In addition to the options supported by the `gpii.express.router` component, this component has the following unique
+In addition to the options supported by the `fluid.express.router` component, this component has the following unique
 options.
 
 | Option                    | Type       | Description |
@@ -71,27 +71,27 @@ overriden with another invoker.
 
 ### `{that}.middleware(request, response, next)`
 
-* `request`: An object representing the individual user's request.  See [the `gpii-express`
-  documentation](https://github.com/GPII/gpii-express/blob/master/docs/express.md#the-express-request-object) for
+* `request`: An object representing the individual user's request.  See [the `fluid-express`
+  documentation](https://github.com/fluid-project/fluid-express/blob/master/docs/express.md#the-express-request-object) for
   details.
 * `response`: The response object, which can be used to send information to the requesting user.  See [the
-  `gpii-express`
-  documentation](https://github.com/GPII/gpii-express/blob/master/docs/express.md#the-express-response-object) for
-  details.
-* `next`: The next Express middleware or router function in the chain.  See [the `gpii-express` documentation for
-  details](https://github.com/GPII/gpii-express/blob/master/docs/middleware.md#what-is-middleware).
+  `fluid-express`
+  documentation](https://github.com/fluid-project/fluid-express/blob/master/docs/express.md#the-express-response-object)
+  for details.
+* `next`: The next Express middleware or router function in the chain.  See [the `fluid-express` documentation for
+  details](https://github.com/fluid-project/fluid-express/blob/master/docs/middleware.md#what-is-middleware).
 * Returns: Nothing.
 
-Fulfills the standard contract for a `gpii.express.middleware` grade.  This invoker is backed by an instance of
+Fulfills the standard contract for a `fluid.express.middleware` grade.  This invoker is backed by an instance of
 express-pouchdb, which handles the actual requests and responses.
 
-## `gpii.pouch.express`
+## `fluid.pouch.express`
 
-An instance of `gpii.pouch.express.base` which has been configured to store its content on the filesystem.
+An instance of `fluid.pouch.express.base` which has been configured to store its content on the filesystem.
 
 ### Component Options
 
-In addition to the above component options, the `gpii.pouch.express` grade supports the following unique options:
+In addition to the above component options, the `fluid.pouch.express` grade supports the following unique options:
 
 | Option                   | Type       | Description |
 | ------------------------ | ---------- | ----------- |
@@ -117,21 +117,21 @@ Initialize all of the databases configured in `options.databases` (see above).
 
 ## Using these grades in [Fluid IoC Tests](http://docs.fluidproject.org/infusion/development/IoCTestingFramework.html).
 
-There are convenience grades and helper functions that make it easier to use `gpii.pouch` in Fluid IoC tests.  Please
+There are convenience grades and helper functions that make it easier to use `fluid.pouch` in Fluid IoC tests.  Please
 see the [testing documentation](tests.md) in this package for details.
 
-## Using these grades directly with a `gpii.express` instance
+## Using these grades directly with a `fluid.express` instance
 
-If you are working with another test framework, you can configure `gpii.pouch` to work with a `gpii.express` instance
+If you are working with another test framework, you can configure `fluid.pouch` to work with a `fluid.express` instance
 as shown in this example:
 
 ```javascript
 fluid.defaults("my.pouch.server.grade", {
-    gradeNames: ["gpii.express"],
+    gradeNames: ["fluid.express"],
     port : "9989",
     components: {
         pouch: {
-            type: "gpii.pouch",
+            type: "fluid.pouch",
             options: {
                 databases: {
                     sample:  { data: [ "%my-package/tests/data/sample1.json", "%my-package/tests/data/sample2.json"] },

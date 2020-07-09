@@ -1,21 +1,20 @@
-// Browser and Node shared fixtures for the `gpii.pouch` PouchDB component tests.
+// Browser and Node shared fixtures for the `fluid.pouch` PouchDB component tests.
 /* eslint-env node */
 "use strict";
 var fluid  = fluid || require("infusion");
-var gpii   = fluid.registerNamespace("gpii");
 var jqUnit = jqUnit || require("node-jqunit");
 
-if (!gpii.pouch) {
+if (!fluid.pouch) {
     require("../../../");
-    gpii.pouch.loadTestingSupport();
+    fluid.pouch.loadTestingSupport();
 }
 
-fluid.registerNamespace("gpii.tests.pouchdb.component.common");
+fluid.registerNamespace("fluid.tests.pouchdb.component.common");
 
 // A CouchDB "map" function to test the `query` method.  The view only returns records that have a `color` value.
 // See http://wiki.apache.org/couchdb/Introduction_to_CouchDB_views#Map_Functions
 /* globals emit */
-gpii.tests.pouchdb.component.common.map = function (doc) {
+fluid.tests.pouchdb.component.common.map = function (doc) {
     if (doc.color) {
         emit(doc.color, doc);
     }
@@ -23,7 +22,7 @@ gpii.tests.pouchdb.component.common.map = function (doc) {
 
 // A CouchDB "reduce" function to test the query method.  Generates a count of records by `color` value.
 // See: http://wiki.apache.org/couchdb/Introduction_to_CouchDB_views#Reduce_Functions
-gpii.tests.pouchdb.component.common.reduce = function (keys, values, rereduce) {
+fluid.tests.pouchdb.component.common.reduce = function (keys, values, rereduce) {
     var colorSummary = {};
     if (rereduce) {
         values.forEach(function (toReduce) {
@@ -42,8 +41,8 @@ gpii.tests.pouchdb.component.common.reduce = function (keys, values, rereduce) {
     return colorSummary; // { red: 1, yellow: 2 }
 };
 
-fluid.defaults("gpii.tests.pouchdb.component.common.caseHolder.base", {
-    gradeNames: ["gpii.test.express.caseHolder.base"],
+fluid.defaults("fluid.tests.pouchdb.component.common.caseHolder.base", {
+    gradeNames: ["fluid.test.express.caseHolder.base"],
     // Recreate the database before each test.
     sequenceStart: [{
         func: "{testEnvironment}.events.constructFixtures.fire"
@@ -62,8 +61,8 @@ fluid.defaults("gpii.tests.pouchdb.component.common.caseHolder.base", {
 });
 
 
-fluid.defaults("gpii.tests.pouchdb.component.common.caseHolder", {
-    gradeNames: ["gpii.tests.pouchdb.component.common.caseHolder.base"],
+fluid.defaults("fluid.tests.pouchdb.component.common.caseHolder", {
+    gradeNames: ["fluid.tests.pouchdb.component.common.caseHolder.base"],
     inputs: {
         bulkData: [
             {
@@ -101,7 +100,7 @@ fluid.defaults("gpii.tests.pouchdb.component.common.caseHolder", {
         bulkCreate: [{ ok: true, id: "one"}, { ok: true, id: "two"}]
     },
     rawModules: [{
-        name: "Common tests for `gpii.pouch` component...",
+        name: "Common tests for `fluid.pouch` component...",
         type: "test",
         tests: [
             {
@@ -187,7 +186,7 @@ fluid.defaults("gpii.tests.pouchdb.component.common.caseHolder", {
                     },
                     {
                         event:    "{testEnvironment}.pouchDb.events.onBulkDocsComplete",
-                        listener: "gpii.test.pouchdb.recordsAreEquivalent",
+                        listener: "fluid.test.pouchdb.recordsAreEquivalent",
                         args:     ["The bulk creation of documents should have been successful...", "{that}.options.expectedResponses.bulkCreate", "{arguments}.0"]
                     }
                 ]
@@ -225,7 +224,7 @@ fluid.defaults("gpii.tests.pouchdb.component.common.caseHolder", {
                     },
                     {
                         event:    "{testEnvironment}.pouchDb.events.onBulkGetComplete",
-                        listener: "gpii.test.pouchdb.recordsAreEquivalent",
+                        listener: "fluid.test.pouchdb.recordsAreEquivalent",
                         args:     ["a bulk get of all documents should return the correct content...", [{ id: "one" }, { id: "two"}], "{arguments}.0.results"]
                     }
                 ]
@@ -283,7 +282,7 @@ fluid.defaults("gpii.tests.pouchdb.component.common.caseHolder", {
                     {
                         event:    "{testEnvironment}.pouchDb.events.onBulkDocsComplete",
                         listener: "{testEnvironment}.pouchDb.query",
-                        args:     [gpii.tests.pouchdb.component.common.map]
+                        args:     [fluid.tests.pouchdb.component.common.map]
                     },
                     {
                         event:    "{testEnvironment}.pouchDb.events.onQueryComplete",
@@ -302,7 +301,7 @@ fluid.defaults("gpii.tests.pouchdb.component.common.caseHolder", {
                     {
                         event:    "{testEnvironment}.pouchDb.events.onBulkDocsComplete",
                         listener: "{testEnvironment}.pouchDb.query",
-                        args:     [{ map: gpii.tests.pouchdb.component.common.map}]
+                        args:     [{ map: fluid.tests.pouchdb.component.common.map}]
                     },
                     {
                         event:    "{testEnvironment}.pouchDb.events.onQueryComplete",
@@ -321,7 +320,7 @@ fluid.defaults("gpii.tests.pouchdb.component.common.caseHolder", {
                     {
                         event:    "{testEnvironment}.pouchDb.events.onBulkDocsComplete",
                         listener: "{testEnvironment}.pouchDb.query",
-                        args:     [{ map: gpii.tests.pouchdb.component.common.map, reduce: gpii.tests.pouchdb.component.common.reduce}]
+                        args:     [{ map: fluid.tests.pouchdb.component.common.map, reduce: fluid.tests.pouchdb.component.common.reduce}]
                     },
                     {
                         event:    "{testEnvironment}.pouchDb.events.onQueryComplete",
@@ -334,14 +333,14 @@ fluid.defaults("gpii.tests.pouchdb.component.common.caseHolder", {
     }]
 });
 
-fluid.defaults("gpii.tests.pouchdb.component.common.environment", {
+fluid.defaults("fluid.tests.pouchdb.component.common.environment", {
     gradeNames: ["fluid.test.testEnvironment"],
     events: {
         constructFixtures: null
     },
     components: {
         pouchDb: {
-            type: "gpii.pouch",
+            type: "fluid.pouch",
             createOnEvent: "constructFixtures",
             options: {
                 dbOptions: {
@@ -350,7 +349,7 @@ fluid.defaults("gpii.tests.pouchdb.component.common.environment", {
             }
         },
         caseHolder: {
-            type: "gpii.tests.pouchdb.component.common.caseHolder"
+            type: "fluid.tests.pouchdb.component.common.caseHolder"
         }
     }
 });

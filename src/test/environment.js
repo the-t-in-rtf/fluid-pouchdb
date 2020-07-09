@@ -1,17 +1,16 @@
 /* eslint-env node */
 "use strict";
 var fluid = require("infusion");
-var gpii  = fluid.registerNamespace("gpii");
 
 require("../js/harness");
 
-fluid.registerNamespace("gpii.test.pouch.environment");
+fluid.registerNamespace("fluid.test.pouch.environment");
 
-gpii.test.pouch.environment.startCleanups = function (that) {
+fluid.test.pouch.environment.startCleanups = function (that) {
     that.harness.express.expressPouch.events.onCleanup.fire();
 };
 
-fluid.defaults("gpii.test.pouch.environment", {
+fluid.defaults("fluid.test.pouch.environment", {
     gradeNames: ["fluid.test.testEnvironment"],
     port:       6792,
     baseUrl:    {
@@ -23,11 +22,11 @@ fluid.defaults("gpii.test.pouch.environment", {
     distributeOptions: [
         {
             source: "{that}.options.pouchConfig",
-            target: "{that gpii.pouch.express.base}.options"
+            target: "{that fluid.pouch.express.base}.options"
         },
         {
             source: "{that}.options.harnessGrades",
-            target: "{that > gpii.pouch.harness}.options.gradeNames"
+            target: "{that > fluid.pouch.harness}.options.gradeNames"
         }
     ],
     events: {
@@ -43,13 +42,13 @@ fluid.defaults("gpii.test.pouch.environment", {
     },
     listeners: {
         "onCleanup.cleanup": {
-            funcName: "gpii.test.pouch.environment.startCleanups",
+            funcName: "fluid.test.pouch.environment.startCleanups",
             args:     ["{that}"]
         }
     },
     components: {
         harness: {
-            type: "gpii.pouch.harness",
+            type: "fluid.pouch.harness",
             createOnEvent: "constructFixtures",
             options: {
                 port:       "{testEnvironment}.options.port",

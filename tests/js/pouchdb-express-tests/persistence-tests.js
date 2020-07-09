@@ -6,24 +6,23 @@
 /* eslint-env node */
 "use strict";
 var fluid  = require("infusion");
-var gpii   = fluid.registerNamespace("gpii");
 
 require("../../../");
-gpii.pouch.loadTestingSupport();
+fluid.pouch.loadTestingSupport();
 
-fluid.defaults("gpii.tests.pouch.persistent.request", {
-    gradeNames: ["gpii.test.pouch.request"],
+fluid.defaults("fluid.tests.pouch.persistent.request", {
+    gradeNames: ["fluid.test.pouch.request"],
     path:   "/persistence/new",
     method: "GET"
 });
 
-fluid.defaults("gpii.tests.pouch.persistent.request.view", {
-    gradeNames: ["gpii.tests.pouch.persistent.request"],
+fluid.defaults("fluid.tests.pouch.persistent.request.view", {
+    gradeNames: ["fluid.tests.pouch.persistent.request"],
     path: "/persistence/_design/persistence/_view/byId?startKey=%22new%22"
 });
 
-fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
-    gradeNames: ["gpii.test.pouch.caseHolder.base"],
+fluid.defaults("fluid.tests.pouch.persistent.caseHolder", {
+    gradeNames: ["fluid.test.pouch.caseHolder.base"],
     persistenceRecord: { _id: "new", foo: "bar"},
     rawModules: [{
         name: "Testing persistence within a single restart...",
@@ -177,53 +176,53 @@ fluid.defaults("gpii.tests.pouch.persistent.caseHolder", {
     }],
     components: {
         getViewBeforeInsertRequest: {
-            type: "gpii.tests.pouch.persistent.request.view"
+            type: "fluid.tests.pouch.persistent.request.view"
         },
         insertRequest: {
-            type: "gpii.tests.pouch.persistent.request",
+            type: "fluid.tests.pouch.persistent.request",
             options: {
                 method: "PUT"
             }
         },
         getAfterInsertRequest: {
-            type: "gpii.tests.pouch.persistent.request"
+            type: "fluid.tests.pouch.persistent.request"
         },
         getViewAfterInsertRequest: {
-            type: "gpii.tests.pouch.persistent.request.view"
+            type: "fluid.tests.pouch.persistent.request.view"
         },
         getAfterRestartRequest: {
-            type: "gpii.tests.pouch.persistent.request"
+            type: "fluid.tests.pouch.persistent.request"
         },
         getViewAfterRestartRequest: {
-            type: "gpii.tests.pouch.persistent.request.view"
+            type: "fluid.tests.pouch.persistent.request.view"
         },
         getAfterResetRequest: {
-            type: "gpii.tests.pouch.persistent.request"
+            type: "fluid.tests.pouch.persistent.request"
         },
         getViewAfterResetRequest: {
-            type: "gpii.tests.pouch.persistent.request.view"
+            type: "fluid.tests.pouch.persistent.request.view"
         }
     }
 });
 
-fluid.registerNamespace("gpii.tests.pouch.persistent.environment");
+fluid.registerNamespace("fluid.tests.pouch.persistent.environment");
 
-fluid.defaults("gpii.tests.pouch.persistent.environment", {
-    gradeNames: ["gpii.test.pouch.environment"],
+fluid.defaults("fluid.tests.pouch.persistent.environment", {
+    gradeNames: ["fluid.test.pouch.environment"],
     components: {
         harness: {
-            type: "gpii.pouch.harness.persistent"
+            type: "fluid.pouch.harness.persistent"
 
         },
         caseHolder: {
-            type: "gpii.tests.pouch.persistent.caseHolder"
+            type: "fluid.tests.pouch.persistent.caseHolder"
         }
     },
     port:       6798,
     hangWait:   15000,
     pouchConfig: {
         databases: {
-            persistence: { data: ["%gpii-pouchdb/tests/data/persistence"]},
+            persistence: { data: ["%fluid-pouchdb/tests/data/persistence"]},
             _replicator: {},
             // _users: {},
             pouch__all_dbs__: {}
@@ -235,9 +234,9 @@ fluid.defaults("gpii.tests.pouch.persistent.environment", {
     distributeOptions: [
         {
             record: true,
-            target: "{that gpii.pouch.express.base}.options.members.baseDirBelongsToUs"
+            target: "{that fluid.pouch.express.base}.options.members.baseDirBelongsToUs"
         }
     ]
 });
 
-fluid.test.runTests("gpii.tests.pouch.persistent.environment");
+fluid.test.runTests("fluid.tests.pouch.persistent.environment");

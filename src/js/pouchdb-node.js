@@ -1,13 +1,12 @@
 /*
 
-    A node-specific extension of gpii.pouch that adds additional abilities, such as loading data from package-specific
+    A node-specific extension of fluid.pouch that adds additional abilities, such as loading data from package-specific
     paths.
 
  */
 /* eslint-env node */
 "use strict";
 var fluid  = require("infusion");
-var gpii   = fluid.registerNamespace("gpii");
 
 var fs     = require("fs");
 var os     = require("os");
@@ -15,7 +14,7 @@ var path   = require("path");
 
 require("../../");
 
-fluid.registerNamespace("gpii.pouch.node");
+fluid.registerNamespace("fluid.pouch.node");
 
 /**
  *
@@ -24,7 +23,7 @@ fluid.registerNamespace("gpii.pouch.node");
  * @param {Object} that - The component itself.
  *
  */
-gpii.pouch.node.initDir = function (that) {
+fluid.pouch.node.initDir = function (that) {
     var fullPath = path.resolve(that.options.baseDir, that.options.dbOptions.name);
 
     if (!fs.existsSync(that.options.baseDir)) {
@@ -45,7 +44,7 @@ gpii.pouch.node.initDir = function (that) {
  * @return {String} The resolved path followed by the path separator.
  *
  */
-gpii.pouch.node.makeSafePrefix = function (toResolve) {
+fluid.pouch.node.makeSafePrefix = function (toResolve) {
     return fluid.module.resolvePath(toResolve) + path.sep;
 };
 
@@ -57,12 +56,12 @@ gpii.pouch.node.makeSafePrefix = function (toResolve) {
  * @return {Promise} A promise that will be resolved when cleanup is complete or rejected if an error occurs.
  *
  */
-gpii.pouch.node.cleanup = function (that) {
+fluid.pouch.node.cleanup = function (that) {
     var togo = fluid.promise();
     togo.then(that.events.onCleanupComplete.fire);
 
     if (that.baseDirBelongsToUs) {
-        var cleanupPromise = gpii.pouchdb.timelyRimraf(that.options.baseDir, {}, that.options.rimrafTimeout);
+        var cleanupPromise = fluid.pouchdb.timelyRimraf(that.options.baseDir, {}, that.options.rimrafTimeout);
         cleanupPromise.then(togo.resolve, function (error) {
             fluid.log("Error cleaning up basedir:", error);
             togo.resolve();
@@ -85,7 +84,7 @@ gpii.pouch.node.cleanup = function (that) {
  * @return {Promise} - A promise which will be resolved when all data has been loaded.
  *
  */
-gpii.pouch.node.loadDataFromPath = function (that, dbPaths) {
+fluid.pouch.node.loadDataFromPath = function (that, dbPaths) {
     var promises = [];
 
     // This instance may not actually have any data, but it should still incidate that it has finished (not) loading data.
@@ -113,7 +112,7 @@ gpii.pouch.node.loadDataFromPath = function (that, dbPaths) {
  * @param {Object} that - The component itself.
  *
  */
-gpii.pouch.node.loadDataIfNeeded = function (that) {
+fluid.pouch.node.loadDataIfNeeded = function (that) {
     // As this is a bit of internal housekeeping, call "info" directly to avoid firing an `onInfoComplete` function.
     that.pouchDb.info(function (err, result) {
         if (err) {
@@ -139,21 +138,21 @@ gpii.pouch.node.loadDataIfNeeded = function (that) {
  * @param {Array} fnArgs - Arguments to pass to the pouch `destroy` function.
  * @return {Promise} A promise that will be resolved when pouch has been destroyed or rejected if an error occurs.
  */
-gpii.pouch.node.destroyPouch = function (that, fnArgs) {
+fluid.pouch.node.destroyPouch = function (that, fnArgs) {
     var togo = fluid.promise();
 
-    var dbDestroyPromise = gpii.pouch.callPouchFunction(that, "destroy", fnArgs, "onPouchDestroyComplete");
+    var dbDestroyPromise = fluid.pouch.callPouchFunction(that, "destroy", fnArgs, "onPouchDestroyComplete");
 
     dbDestroyPromise.then(function () {
-        var dirCleanupPromise = gpii.pouch.node.cleanup(that);
+        var dirCleanupPromise = fluid.pouch.node.cleanup(that);
         dirCleanupPromise.then(togo.resolve, togo.reject);
     }, togo.reject);
 
     return togo;
 };
 
-fluid.defaults("gpii.pouch.node.base", {
-    gradeNames: ["gpii.pouch"],
+fluid.defaults("fluid.pouch.node.base", {
+    gradeNames: ["fluid.pouch"],
     tmpDir:     os.tmpdir(),
     baseDir:    "@expand:path.resolve({that}.options.tmpDir, {that}.id)",
     removeDirOnCleanup: true,
@@ -166,7 +165,7 @@ fluid.defaults("gpii.pouch.node.base", {
         auto_compaction: true,
         skip_setup: false,
         // The trailing slash and prefix are required to ensure that we end up with /path/to/dir/dbname instead of /path/to/dirdbname.
-        prefix: "@expand:gpii.pouch.node.makeSafePrefix({that}.options.baseDir)"
+        prefix: "@expand:fluid.pouch.node.makeSafePrefix({that}.options.baseDir)"
     },
     events: {
         onDataLoaded:null,
@@ -174,18 +173,18 @@ fluid.defaults("gpii.pouch.node.base", {
     },
     invokers: {
         destroyPouch: {
-            funcName: "gpii.pouch.node.destroyPouch",
+            funcName: "fluid.pouch.node.destroyPouch",
             args:     ["{that}", "{arguments}"] // fnName, fnArgs, eventName
         },
         loadData: {
-            funcName: "gpii.pouch.node.loadDataFromPath",
+            funcName: "fluid.pouch.node.loadDataFromPath",
             args:     ["{that}", "{arguments}.0"]
         }
     },
     listeners: {
         "onCreate.initDir": {
             priority: "before:initPouch",
-            funcName: "gpii.pouch.node.initDir",
+            funcName: "fluid.pouch.node.initDir",
             args:     ["{that}"]
         },
         "onDataLoaded.log": {
@@ -196,12 +195,12 @@ fluid.defaults("gpii.pouch.node.base", {
 });
 
 
-fluid.defaults("gpii.pouch.node", {
-    gradeNames: ["gpii.pouch.node.base"],
+fluid.defaults("fluid.pouch.node", {
+    gradeNames: ["fluid.pouch.node.base"],
     listeners: {
         "onCreate.loadDataIfNeeded": {
             priority: "after:initPouch",
-            funcName: "gpii.pouch.node.loadDataIfNeeded",
+            funcName: "fluid.pouch.node.loadDataIfNeeded",
             args:     ["{that}"]
         },
         "onError.log": {

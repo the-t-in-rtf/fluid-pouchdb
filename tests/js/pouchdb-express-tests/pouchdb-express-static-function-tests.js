@@ -1,25 +1,24 @@
 /*
 
- Tests for the static functions used in `gpii.pouch.express`.
+ Tests for the static functions used in `fluid.pouch.express`.
 
  */
 /* eslint-env node */
 "use strict";
 var fluid =  require("infusion");
 var jqUnit = require("node-jqunit");
-var gpii   = fluid.registerNamespace("gpii");
 
 require("../../../");
 
-fluid.registerNamespace("gpii.tests.pouchdb.express");
+fluid.registerNamespace("fluid.tests.pouchdb.express");
 
-gpii.tests.pouchdb.express.testDbDefExpansion = function (testDef) {
+fluid.tests.pouchdb.express.testDbDefExpansion = function (testDef) {
     jqUnit.test(testDef.name, function () {
-        jqUnit.assertDeepEq("The output should be as expected...", testDef.expected, gpii.pouch.express.expandDbDef(testDef.input));
+        jqUnit.assertDeepEq("The output should be as expected...", testDef.expected, fluid.pouch.express.expandDbDef(testDef.input));
     });
 };
 
-fluid.defaults("gpii.tests.pouchdb.express", {
+fluid.defaults("fluid.tests.pouchdb.express", {
     gradeNames: ["fluid.component"],
     dbDefExpansionTests: {
         objectSinglePath: {
@@ -71,14 +70,14 @@ fluid.defaults("gpii.tests.pouchdb.express", {
     listeners: {
         "onCreate.announceModule": {
             funcName: "jqUnit.module",
-            args:     ["Testing static functions used in `gpii.pouch.express`..."]
+            args:     ["Testing static functions used in `fluid.pouch.express`..."]
         },
         "onCreate.runDbDefExpansionTests": {
             priority: "after:announceModule",
             funcName: "fluid.each",
-            args:     ["{that}.options.dbDefExpansionTests", gpii.tests.pouchdb.express.testDbDefExpansion]
+            args:     ["{that}.options.dbDefExpansionTests", fluid.tests.pouchdb.express.testDbDefExpansion]
         }
     }
 });
 
-gpii.tests.pouchdb.express();
+fluid.tests.pouchdb.express();
