@@ -28,6 +28,7 @@
     "devDependencies": {
         "eslint": "7.4.0",
         "eslint-config-fluid": "1.4.0",
+        "eslint-plugin-markdown": "1.0.2",
         "fluid-testem": "2.1.13",
         "fluid-grunt-lint-all": "1.0.8",
         "grunt": "1.2.1",
