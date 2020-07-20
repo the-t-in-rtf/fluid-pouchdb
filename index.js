@@ -1,9 +1,8 @@
 /* eslint-env node */
 "use strict";
 var fluid = require("infusion");
-var gpii  = fluid.registerNamespace("gpii");
 
-fluid.module.register("gpii-pouchdb", __dirname, require);
+fluid.module.register("fluid-pouchdb", __dirname, require);
 
 require("./src/js/timelyRimraf");
 require("./src/js/pouchdb-common");
@@ -11,11 +10,11 @@ require("./src/js/pouchdb-node");
 require("./src/js/pouch-express");
 require("./src/js/harness");
 
-fluid.registerNamespace("gpii.pouch");
+fluid.registerNamespace("fluid.pouch");
 
-gpii.pouch.loadTestingSupport = function () {
-    require("gpii-express");
-    gpii.express.loadTestingSupport();
+fluid.pouch.loadTestingSupport = function () {
+    require("fluid-express");
+    fluid.express.loadTestingSupport();
 
     require("./src/test/environment");
     require("./src/test/common-helpers");

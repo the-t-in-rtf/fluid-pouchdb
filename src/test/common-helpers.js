@@ -6,11 +6,10 @@
 /* eslint-env node */
 "use strict";
 var fluid = fluid || require("infusion");
-var gpii  = fluid.registerNamespace("gpii");
 
 var jqUnit = jqUnit || require("node-jqunit");
 
-fluid.registerNamespace("gpii.test.pouchdb");
+fluid.registerNamespace("fluid.test.pouchdb");
 
 /**
  *
@@ -23,7 +22,7 @@ fluid.registerNamespace("gpii.test.pouchdb");
  * @param {Array} actual - An array of actual output to compare to the expected results.
  *
  */
-gpii.test.pouchdb.recordsAreEquivalent = function (message, expected, actual) {
+fluid.test.pouchdb.recordsAreEquivalent = function (message, expected, actual) {
     jqUnit.assertEquals(message + " (record count)", expected.length, actual.length);
     for (var a = 0; a < expected.length; a++) {
         jqUnit.assertLeftHand(message + " (array position " + a + ")", expected[a], actual[a]);

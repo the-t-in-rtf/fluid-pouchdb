@@ -1,4 +1,4 @@
-# `gpii.pouch`
+# `fluid.pouch`
 
 A Fluid component that wraps a PouchDB instance and exposes select methods from the underlying object.
 
@@ -144,7 +144,7 @@ Clean up any stale map/reduce indexes.  This method is not tested and is used at
 
 Check the [PouchDB `viewCleanup` docs](https://pouchdb.com/api.html#view_cleanup) for more details.
 
-### `gpii.pouch.node`
+### `fluid.pouch.node`
 
 #### Component Options
 

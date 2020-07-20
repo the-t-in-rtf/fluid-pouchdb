@@ -1,12 +1,11 @@
 /*
     A static function to improve the performance when making repeated asynchronous rimraf calls.
 
-    See https://issues.gpii.net/browse/GPII-2392 for details.
+    See https://issues.fluid.net/browse/fluid-2392 for details.
 */
 /* eslint-env node */
 "use strict";
 var fluid = require("infusion");
-var gpii  = fluid.registerNamespace("gpii");
 
 var rimraf = require("rimraf");
 
@@ -15,7 +14,7 @@ var rimraf = require("rimraf");
 // See https://github.com/isaacs/rimraf#options
 var fs     = require("graceful-fs");
 
-fluid.registerNamespace("gpii.pouchdb");
+fluid.registerNamespace("fluid.pouchdb");
 
 /**
  *
@@ -28,7 +27,7 @@ fluid.registerNamespace("gpii.pouchdb");
  * @return {Promise} A promise that will be resolved when content has been removed or rejected if an error occurs.
  *
  */
-gpii.pouchdb.timelyRimraf = function (pathToRemove, rimrafOptions, timeoutMs) {
+fluid.pouchdb.timelyRimraf = function (pathToRemove, rimrafOptions, timeoutMs) {
     var promise = fluid.promise();
     if (timeoutMs) {
         setTimeout(function () {

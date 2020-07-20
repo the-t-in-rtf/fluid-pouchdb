@@ -2,18 +2,17 @@
 /* eslint-env node */
 "use strict";
 var fluid  = require("infusion");
-var gpii   = fluid.registerNamespace("gpii");
 var fs     = require("fs");
 var mock   = require("mock-fs");
 var jqUnit = require("node-jqunit");
 
 // TODO: These fail to complete and block other tests from running at the moment.
 
-fluid.require("%gpii-pouchdb");
+fluid.require("%fluid-pouchdb");
 
-fluid.registerNamespace("gpii.tests.timelyRimraf");
+fluid.registerNamespace("fluid.tests.timelyRimraf");
 
-gpii.tests.timelyRimraf.cleanup = function () {
+fluid.tests.timelyRimraf.cleanup = function () {
     mock.restore();
 };
 
@@ -26,7 +25,7 @@ jqUnit.test("Mocks should mock...", function () {
 
     jqUnit.assertTrue("The mock file should exist...", fs.existsSync("targetFile"));
 
-    gpii.tests.timelyRimraf.cleanup();
+    fluid.tests.timelyRimraf.cleanup();
 });
 
 jqUnit.test("Successful calls should succeed...", function () {
@@ -36,7 +35,7 @@ jqUnit.test("Successful calls should succeed...", function () {
 
     jqUnit.stop();
 
-    var promise = gpii.pouchdb.timelyRimraf("targetFile");
+    var promise = fluid.pouchdb.timelyRimraf("targetFile");
 
     promise.then(
         function () {
@@ -44,12 +43,12 @@ jqUnit.test("Successful calls should succeed...", function () {
             jqUnit.assert("We should have been able to remove a simulated file...");
 
             jqUnit.assertFalse("The file should no longer exist...", fs.existsSync("targetFile"));
-            gpii.tests.timelyRimraf.cleanup();
+            fluid.tests.timelyRimraf.cleanup();
         },
         function (error) {
             jqUnit.start();
             jqUnit.fail(error);
-            gpii.tests.timelyRimraf.cleanup();
+            fluid.tests.timelyRimraf.cleanup();
         }
     );
 });
@@ -59,19 +58,19 @@ jqUnit.test("Failing calls should fail...", function () {
 
     jqUnit.stop();
 
-    var promise = gpii.pouchdb.timelyRimraf("target", { unlink: function (file, cb) { cb("Fail!"); }});
+    var promise = fluid.pouchdb.timelyRimraf("target", { unlink: function (file, cb) { cb("Fail!"); }});
 
     promise.then(
         function () {
             jqUnit.start();
             jqUnit.fail("No error was thrown...");
 
-            gpii.tests.timelyRimraf.cleanup();
+            fluid.tests.timelyRimraf.cleanup();
         },
         function () {
             jqUnit.start();
             jqUnit.assert("An error was received, as expected...");
-            gpii.tests.timelyRimraf.cleanup();
+            fluid.tests.timelyRimraf.cleanup();
         }
     );
 });
@@ -81,19 +80,19 @@ jqUnit.test("Long running calls should time out...", function () {
 
     jqUnit.stop();
 
-    var promise = gpii.pouchdb.timelyRimraf("target", { unlink: function (file, cb) { setTimeout(cb, 150); }}, 50);
+    var promise = fluid.pouchdb.timelyRimraf("target", { unlink: function (file, cb) { setTimeout(cb, 150); }}, 50);
 
     promise.then(
         function () {
             jqUnit.start();
             jqUnit.fail("No error was thrown...");
 
-            gpii.tests.timelyRimraf.cleanup();
+            fluid.tests.timelyRimraf.cleanup();
         },
         function (error) {
             jqUnit.start();
             jqUnit.assertTrue("We should have received a timeout...", error.indexOf("Rimraf failed to complete") !== -1);
-            gpii.tests.timelyRimraf.cleanup();
+            fluid.tests.timelyRimraf.cleanup();
         }
     );
 });

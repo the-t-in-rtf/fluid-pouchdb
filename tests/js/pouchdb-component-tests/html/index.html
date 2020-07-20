@@ -28,8 +28,8 @@
         <!-- The client-side PouchDB dependencies -->
         <script type="text/javascript" src="/node_modules/pouchdb/dist/pouchdb.js"></script>
 
-        <!-- The gpii-express dependency for our test harness -->
-        <script type="text/javascript" src="/node_modules/gpii-express/tests/js/lib/test-helpers.js"></script>
+        <!-- The fluid-express dependency for our test harness -->
+        <script type="text/javascript" src="/node_modules/fluid-express/tests/js/lib/test-helpers.js"></script>
 
 
         <!-- This package's code to be tested-->
@@ -39,7 +39,7 @@
         <!-- required for use with Testem -->
         <script type="text/javascript" src="/testem.js"></script>
 
-        <!-- gpii-testem code coverage reporter -->
+        <!-- fluid-testem code coverage reporter -->
         <script type="text/javascript" src="/coverage/client/coverageSender.js"></script>
 
         <link rel="stylesheet" href="/node_modules/infusion/tests/lib/qunit/css/qunit.css"/>
@@ -54,7 +54,7 @@
         <!-- our QUnit tests -->
         <script type="text/javascript" src="../pouchdb-component-common-tests.js"></script>
         <script type="text/javascript">
-            fluid.test.runTests("gpii.tests.pouchdb.component.common.environment");
+            fluid.test.runTests("fluid.tests.pouchdb.component.common.environment");
         </script>
     </body>
 </html>

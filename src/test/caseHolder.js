@@ -1,7 +1,7 @@
 /* eslint-env node */
 /*
 
-    Caseholders to ensure that tests run against gpii-pouchdb are kept distinct from one another, so that you can be
+    Caseholders to ensure that tests run against fluid-pouchdb are kept distinct from one another, so that you can be
     confident you are not running your tests against a previous instance or data set.
 
     1. Explicitly removes all data between runs.
@@ -11,14 +11,13 @@
  */
 "use strict";
 var fluid = require("infusion");
-var gpii  = fluid.registerNamespace("gpii");
 
-fluid.registerNamespace("gpii.test.pouch.caseHolder");
+fluid.registerNamespace("fluid.test.pouch.caseHolder");
 
 // A series of test sequence steps that will clear out any existing data.  Designed for use with caseHolders that extend
-// gpii.test.express.caseHolder, which have the ability to wire "start" and "end" sequence steps before and after each
+// fluid.test.express.caseHolder, which have the ability to wire "start" and "end" sequence steps before and after each
 // test's "body".
-gpii.test.pouch.caseHolder.cleanupSequence = [
+fluid.test.pouch.caseHolder.cleanupSequence = [
     {
         func: "{testEnvironment}.events.onCleanup.fire",
         args: []
@@ -30,11 +29,11 @@ gpii.test.pouch.caseHolder.cleanupSequence = [
     }
 ];
 
-fluid.defaults("gpii.test.pouch.caseHolder.base", {
-    gradeNames: ["gpii.test.express.caseHolder"]
+fluid.defaults("fluid.test.pouch.caseHolder.base", {
+    gradeNames: ["fluid.test.express.caseHolder"]
 });
 
-fluid.defaults("gpii.test.pouch.caseHolder", {
-    gradeNames: ["gpii.test.pouch.caseHolder.base"],
-    sequenceEnd: gpii.test.pouch.caseHolder.cleanupSequence
+fluid.defaults("fluid.test.pouch.caseHolder", {
+    gradeNames: ["fluid.test.pouch.caseHolder.base"],
+    sequenceEnd: fluid.test.pouch.caseHolder.cleanupSequence
 });

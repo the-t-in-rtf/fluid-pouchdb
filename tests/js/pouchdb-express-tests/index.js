@@ -1,4 +1,4 @@
-// Rollup for all `gpii.pouch.express` tests
+// Rollup for all `fluid.pouch.express` tests
 /* eslint-env node */
 "use strict";
 require("./basic-tests");

@@ -1,14 +1,14 @@
 // An additional cleanup step required to pick up straggling _user lockfiles and logs in Windows.
-// See: https://github.com/GPII/gpii-pouchdb/pull/13#issuecomment-278364757
+// See: https://github.com/fluid-project/fluid-pouchdb/pull/13#issuecomment-278364757
 /* eslint-env node */
 "use strict";
 var fluid  = require("infusion");
 var rimraf = require("rimraf");
 var fs     = require("fs");
 
-fluid.require("%gpii-pouchdb/src/js/harness.js");
+fluid.require("%fluid-pouchdb/src/js/harness.js");
 
-var harnessOptions = fluid.defaults("gpii.pouch.harness.persistent");
+var harnessOptions = fluid.defaults("fluid.pouch.harness.persistent");
 
 if (fs.existsSync(harnessOptions.baseDir)) {
     fluid.log("Cleaning up straggling filesystem content in '", harnessOptions.baseDir, "'...");

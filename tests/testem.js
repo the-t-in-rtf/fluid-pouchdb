@@ -1,18 +1,17 @@
 /* eslint-env node */
 "use strict";
 var fluid = require("infusion");
-var gpii  = fluid.registerNamespace("gpii");
 
-fluid.require("%gpii-testem");
+fluid.require("%fluid-testem");
 
-fluid.defaults("gpii.pouchdb.testem", {
-    gradeNames: ["gpii.testem.instrumentation"],
+fluid.defaults("fluid.pouchdb.testem", {
+    gradeNames: ["fluid.testem.instrumentation"],
     testPages:  ["tests/js/pouchdb-component-tests/html/index.html"],
-    sourceDirs: { src: "%gpii-pouchdb/src" },
-    coverageDir: "%gpii-pouchdb/coverage",
+    sourceDirs: { src: "%fluid-pouchdb/src" },
+    coverageDir: "%fluid-pouchdb/coverage",
     contentDirs: {
-        nm: "%gpii-pouchdb/node_modules",
-        tests: "%gpii-pouchdb/tests"
+        nm: "%fluid-pouchdb/node_modules",
+        tests: "%fluid-pouchdb/tests"
     },
     testemOptions: {
         tap_quiet_logs: true,
@@ -21,4 +20,4 @@ fluid.defaults("gpii.pouchdb.testem", {
     }
 });
 
-module.exports = gpii.pouchdb.testem().getTestemOptions();
+module.exports = fluid.pouchdb.testem().getTestemOptions();
