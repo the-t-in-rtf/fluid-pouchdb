@@ -1,6 +1,6 @@
 {
     "name": "fluid-pouchdb",
-    "version": "1.0.17",
+    "version": "1.0.18",
     "private": false,
     "repository": "https://github.com/fluid-project/fluid-pouchdb",
     "license": "BSD-3-Clause",
